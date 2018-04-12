@@ -3,7 +3,7 @@
     <header class="page-header">
       <span class="page-title">Playlists</span>
       <router-link v-bind:to="nextIdLink">
-        <svg class="submenu-link" viewBox="0 0 34.471 34.471"><use xlink:href="#icon-plus"></use></svg>
+        <svg class="submenu-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-plus"></use></svg>
       </router-link>
     </header>
     <div class="page-content">

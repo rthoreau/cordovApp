@@ -8,7 +8,7 @@
         ref="searchInput" 
         v-model="searchValue"
         @keyup.enter="search()"
-        v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 29.648 34.728" class="search-icon" ><use xlink:href="#icon-search"></use></svg></label>
+        v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon" ><use xlink:href="#icon-search"></use></svg></label>
       </span>
     </header>
     <div class="page-content">

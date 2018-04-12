@@ -2,13 +2,13 @@
   <div id="playlist">
     <header class="page-header">
 
-      <button @click="back()"><svg viewBox="0 0 23.622 34.425"><use xlink:href="#icon-back"></use></svg></button>
+      <button @click="back()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></button>
 
       <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name" v-on:keyup.enter="save()"/>
 
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
 
-      <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
+      <svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
 
       <button @click="save()" class="right" v-if="mode === 'edit'">OK</button>
     </header>

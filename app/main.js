@@ -5,10 +5,8 @@ import store from './store'
 
 Vue.config.productionTip = false;
 
-window.addEventListener('load', function () {
-  new Vue({
-    render: h => h(App),
-    router,
-    store
-  }).$mount('#app')
-});
+new Vue({
+  render: h => h(App),
+  router,
+  store
+}).$mount('#app')

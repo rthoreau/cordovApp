@@ -1,6 +1,6 @@
 <template>
   <div id="favorite">
-    <header class="page-header"><span class="page-title">Favoris</span><!--<svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>-->
+    <header class="page-header"><span class="page-title">Favoris</span><!--<svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>-->
     </header>
     <!--<SubMenu v-if="submenuVisible" :links="links" @closeMenu="submenuVisible = false"></SubMenu>-->
     <div class="page-content">

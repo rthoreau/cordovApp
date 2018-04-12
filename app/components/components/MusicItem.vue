@@ -1,7 +1,7 @@
 <template>
   <div class="music-item item" :class="classe">
 
-    <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 31.909 35.383"><use xlink:href="#icon-pause"></use></svg>
+    <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable"></use></svg>
 
     <div class="music-plateform" :class="music.plateform" @click="setCurrentMusic(music.id)">
       <plateformicon :plateform="music.plateform"></plateformicon>
@@ -17,11 +17,11 @@
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
 
-    <svg v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" :class="music.favorite ? 'favorite' : ''" viewBox="0 0 38.394 35.2" @click="addToFavorite()"><use xlink:href="#icon-favorite"></use></svg>
+    <svg v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" :class="music.favorite ? 'favorite' : ''" viewBox="0 0 23.125 23.129" @click="addToFavorite()"><use xlink:href="#icon-favorite"></use></svg>
 
-    <svg  v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+    <svg  v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
 
-    <svg v-if="page === 'playlist' && mode === 'edit'" class="remove-link" viewBox="0 0 31.799 35.394" @click="deleteFromRender()"><use xlink:href="#icon-next"></use></svg>
+    <svg v-if="page === 'playlist' && mode === 'edit'" class="remove-link" viewBox="0 0 23.125 23.129" @click="deleteFromRender()"><use xlink:href="#icon-delete"></use></svg>
 
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" :params="popupParams">

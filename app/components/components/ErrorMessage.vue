@@ -1,7 +1,7 @@
 <template>
   <div class="error-message" :class="transitionClass">
     <p>{{error}}</p>
-    <svg viewBox="0 0 31.799 35.394" @click="closeMessage()"><use xlink:href="#icon-next"></use></svg>
+    <svg viewBox="0 0 23.125 23.129" @click="closeMessage()"><use xlink:href="#icon-next"></use></svg>
   </div>
 </template>
 

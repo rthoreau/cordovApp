@@ -82,5 +82,8 @@ module.exports = {
   },
   vue: {
     loaders: utils.cssLoaders()
+  },
+  htmlWebpackPlugin: {
+    minify: false
   }
 }

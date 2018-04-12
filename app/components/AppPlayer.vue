@@ -19,15 +19,15 @@
 
       <button @click="playPause()" class="play">
         <transition name="switch" mode="in-out">
-            <svg viewBox="0 0 31.908 35.381" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
-            <svg viewBox="0 0 31.909 35.383" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
+            <svg viewBox="0 0 23.125 23.129" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
+            <svg viewBox="0 0 23.125 23.129" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
         </transition>
       </button>
 
       <button @click="nextVideo()" class="next">Next</button>
       <button @click="test()" class="next">test</button>
       <span>{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
-      <button class="expand-link" @click="expand()"><svg viewBox="0 0 31.908 35.381"><use xlink:href="#icon-next" ></use></svg></button>
+      <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></button>
     </div>
     <waitingline></waitingline>
   </div>
@@ -217,7 +217,7 @@ export default {
   bottom:0;
   height:3.85rem;
   width:100%;
-  background:linear-gradient(to bottom, #4b89dc, #4b89dc 4rem, #18222d 4rem, #18222d);
+  background:linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 4rem, transparent 4rem, transparent);
   text-align:left;
   color:white;
   z-index:100;
@@ -227,7 +227,7 @@ export default {
   padding:0.5rem 4%;
 }
 #appPlayer.expanded{
-  box-shadow:inset -5px 8px 15px -10px black;
+  border-top:1px solid rgba(33,82,146,0.15);
   height:calc(100% - 4rem);
 }
 .progress{

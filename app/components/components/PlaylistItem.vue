@@ -9,7 +9,7 @@
         v-bind:id="id">{{index}} : {{getMusic(id).title}}</li>
       </ul>
     </div>
-    <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+    <svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
     <submenu v-if="submenuVisible" v-bind:links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" v-bind:params="popupParams">
       Supprimer la playlist ?
