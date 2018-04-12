@@ -115,8 +115,8 @@ export default {
     },
     loadVideoById (id) {
       if (this.player) {
-        console.log(id);
-        //this.player.loadVideoById(id);
+        //console.log(id);
+        this.player.loadVideoById(id);
         this.setProgressByGet();
       }
     },
