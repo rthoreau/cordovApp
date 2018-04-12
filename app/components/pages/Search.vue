@@ -60,6 +60,9 @@ export default {
       }
     }
   },
+  mounted () {
+    this.$refs.searchInput.focus()
+  },
   computed: {
     ...mapGetters({
       getSearchResult: 'manageStore/getSearchResult'

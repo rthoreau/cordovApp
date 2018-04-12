@@ -64,6 +64,7 @@ body{
   z-index:0;
   transition:height 0.5s;
   overflow:hidden;
+  z-index:10;
 }
 .page.hidden{
   height:0;
@@ -197,8 +198,8 @@ ul.selection li + li:before{
   top:0;
   left:1%;
   width:98%;
-  height:0.1rem;
-  background-color:#eee;
+  height:0.04rem;
+  background-color:rgba(255,255,255,0.2);
 }
 .music-plateform{
   position:absolute;

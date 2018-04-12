@@ -11,13 +11,16 @@
         <img :src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
-    <div class="music-content" :class="page" @click="setCurrentMusic(music.id)">
+    <div class="music-content" :class="mode ? page + mode : page" @click="setCurrentMusic(music.id)">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
 
-    <svg v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" :class="music.favorite ? 'favorite' : ''" viewBox="0 0 23.125 23.129" @click="addToFavorite()"><use xlink:href="#icon-favorite"></use></svg>
+    <svg key="a" v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" viewBox="0 0 23.125 23.129" @click="addToFavorite()">
+      <use v-if="music.favorite" xlink:href="#icon-favorited"></use>
+      <use v-if="!music.favorite" xlink:href="#icon-favorite"></use>
+    </svg>
 
     <svg  v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
 
@@ -164,16 +167,19 @@ export default {
 .music-content{
   display:inline-block;
   text-align:left;
-  width:62%;
-  margin-right:2%;
+  width:61%;
+  margin-right:3%;
   vertical-align: middle;
-  width:calc(84% - 4.8rem);
+  width:calc(83% - 4.8rem);
   font-size:1rem;
   vertical-align: top;
 }
 .music-content.favorite{
-  width:74%;
-  width:calc(96% - 4.8rem);
+  width:73%;
+  width:calc(95% - 4.8rem);
+}
+.music-content.playlistedit{
+  width:56%;
 }
 .music-content span{
   display:block;
@@ -190,19 +196,10 @@ export default {
   margin-right:4%;
 }
 .move-link{
-  width:4%;
+  width:6%;
   margin-right:5%;
-}
-.favorite-link{
-  opacity:0.2;
-}
-.favorite-link.favorite{
-  opacity:1;
 }
 .editing .music-plateform{
   left:12%;
-}
-.editing .music-content{
-  width:54%;
 }
 </style>

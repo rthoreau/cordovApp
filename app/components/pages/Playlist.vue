@@ -2,7 +2,7 @@
   <div id="playlist">
     <header class="page-header">
 
-      <button @click="back()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></button>
+      <button @click="back()" class="back-link"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></button>
 
       <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name" v-on:keyup.enter="save()"/>
 
@@ -10,7 +10,7 @@
 
       <svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
 
-      <button @click="save()" class="right" v-if="mode === 'edit'">OK</button>
+      <button @click="save()" class="right save-link" v-if="mode === 'edit'"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
     </header>
     
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
@@ -209,7 +209,7 @@ background-color:rgba(255,255,255,0.2);
   height:2.5rem;
   color:white;
   font-size:1.4rem;
-  padding:0 0.5rem;
+  padding:0 0.8rem;
   width:18%;
 }
 .item.sortable-chosen{
@@ -217,5 +217,15 @@ background-color:rgba(255,255,255,0.2);
 }
 .item.sortable-ghost{
   opacity:0.3;
+}
+#playlist .page-header .back-link{
+  text-align:left;
+  padding:0 0.8rem;
+}
+.back-link svg{
+  width:55%;
+}
+.save-link svg{
+  width:80%;
 }
 </style>

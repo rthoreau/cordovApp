@@ -51,7 +51,7 @@ export default {
     z-index:200;
 }
 .popup{
-  background-color:white;
+  background-color:#152031;
   position:fixed;
   top:50%;
   left:50%;
@@ -77,7 +77,7 @@ export default {
 .popup .container{
   padding:2rem 0.8rem;
   font-size:1rem;
-  color:#222;
+  color:#ddd;
   text-align:center;
 }
 .popup header + .container{
@@ -86,7 +86,7 @@ export default {
 }
 .popup footer{
   padding:0.5rem 0;
-  background:linear-gradient(to right, #4b89dc, #4b89dc 49%, #888 50%, #888);
+  background:linear-gradient(to right, #4b89dc, #4b89dc 49%, #111 50%, #111);
   font-size:0;
   text-align:center;
 }

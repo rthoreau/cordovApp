@@ -95,7 +95,7 @@ export default {
     top:-0.2rem;
   }
   #appHeader .nav a.router-link-exact-active svg{
-    fill:#215292;
+    fill:#207bd2;
   }
   #appHeader .submenu{
     top:4rem;

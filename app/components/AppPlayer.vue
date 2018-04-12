@@ -161,9 +161,9 @@ export default {
     test () {
       this.player.seekTo(this.currentTime + 50);
     },
-    expand () {
+    expand (hide) {
       //TODO quand expand, changer de route
-      this.expandClass = this.expandClass === '' ? 'expanded' : '';
+      this.expandClass = this.expandClass === 'expanded' || hide ? '' : 'expanded';
       this.$emit('expanded', (this.expandClass !== ''));
     }
   },
@@ -206,6 +206,9 @@ export default {
     videoId: function (id) {
       this.loadVideoById(id);
       this.setProgressByGet();
+    },
+    $route: function () {
+      this.expand(true);
     }
   }
 }
@@ -229,6 +232,7 @@ export default {
 #appPlayer.expanded{
   border-top:1px solid rgba(33,82,146,0.15);
   height:calc(100% - 4rem);
+  z-index:0;
 }
 .progress{
   position:absolute;
