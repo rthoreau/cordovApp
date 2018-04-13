@@ -24,10 +24,10 @@
         </transition>
       </button>
 
-      <button @click="nextVideo()" class="next">Next</button>
+      <button @click="nextVideo()" class="next"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></button>
       <button @click="test()" class="next">test</button>
-      <span>{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
-      <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></button>
+      <span class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+      <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
     </div>
     <waitingline></waitingline>
   </div>
@@ -242,6 +242,9 @@ export default {
   background-color:white;
   transition:width 0.5s linear;
 }
+#appPlayer.expanded .progress{
+  top:0;
+}
 .player-container .music-plateform{
   top:0.5rem;
   height:2.85rem;
@@ -264,6 +267,7 @@ export default {
   width:100%;
   right:0;
   top:0;
+  object-fit:cover;
 }
 .overlay{
   position:absolute;
@@ -276,13 +280,13 @@ export default {
   width:100%!important;
   height:100%!important;
 }
-#appPlayer button{
+.player-container button{
   position:relative;
   display:inline-block;
   vertical-align:top;
-  width:2rem;
+  width:1.8rem;
 }
-#appPlayer button svg{
+.player-containerbutton svg{
   position:absolute;
   height:1.8rem;
   left:50%;
@@ -303,7 +307,11 @@ export default {
 #appPlayer.sortable-drag *{
   display:none;
 }
+.time{
+  font-size:0.8rem;
+}
 .expand-link{
   height:1.5rem;
+  float:right;
 }
 </style>

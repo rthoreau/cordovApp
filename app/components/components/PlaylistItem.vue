@@ -35,6 +35,7 @@ export default {
       submenuVisible: false,
       links: [
         {text: 'Accéder à la playlist', action: 'Playlist/' + this.playlist.id, mode: 'router'},
+        {text: 'Ajouter à la file', action: () => this.waitingLineAction({action: 'add', ids: this.playlist.musics})},
         {text: 'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
       popupVisible: false,
@@ -54,7 +55,8 @@ export default {
       }
     },
     ...mapActions({
-      deletePlaylist: 'manageStore/deletePlaylist'
+      deletePlaylist: 'manageStore/deletePlaylist',
+      waitingLineAction: 'manageStore/waitingLineAction'
     })
   },
   computed: {

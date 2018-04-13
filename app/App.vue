@@ -47,9 +47,9 @@ body{
   background: url(assets/bg.jpg) no-repeat fixed;
   background-size:cover;
   margin:0;
-  font-family: Segoe, sans-serif!important;
+  font-family: Arial, sans-serif!important;
   text-align: center;
-  color: #7c9bbb;
+  color: #c8d6e8;
 }
 #app{
   padding:4em 0;
@@ -57,6 +57,15 @@ body{
 }
 *{
   box-sizing:border-box;
+}
+button{
+  font-size:1em;
+  color:inherit;
+  padding:0;
+}
+button svg{
+  width:100%;
+  height:auto;
 }
 .page{
   position:relative;
@@ -71,7 +80,7 @@ body{
   overflow:hidden;
 }
 .page.hidden .page-header{
-  opacity:0;
+  height:0;
   overflow:hidden;
 }
 .page-header{
@@ -223,7 +232,7 @@ ul.selection li + li:before{
 /* items */
 .item{
   padding:0.5rem 4%;
-  transition:background-color 0.2s;
+  transition:background-color 0.4s;
 }
 .item .submenu-link{
   height:1rem;
@@ -242,6 +251,6 @@ ul.selection li + li:before{
   bottom:100%;
 }
 .item.active{
-  background-color:rgba(120,168,255,0.1);
+  background-color:rgba(130, 153, 195, 0.31);
 }
 </style>

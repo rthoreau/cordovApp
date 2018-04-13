@@ -1,5 +1,5 @@
 <template>
-  <div class="music-item item" :class="classe">
+  <div class="music-item item" :class="mode ? classe + mode : classe">
 
     <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable"></use></svg>
 
@@ -11,20 +11,20 @@
         <img :src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
-    <div class="music-content" :class="mode ? page + mode : page" @click="setCurrentMusic(music.id)">
+    <div class="music-content" :class="page" @click="setCurrentMusic(music.id)">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
 
-    <svg key="a" v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" viewBox="0 0 23.125 23.129" @click="addToFavorite()">
+    <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="addToFavorite()"><svg viewBox="0 0 23.125 23.129">
       <use v-if="music.favorite" xlink:href="#icon-favorited"></use>
       <use v-if="!music.favorite" xlink:href="#icon-favorite"></use>
-    </svg>
+    </svg></button>
 
-    <svg  v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+    <button v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link"  @click="submenuVisible = !submenuVisible"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></button>
 
-    <svg v-if="page === 'playlist' && mode === 'edit'" class="remove-link" viewBox="0 0 23.125 23.129" @click="deleteFromRender()"><use xlink:href="#icon-delete"></use></svg>
+    <button v-if="page === 'playlist' && mode === 'edit'" class="remove-link" @click="deleteFromRender()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-delete"></use></svg></button>
 
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" :params="popupParams">
@@ -78,7 +78,8 @@ export default {
   methods: {
     ...mapActions({
       setCurrentMusic: 'manageStore/setCurrentMusic',
-      musicAction: 'manageStore/musicAction'
+      musicAction: 'manageStore/musicAction',
+      waitingLineAction: 'manageStore/waitingLineAction'
     }),
     hmsDuration (val) {
       var h = Math.floor(val / 3600);
@@ -118,9 +119,9 @@ export default {
       this.loaded = true;
     }, 1000);
     if (this.page === 'waitingLine') {
-      this.links.push({text: 'Retirer de la file', action: () => console.log('TODO')});
+      this.links.push({text: 'Retirer de la file', action: () => this.waitingLineAction({action: 'remove', ids: [this.music.id]})});
     } else {
-      this.links.push({text: 'Ajouter à la file', action: () => console.log('TODO')});
+      this.links.push({text: 'Ajouter à la file', action: () => this.waitingLineAction({action: 'add', ids: [this.music.id]})});
     }
     if (this.music.favorite && this.page === 'favorite') {
       this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', ids: [this.music.id]})});
@@ -152,10 +153,12 @@ export default {
   width:3.5rem;
   height:3.5rem;
   display:inline-block;
-  object-fit:cover;
   margin:0 0.8rem 0 0.5rem;
   text-align:right;
   vertical-align: middle;
+}
+.editing .music-thumbnail-container{
+  margin-left:0.1rem;
 }
 .music-thumbnail{
   width:100%;
@@ -178,8 +181,8 @@ export default {
   width:73%;
   width:calc(95% - 4.8rem);
 }
-.music-content.playlistedit{
-  width:56%;
+.editing .music-content{
+  width:54%;
 }
 .music-content span{
   display:block;

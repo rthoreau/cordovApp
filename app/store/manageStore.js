@@ -72,9 +72,6 @@ const mutations = {
   mutatePlaylists: (state, playlists) => {
     state.playlists = playlists;
   },
-  mutateWaitingLing: (state, waitingLine) => {
-    state.waitingLine = waitingLine;
-  },
   mutateDeletePlaylist: (state, playlistId) => {
     state.playlists = state.playlists.filter(playlist => playlist.id !== playlistId);
   },
@@ -166,7 +163,14 @@ const mutations = {
         state.musics = state.musics.filter(music => params.ids.indexOf(music.id) === -1 || usedIds.indexOf(music.id) !== -1 || music.id === state.currentMusic);
       }
     }
-    console.log(state.musics);
+  },
+  mutateWaitingLine: (state, params) => {
+    if (params.action === 'add') {
+      params.ids.forEach(id => state.waitingLine.push(id));
+    }
+    if (params.action === 'remove') {
+      state.waitingLine = state.waitingLine.filter(id => params.ids.indexOf(id) === -1);
+    }
   }
 }
 
@@ -178,8 +182,8 @@ const actions = {
   setPlaylists (context, playlists) {
     context.commit('mutatePlaylists', playlists)
   },
-  setWaitingLine (context, waitingLine) {
-    context.commit('mutateWaitingLine', waitingLine)
+  waitingLineAction (context, params) {
+    context.commit('mutateWaitingLine', params)
   },
   deletePlaylist (context, playlist) {
     //filter musics before removal

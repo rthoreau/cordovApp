@@ -41,7 +41,8 @@ export default {
 #waitingLine .page-content{
   margin:0;
   padding-top:0;
-  max-height:100%;
+  height:100%;
+  transition:none;
 }
 .subtitle{
   display:inline-block;

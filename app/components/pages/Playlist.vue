@@ -4,7 +4,7 @@
 
       <button @click="back()" class="back-link"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></button>
 
-      <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name" v-on:keyup.enter="save()"/>
+      <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Pop, Jazz ..." v-model="playlist.name" v-on:keyup.enter="save()"/>
 
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
 
@@ -193,14 +193,14 @@ export default {
   background-color:transparent;
   height:1.5em;
   margin:0.6rem 2%;
-  width:60%;
+  width:64%;
   outline:none;
   vertical-align:middle;
 }
 input.page-title:focus{
-background-color:rgba(255,255,255,0.2);
+  background-color:rgba(255,255,255,0.2);
 }
-.edit{
+.page-title.edit{
   border:2px dashed white;
   padding:0.5rem;
 }
@@ -209,11 +209,11 @@ background-color:rgba(255,255,255,0.2);
   height:2.5rem;
   color:white;
   font-size:1.4rem;
-  padding:0 0.8rem;
-  width:18%;
+  padding:0 0.4rem;
+  width:16%;
 }
 .item.sortable-chosen{
-  background-color:rgba(0,0,0,0.3);
+  background-color:rgba(60,95,132,0.3);
 }
 .item.sortable-ghost{
   opacity:0.3;
@@ -223,7 +223,7 @@ background-color:rgba(255,255,255,0.2);
   padding:0 0.8rem;
 }
 .back-link svg{
-  width:55%;
+  width:100%;
 }
 .save-link svg{
   width:80%;
