@@ -35,9 +35,9 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
 @font-face {
-  font-family: Segoe;
+  font-family: 'Segoe UI';
   src: url(assets/seguiemj.ttf);
 }
 html, body{
@@ -47,7 +47,7 @@ body{
   background: url(assets/bg.jpg) no-repeat fixed;
   background-size:cover;
   margin:0;
-  font-family: Arial, sans-serif!important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   color: #c8d6e8;
 }
@@ -62,11 +62,25 @@ button{
   font-size:1em;
   color:inherit;
   padding:0;
+  background-color:transparent;
+  border:none;
+  -webkit-appearance:none;
+  outline:none;
+  svg{
+    width:100%;
+    height:auto;
+  }
 }
-button svg{
-  width:100%;
-  height:auto;
+p{
+  margin:0;
 }
+
+svg{
+  fill:white;
+  height:100%;
+  transition:fill 0.5s;
+}
+
 .page{
   position:relative;
   height:100%;
@@ -74,14 +88,14 @@ button svg{
   transition:height 0.5s;
   overflow:hidden;
   z-index:10;
-}
-.page.hidden{
-  height:0;
-  overflow:hidden;
-}
-.page.hidden .page-header{
-  height:0;
-  overflow:hidden;
+  &.hidden{
+    height:0;
+    overflow:hidden;
+    .page-header{
+      height:0;
+      overflow:hidden;
+    }
+  }
 }
 .page-header{
   position:fixed;
@@ -95,6 +109,16 @@ button svg{
   text-align:left;
   padding-left:2.4rem;
   transition:opacity 0.5s;
+  .submenu-link{
+    position:absolute;
+    height:50%;
+    fill:white;
+    top:25%;
+    right:5%;
+    & + .submenu-link{
+      right:18%;
+    }
+  }
 }
 .page-content{
   display:inline-block;
@@ -103,27 +127,16 @@ button svg{
   overflow:scroll;
   margin:4rem 0;
   text-align:left;
-  /*min-height:calc(100% - 12rem)*/
   height:calc(100% - 4rem);
-}
-.page-header + .page-content{
-  margin-top:4em;
+  & + .page-content{
+    margin-top:4em;
+  }
 }
 .page-title{
   font-size:1.8rem;
   line-height:4rem;
   color:white;
   vertical-align: middle;
-}
-.page-header .submenu-link{
-  position:absolute;
-  height:50%;
-  fill:white;
-  top:25%;
-  right:5%;
-}
-.page-header .submenu-link + .submenu-link{
-  right:18%;
 }
 
 *::-webkit-input-placeholder {
@@ -148,12 +161,7 @@ button svg{
 .lo{
   background-color:#5d9cec;
 }
-button{
-  background-color:transparent;
-  border:none;
-  -webkit-appearance:none;
-  outline:none;
-}
+
 ul{
   list-style-type:none;
   padding:0;
@@ -173,42 +181,44 @@ label.checkbox{
   font-size:1rem;
   position:relative;
   transition:all 0.5s;
+  &:before{
+    content:'';
+    width:1.2rem;
+    height:1.2rem;
+    border:0.05rem solid #888;
+    background-color:white;
+    position:absolute;
+    right:0;
+    top:50%;
+    transform:translate(0,-50%);
+    transition:all 0.5s;
+  }
 }
-label.checkbox:before{
-  content:'';
-  width:1.2rem;
-  height:1.2rem;
-  border:0.05rem solid #888;
-  background-color:white;
-  position:absolute;
-  right:0;
-  top:50%;
-  transform:translate(0,-50%);
-  transition:all 0.5s;
-}
-input:checked + label.checkbox{
-  color:#5d9cec;
-}
-input:checked + label.checkbox:before{
-  background-color:#5d9cec;
-  border-color:#5d9cec;
+input:checked{
+  & + label.checkbox{
+    color:#5d9cec;
+    &:before{
+      background-color:#5d9cec;
+      border-color:#5d9cec;
+    }
+  }
 }
 ul.selection li{
   position:relative;
   padding:0.4rem 0;
-}
-ul.selection li + li{
-  margin-top:0.1rem;
-  padding-top:0.5rem;
-}
-ul.selection li + li:before{
-  content:'';
-  position:absolute;
-  top:0;
-  left:1%;
-  width:98%;
-  height:0.04rem;
-  background-color:rgba(255,255,255,0.2);
+  & + li{
+    margin-top:0.1rem;
+    padding-top:0.5rem;
+    &:before{
+      content:'';
+      position:absolute;
+      top:0;
+      left:1%;
+      width:98%;
+      height:0.04rem;
+      background-color:rgba(255,255,255,0.2);
+    }
+  }
 }
 .music-plateform{
   position:absolute;
@@ -222,7 +232,7 @@ ul.selection li + li:before{
 
 .appear-enter-active,
 .appear-leave-active{
-  transition: all 1.2s;
+  transition: all 0.3s;
 }
 .appear-enter,
 .appear-leave-to{
@@ -233,24 +243,28 @@ ul.selection li + li:before{
 .item{
   padding:0.5rem 4%;
   transition:background-color 0.4s;
+  &.active{
+    background-color:rgba(130, 153, 195, 0.31);
+  }
+  .submenu-link{
+    height:1rem;
+    vertical-align: middle;
+    width:2%;
+    text-align:center;
+  }
+  .submenu{
+    position:absolute;
+    top:100%;
+    right:0.6rem;
+    margin:0.4rem 0;
+    &.top{
+      top:auto;
+      bottom:100%;
+    }
+  }
 }
-.item .submenu-link{
-  height:1rem;
-  vertical-align: middle;
-  width:2%;
-  text-align:center;
-}
-.item .submenu{
-  position:absolute;
-  top:100%;
-  right:0.6rem;
-  margin:0.4rem 0;
-}
-.item .submenu.top{
-  top:auto;
-  bottom:100%;
-}
-.item.active{
-  background-color:rgba(130, 153, 195, 0.31);
+.empty-message{
+  padding:1.4rem;
+  color:#c8d6e8;
 }
 </style>

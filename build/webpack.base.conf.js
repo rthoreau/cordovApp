@@ -46,6 +46,10 @@ module.exports = {
         loader: 'vue'
       },
       {
+        test: /\.s[a|c]ss$/,
+        loader: 'style!css!sass'
+      },
+      {
         test: /\.js$/,
         loader: 'babel',
         include: projectRoot,
@@ -81,7 +85,9 @@ module.exports = {
     formatter: require('eslint-friendly-formatter')
   },
   vue: {
-    loaders: utils.cssLoaders()
+    loaders:{
+      scss: 'style!css!sass'
+    }
   },
   htmlWebpackPlugin: {
     minify: false

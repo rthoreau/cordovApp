@@ -18,7 +18,7 @@
       </div>
 
       <button @click="playPause()" class="play">
-        <transition name="switch" mode="in-out">
+        <transition name="switch" mode="out-in">
             <svg viewBox="0 0 23.125 23.129" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
             <svg viewBox="0 0 23.125 23.129" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
         </transition>
@@ -67,10 +67,17 @@ export default {
   },
   methods: {
     ...mapActions({
-      setCurrentMusic: 'manageStore/setCurrentMusic'
+      setCurrentMusic: 'manageStore/setCurrentMusic',
+      musicAction: 'manageStore/musicAction'
     }),
     nextVideo () {
-      this.setCurrentMusic('ert5784ert');
+      var waiting = this.getWaitingLine;
+      if (waiting.length !== 0) {
+        this.setCurrentMusic(this.getWaitingLine[0]);
+        this.musicAction({action: 'remove', index: 0, from: 'waitingLine'})
+      } else {
+        this.paused = true;
+      }
     },
     ready (player) {
       this.player = player;
@@ -107,10 +114,11 @@ export default {
         console.log(this.player);
       }
     },
-    pauseVideo () {
+    pauseVideo (reset) {
+      reset = reset ? 0 : false;
       if (this.player) {
         this.player.pauseVideo();
-        this.watchTime(false);
+        this.watchTime(reset);
       }
     },
     loadVideoById (id) {
@@ -173,7 +181,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      getCurrentMusic: 'manageStore/getCurrentMusic'
+      getCurrentMusic: 'manageStore/getCurrentMusic',
+      getWaitingLine: 'manageStore/getWaitingLine'
     })
   },
   //TODO
@@ -214,7 +223,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
 #appPlayer{
   position:fixed;
   bottom:0;
@@ -225,14 +234,28 @@ export default {
   color:white;
   z-index:100;
   transition:height 0.5s;
+  &.expanded{
+    border-top:1px solid rgba(33,82,146,0.15);
+    height:calc(100% - 4rem);
+    z-index:0;
+  }
 }
 .player-container{
   padding:0.5rem 4%;
-}
-#appPlayer.expanded{
-  border-top:1px solid rgba(33,82,146,0.15);
-  height:calc(100% - 4rem);
-  z-index:0;
+  .music-plateform{
+    top:0.5rem;
+    height:2.85rem;
+    position:static;
+    display:inline-block;
+    margin-right:0.5rem;
+  }
+  button{
+    position:relative;
+    display:inline-block;
+    vertical-align:top;
+    width:1.8rem;
+    height:auto;
+  }
 }
 .progress{
   position:absolute;
@@ -242,15 +265,8 @@ export default {
   background-color:white;
   transition:width 0.5s linear;
 }
-#appPlayer.expanded .progress{
+.expanded .progress{
   top:0;
-}
-.player-container .music-plateform{
-  top:0.5rem;
-  height:2.85rem;
-  position:static;
-  display:inline-block;
-  margin-right:0.5rem;
 }
 .video-container{
   height:2.85rem;
@@ -280,32 +296,12 @@ export default {
   width:100%!important;
   height:100%!important;
 }
-.player-container button{
-  position:relative;
-  display:inline-block;
-  vertical-align:top;
-  width:1.8rem;
-}
-.player-containerbutton svg{
-  position:absolute;
-  height:1.8rem;
-  left:50%;
-  top:0.5rem;
-}
 
-.switch-leave-active {
-  transition: all 0.8s ease;
+.switch-enter-active, .switch-leave-active{
+  transition: all 0.3s ease;
 }
-.switch-enter,
-.switch-leave-to{
+.switch-enter, .switch-leave-to{
   opacity: 0;
-}
-#appPlayer.sortable-drag{
-  width:300%!important;
-  left:-50%!important;
-}
-#appPlayer.sortable-drag *{
-  display:none;
 }
 .time{
   font-size:0.8rem;
@@ -313,5 +309,13 @@ export default {
 .expand-link{
   height:1.5rem;
   float:right;
+}
+.play{
+  height:1.8rem;
+  svg{
+    top:0;
+    left:0;
+    position:absolute;
+  }
 }
 </style>

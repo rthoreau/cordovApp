@@ -3,21 +3,21 @@
 
     <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable"></use></svg>
 
-    <div class="music-plateform" :class="music.plateform" @click="setCurrentMusic(music.id)">
+    <div class="music-plateform" :class="music.plateform" @click="addToCurrent()">
       <plateformicon :plateform="music.plateform"></plateformicon>
     </div>
-    <div class="music-thumbnail-container" @click="setCurrentMusic(music.id)">
+    <div class="music-thumbnail-container" @click="addToCurrent()">
       <transition name="appear">
         <img :src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
-    <div class="music-content" :class="page" @click="setCurrentMusic(music.id)">
+    <div class="music-content" :class="page" @click="addToCurrent()">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
 
-    <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="addToFavorite()"><svg viewBox="0 0 23.125 23.129">
+    <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="musicAction({action: (music.favorite ? 'remove' : 'add'), to: 'favorite', from: 'favorite', id: music.id})"><svg viewBox="0 0 23.125 23.129">
       <use v-if="music.favorite" xlink:href="#icon-favorited"></use>
       <use v-if="!music.favorite" xlink:href="#icon-favorite"></use>
     </svg></button>
@@ -49,7 +49,8 @@ export default {
     music: Object,
     page: String,
     playlistid: String,
-    mode: String
+    mode: String,
+    index: Number
   },
   components: {
     plateformicon,
@@ -77,9 +78,7 @@ export default {
   },
   methods: {
     ...mapActions({
-      setCurrentMusic: 'manageStore/setCurrentMusic',
-      musicAction: 'manageStore/musicAction',
-      waitingLineAction: 'manageStore/waitingLineAction'
+      musicAction: 'manageStore/musicAction'
     }),
     hmsDuration (val) {
       var h = Math.floor(val / 3600);
@@ -91,12 +90,15 @@ export default {
       return h + m + ':' + s;
     },
     addToPlaylists () {
-      this.musicAction({action: 'add', to: 'playlist', musicId: this.music.id, playlistIds: this.checkedPlaylists});
+      this.musicAction({action: 'add', to: 'playlist', id: this.music.id, playlistIds: this.checkedPlaylists});
       this.popupVisible = false;
     },
     addToFavorite () {
-      this.musicAction({action: 'add', to: 'favorite', musicId: this.music.id, source: this.source, music: this.music});
+      this.musicAction({action: 'add', to: 'favorite', id: this.music.id, source: this.source, music: this.music});
       this.$emit('refresh', true);
+    },
+    addToCurrent () {
+      this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music})
     },
     deleteFromRender () {
       this.$emit('delete', true);
@@ -119,16 +121,16 @@ export default {
       this.loaded = true;
     }, 1000);
     if (this.page === 'waitingLine') {
-      this.links.push({text: 'Retirer de la file', action: () => this.waitingLineAction({action: 'remove', ids: [this.music.id]})});
+      this.links.push({text: 'Retirer de la file', action: () => this.musicAction({action: 'remove', from: 'waitingLine', index: this.index})});
     } else {
-      this.links.push({text: 'Ajouter à la file', action: () => this.waitingLineAction({action: 'add', ids: [this.music.id]})});
+      this.links.push({text: 'Ajouter à la file', action: () => this.musicAction({action: 'add', to: 'waitingLine', id: this.music.id})});
     }
     if (this.music.favorite && this.page === 'favorite') {
-      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', ids: [this.music.id]})});
+      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', id: this.music.id})});
     }
     if (this.page === 'playlist') {
       this.links.push({text: 'Supprimer de la playlist',
-        action: () => this.musicAction({action: 'remove', from: 'playlist', ids: [this.music.id], playlistId: parseInt(this.playlistid)})});
+        action: () => this.musicAction({action: 'remove', from: 'playlist', id: this.music.id, playlistId: parseInt(this.playlistid)})});
     }
     this.source = this.page === 'search' ? this.page : '';
     this.setClass();
@@ -142,7 +144,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
 .music-item{
   position:relative;
   font-size:0;
@@ -156,9 +158,6 @@ export default {
   margin:0 0.8rem 0 0.5rem;
   text-align:right;
   vertical-align: middle;
-}
-.editing .music-thumbnail-container{
-  margin-left:0.1rem;
 }
 .music-thumbnail{
   width:100%;
@@ -176,16 +175,24 @@ export default {
   width:calc(83% - 4.8rem);
   font-size:1rem;
   vertical-align: top;
+  &.favorite{
+    width:73%;
+    width:calc(95% - 4.8rem);
+  }
+  span{
+    display:block;
+  }
 }
-.music-content.favorite{
-  width:73%;
-  width:calc(95% - 4.8rem);
-}
-.editing .music-content{
-  width:54%;
-}
-.music-content span{
-  display:block;
+.editing{
+  .music-thumbnail-container{
+    margin-left:0.1rem;
+  }
+  .music-content{
+    width:54%;
+  }
+  .music-plateform{
+    left:12%;
+  }
 }
 .music-title{
   font-weight:bold;
@@ -201,8 +208,5 @@ export default {
 .move-link{
   width:6%;
   margin-right:5%;
-}
-.editing .music-plateform{
-  left:12%;
 }
 </style>

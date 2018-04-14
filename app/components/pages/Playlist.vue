@@ -74,9 +74,9 @@ export default {
   },
   methods: {
     ...mapActions({
-      setPlaylists: 'manageStore/setPlaylists',
+      setPlaylist: 'manageStore/setPlaylist',
       deletePlaylist: 'manageStore/deletePlaylist',
-      music: 'manageStore/music'
+      filterMusics: 'manageStore/filterMusics'
     }),
     callDeletePlaylist (confirmed) {
       confirmed = confirmed || false;
@@ -101,18 +101,8 @@ export default {
         this.$refs.editInput.focus();
         return false;
       }
-      if (this.deleteIds.length) {
-        this.music({action: 'remove', from: 'playlist', ids: this.deleteIds, playlistId: this.playlist.id});
-        this.deleteIds = [];
-      }
-      var playlists = this.$store.getters['manageStore/getPlaylists'];
-      var index = playlists.findIndex(playlist => playlist.id === this.playlist.id);
-      if (index === -1) {
-        playlists.push(this.playlist);
-      } else {
-        playlists[index] = this.playlist;
-      }
-      this.setPlaylists(playlists);
+      this.setPlaylist(this.playlist);
+      this.filterMusics();
       this.changeMode();
 
       //reload manually to avoid auto-save
@@ -184,18 +174,32 @@ export default {
 }
 </script>
 
-<style>
-#playlist .page-header{
-  padding-left:0.4rem;
-  font-size:0;
-}
-#playlist input.page-title{
-  background-color:transparent;
-  height:1.5em;
-  margin:0.6rem 2%;
-  width:64%;
-  outline:none;
-  vertical-align:middle;
+<style lang="sass">
+#playlist {
+  .page-header{
+    padding-left:0.4rem;
+    font-size:0;
+    button{
+      vertical-align: middle;
+      height:2.5rem;
+      color:white;
+      font-size:1.4rem;
+      padding:0 0.4rem;
+      width:16%;
+    }
+    .back-link{
+      text-align:left;
+      padding:0 0.8rem;
+    }
+  }
+  input.page-title{
+    background-color:transparent;
+    height:1.5em;
+    margin:0.6rem 2%;
+    width:64%;
+    outline:none;
+    vertical-align:middle;
+  }
 }
 input.page-title:focus{
   background-color:rgba(255,255,255,0.2);
@@ -204,24 +208,12 @@ input.page-title:focus{
   border:2px dashed white;
   padding:0.5rem;
 }
-#playlist .page-header button{
-  vertical-align: middle;
-  height:2.5rem;
-  color:white;
-  font-size:1.4rem;
-  padding:0 0.4rem;
-  width:16%;
-}
 .item.sortable-chosen{
   background-color:rgba(60,95,132,0.3);
 }
 .item.sortable-ghost{
   opacity:0.3;
-}
-#playlist .page-header .back-link{
-  text-align:left;
-  padding:0 0.8rem;
-}
+} 
 .back-link svg{
   width:100%;
 }

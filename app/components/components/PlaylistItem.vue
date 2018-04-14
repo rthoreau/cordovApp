@@ -1,6 +1,6 @@
 <template>
   <div class="playlist-item item" v-bind:class="submenuVisible ? 'active' : ''">
-    <div class="playlist-content">
+    <div class="playlist-content" @click="play()">
       <span class="playlist-name">{{playlist.name}}</span>
       <ul class="playlist-music-list">
         <li
@@ -35,7 +35,7 @@ export default {
       submenuVisible: false,
       links: [
         {text: 'Accéder à la playlist', action: 'Playlist/' + this.playlist.id, mode: 'router'},
-        {text: 'Ajouter à la file', action: () => this.waitingLineAction({action: 'add', ids: this.playlist.musics})},
+        {text: 'Ajouter à la file', action: () => this.musicAction({action: 'add', to: 'waitingLine', ids: this.playlist.musics, from: 'playlist'})},
         {text: 'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
       popupVisible: false,
@@ -56,8 +56,14 @@ export default {
     },
     ...mapActions({
       deletePlaylist: 'manageStore/deletePlaylist',
-      waitingLineAction: 'manageStore/waitingLineAction'
-    })
+      setCurrentMusic: 'manageStore/setCurrentMusic',
+      musicAction: 'manageStore/musicAction'
+    }),
+    play () {
+      var musics = [...this.playlist.musics];
+      this.setCurrentMusic(musics.pop());
+      this.musicAction({action: 'add', ids: musics, to: 'waitingLine'});
+    }
   },
   computed: {
     ...mapGetters({

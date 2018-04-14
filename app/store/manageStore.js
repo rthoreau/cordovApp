@@ -72,105 +72,156 @@ const mutations = {
   mutatePlaylists: (state, playlists) => {
     state.playlists = playlists;
   },
+  mutatePlaylist: (state, playlist) => {
+    var exists = false;
+    state.playlists.map(function (pl) {
+      if (pl.id === playlist.id) {
+        pl = playlist;
+        exists = true
+      }
+      return playlist;
+    });
+    if (!exists) {
+      state.playlists.push(playlist);
+    }
+  },
   mutateDeletePlaylist: (state, playlistId) => {
     state.playlists = state.playlists.filter(playlist => playlist.id !== playlistId);
   },
-  /**
-   * params:
-   * - action : add/remove
-   * - to : favorite/playlist
-   * - from favorite/playlist
-   * - source search/''
-   */
-  mutateMusic: (state, params) => {
-    var needFilter = false;
-    var created = false;
-    if (params.action === 'add') {
-      //if call from search, add music if not in state.musics
-      if (params.source === 'search' && state.musics.filter(music => music.id === params.music.id).length === 0) {
-        if (params.to === 'favorite') {
-          params.music.favorite = true;
-        }
-        state.musics.push(params.music);
-        created = true;
-      }
-      if (params.to === 'playlist') {
-        state.playlists.map(function (playlist) {
-          if (params.playlistIds.indexOf(playlist.id) !== -1) {
-            playlist.musics.push(params.musicId);
-          }
-          return playlist;
-        });
-      } else if (params.to === 'favorite' && !created) {
-        state.musics.map(function (music) {
-          if (music.id === params.musicId) {
-            music.favorite = !music.favorite;
-            if (!music.favorite) {
-              needFilter = true;
-              params.ids = [params.musicId];
-            }
-          }
-          return music;
-        });
-      }
-    }
-    if (needFilter || params.action === 'remove') {
-      var usedIds = [];
-      if (params.from === 'favorite') {
-        //Change .favorite from ids in params.ids
-        state.musics.map(function (music) {
-          if (params.ids.indexOf(music.id) !== -1) {
-            music.favorite = false;
-          }
-          return music;
-        });
-      } else {
-        //List ids from params.ids that are favorite.length);
-        params.ids.forEach(function (id) {
-          if (state.musics.filter(music => music.id === id && music.favorite === true).length > 0 && usedIds.indexOf(id) === -1) {
-            usedIds.push(id);
-          }
-        });
-      }
-      if (params.from === 'playlist') {
-        //Only filter array in params.playlistId
-        state.playlists.map(function (playlist) {
-          if (parseInt(playlist.id) === params.playlistId) {
-            //Keep only ids not in array
-            playlist.musics = playlist.musics.filter(id => params.ids.indexOf(id) === -1);
-          }
-          return playlist;
-        });
-      } else {
-        //List ids from params.ids that are in at least one playlist
-        var i = 0;
-        //Check in all playlists
-        state.playlists.forEach(function (playlist) {
-          //while there are ids and are not all used
-          i = 0;
-          while (i <= params.ids.length && usedIds.length !== params.ids.length) {
-            if (playlist.musics.indexOf(params.ids[i]) !== -1 && usedIds.indexOf(params.ids[i]) === -1) {
-              usedIds.push(params.ids[i]);
-            }
-            i++;
-          }
-        });
-      }
+  mutateFilterMusics: (state, params) => {
+    var keepIds = [];
 
-      //Keep musics that are favorite or in a playlist
-      if (params.ids.length !== usedIds.length) {
-        //Keep ids not in params.ids or that are used
-        state.musics = state.musics.filter(music => params.ids.indexOf(music.id) === -1 || usedIds.indexOf(music.id) !== -1 || music.id === state.currentMusic);
-      }
+    //get ids in playlists
+    state.playlists.map(function (playlist) {
+      playlist.musics.forEach(id => keepIds.push(id));
+    });
+
+    //get id in waitingline
+    state.waitingLine.map(id => keepIds.push(id));
+
+    //get ids favorite
+    if (params.from !== 'favorite') {
+      state.musics.map(function (music) {
+        if (music.favorite) {
+          keepIds.push(music.id);
+        }
+      })
+    }
+
+    //get current
+    keepIds.push(state.currentMusic);
+
+    //keep disinct
+    keepIds.filter((value, index, self) => self.indexOf(value) === index);
+
+    //if less musics to keep than stored musics, filter stored musics
+    if (keepIds.length !== state.musics.length) {
+      state.musics.filter(music => keepIds.indexOf(music.id) !== -1);
     }
   },
-  mutateWaitingLine: (state, params) => {
-    if (params.action === 'add') {
-      params.ids.forEach(id => state.waitingLine.push(id));
+  mutateAddMusic: (state, params) => {
+    var created = false;
+    //if call from search, add music if not exists
+    if (params.source === 'search' && state.musics.filter(music => music.id === params.music.id).length === 0) {
+      if (params.to === 'favorite') {
+        params.music.favorite = true;
+      }
+      state.musics.push(params.music);
+      created = true;
     }
-    if (params.action === 'remove') {
-      state.waitingLine = state.waitingLine.filter(id => params.ids.indexOf(id) === -1);
+
+    if (params.to === 'playlist') {
+      //add to playlist
+      params.playlistIds = params.playlistId ? [params.playlistId] : params.playlistIds;
+      state.playlists.map(function (playlist) {
+        if (params.playlistIds.indexOf(playlist.id)) {
+          if (params.id) {
+            playlist.musics.push(params.id);
+          } else {
+            console.log('missing arg, add what ?')
+          }
+        }
+        return playlist;
+      });
+    } else if (params.to === 'waitingLine') {
+      if (params.ids) {
+        if (params.from === 'playlist') {
+          //add all playlist at end
+          params.ids.forEach(id => state.waitingLine.push(id));
+        } else {
+          //add playlist less the first at start
+          params.ids.forEach(id => state.waitingLine.unshift(id));
+        }
+      } else {
+        //else add to end
+        state.waitingLine.push(params.id);
+      }
+    } else if (params.to === 'favorite' && !created) {
+      //add to playlist if not created
+      state.musics.map(function (music) {
+        if (music.id === params.id) {
+          music.favorite = true;
+        }
+        return music;
+      });
+    } else if (params.to === 'current') {
+      state.currentMusic = params.id;
+    } else {
+      console.log('missing arg, add to ?')
     }
+  },
+  mutateRemoveMusic: (state, params) => {
+    if (params.from === 'playlist') {
+      state.playlists.map(function (playlist) {
+        //from playlist where playlistID
+        if (playlist.id === params.playlistId.toString()) {
+          if (params.index) {
+            //delete at pos (can't delete with id cause maybe 2 time same music)
+            playlist.musics = playlist.musics.filter((id, index) => index !== params.index);
+          } else if (params.all) {
+            //or empty musics
+            playlist.musics = [];
+          } else {
+            console.log('missing arg, remove what ?')
+          }
+        }
+        return playlist;
+      });
+    } else if (params.from === 'waitingLine') {
+      if (params.all) {
+        //empty waitingline
+        state.waitingLine = [];
+      } else {
+        //remove from waitingline at index
+        state.waitingLine = state.waitingLine.filter((id, index) => index !== params.index);
+      }
+    } else if (params.from === 'favorite') {
+      //set favorite false
+      state.musics.map(function (music) {
+        if (music.id === params.id) {
+          music.favorite = false;
+        }
+        return music;
+      });
+    } else {
+      console.log('missing arg, remove from ?')
+    }
+  },
+  mutateRandomizeMusics: (state, params) => {
+    var j
+    var x
+    var i
+    var a = state.waitingLine;
+    state.waitingLine = [];
+    for (i = a.length - 1; i > 0; i--) {
+      j = Math.floor(Math.random() * (i + 1));
+      x = a[i];
+      a[i] = a[j];
+      a[j] = x;
+    }
+    a.map(function (id) {
+      state.waitingLine.push(id);
+    })
   }
 }
 
@@ -182,18 +233,37 @@ const actions = {
   setPlaylists (context, playlists) {
     context.commit('mutatePlaylists', playlists)
   },
-  waitingLineAction (context, params) {
-    context.commit('mutateWaitingLine', params)
+  setPlaylist (context, playlist) {
+    context.commit('mutatePlaylist', playlist)
   },
   deletePlaylist (context, playlist) {
-    //filter musics before removal
-    context.commit('mutateMusic', {action: 'remove', ids: playlist.musics})
     context.commit('mutateDeletePlaylist', playlist.id)
   },
+  /*
+    .action = add/remove/randomize
+    .to/.from = 'playlist/waitingline/favorite'
+    .id = int/''
+    .ids = [int, int...]/''
+    .all = true/'' from playlist/waitingLine
+    .index = remove from position in playlist/waitingline
+    .playlistId = from/to playlist concerned
+    .playlistIds = to playlists concerned
+    .source = search/'' for search page
+    .music = {id:'', url...}/'' for search page
+  */
   musicAction (context, params) {
-    params.to = params.to ? params.to : 'playlist';
-    params.from = params.from ? params.from : '';
-    context.commit('mutateMusic', params)
+    if (params.action === 'add') {
+      context.commit('mutateAddMusic', params)
+    } else if (params.action === 'remove') {
+      context.commit('mutateRemoveMusic', params)
+      context.commit('mutateFilterMusics', params)
+    } else if (params.action === 'randomize') {
+      context.commit('mutateRandomizeMusics', params)
+    } else if (params.action === 'filter') {
+      context.commit('mutateFilterMusics', params)
+    } else {
+      console.log('missing arg, do what ?')
+    }
   }
 }
 

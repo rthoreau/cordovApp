@@ -56,7 +56,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
 .submenu{
   background-color:white;
   position:fixed;
@@ -64,15 +64,15 @@ export default {
   right:0.5rem;
   z-index:50;
   color:#222;
-}
-.submenu ul{
-  list-style-type:none;
-  margin:0;
-  padding:0.5rem;
-  text-align:right;
-}
-.submenu li{
-  padding:0.3rem;
-  font-size:1rem;
+  ul{
+    list-style-type:none;
+    margin:0;
+    padding:0.5rem;
+    text-align:right;
+  }
+  li{
+    padding:0.3rem;
+    font-size:1rem;
+  }
 }
 </style>

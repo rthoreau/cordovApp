@@ -40,7 +40,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
 .popup-overlay{
     background-color:rgba(0,0,0,0.5);
     position:fixed;
@@ -59,36 +59,36 @@ export default {
   max-height:55%;
   padding:0;
   transform:translate(-50%,-50%);
-}
-.popup button{
+  button{
     width:45%;
     padding:0.4rem;
     text-transform:uppercase;
     color:white;
     margin:0;
     font-size:0.8rem;
-}
-.popup header{
-  font-size:1.1rem;
-  padding:0.6rem 1rem;
-  color:white;
-  background-color:#4b89dc;
-}
-.popup .container{
-  padding:2rem 0.8rem;
-  font-size:1rem;
-  color:#ddd;
-  text-align:center;
-}
-.popup header + .container{
-  padding:0.8rem 0.8rem;
-  text-align:left;
-}
-.popup footer{
-  padding:0.5rem 0;
-  background:linear-gradient(to right, #4b89dc, #4b89dc 49%, #111 50%, #111);
-  font-size:0;
-  text-align:center;
+  }
+  header{
+    font-size:1.1rem;
+    padding:0.6rem 1rem;
+    color:white;
+    background-color:#4b89dc;
+    & + .container{
+      padding:0.8rem 0.8rem;
+      text-align:left;
+    }
+  }
+  .container{
+    padding:2rem 0.8rem;
+    font-size:1rem;
+    color:#ddd;
+    text-align:center;
+  }
+  footer{
+    padding:0.5rem 0;
+    background:linear-gradient(to right, #4b89dc, #4b89dc 49%, #111 50%, #111);
+    font-size:0;
+    text-align:center;
+  }
 }
 
 </style>

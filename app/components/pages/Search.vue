@@ -8,7 +8,7 @@
         ref="searchInput" 
         v-model="searchValue"
         @keyup.enter="search()"
-        v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon" ><use xlink:href="#icon-search"></use></svg></label>
+        v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon"><use xlink:href="#icon-search"></use></svg></label>
       </span>
     </header>
     <div class="page-content">
@@ -71,7 +71,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="sass">
   .search-input{
     font-size:1.8rem;
     background-color:transparent;
@@ -86,13 +86,13 @@ export default {
     vertical-align: middle;
     padding:0.1rem 2%;
     margin-right:2%;
-  }
-  .search-input.fill{
-    width:80%;
-  }
-  .search-input:focus{
-    width:80%;
-    border-bottom-color:#215292;
+    &.fill{
+      width:80%;
+    }
+    &:focus{
+      width:80%;
+      border-bottom-color:#215292;
+    }
   }
   #search .page-title label{
     background-color:transparent;
