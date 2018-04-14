@@ -1,4 +1,4 @@
-# vue-cordovapp
+# cordovApp
 
 > A Cordova-compatible Vue.js project
 
