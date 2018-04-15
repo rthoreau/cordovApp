@@ -3,13 +3,13 @@
     <div class="player-container">
       <div class="progress" :style="currentTimeValue"></div>
 
-      <div class="music-plateform" v-bind:class="getCurrentMusic.plateform">
-        <plateformicon v-bind:plateform="getCurrentMusic.plateform"></plateformicon>
+      <div class="music-plateform" v-bind:class="plateform">
+        <plateformicon v-bind:plateform="plateform"></plateformicon>
       </div>
 
       <div class="video-container">
         <transition name="appear">
-          <youtube class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
+          <youtube v-if="plateform === 'yt'" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
         </transition>
         <transition name="appear">
           <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
@@ -30,6 +30,7 @@
       <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
     </div>
     <waitingline></waitingline>
+    <test v-if="plateform === 'lo' && sources !== ''" :music="getCurrentMusic" :sources="sources" :event="localPlayer" @ended="ended"></test>
   </div>
 </template>
 
@@ -40,13 +41,15 @@ import plateformicon from './components/PlateformIcon'
 import waitingline from './pages/WaitingLine'
 import VueYouTubeEmbed, {getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
 import {mapGetters, mapActions} from 'vuex'
+import test from './components/test'
 
 Vue.use(VueYouTubeEmbed)
 export default {
   name: 'App_player',
   components: {
     plateformicon,
-    waitingline
+    waitingline,
+    test
   },
   data () {
     return {
@@ -62,7 +65,10 @@ export default {
       currentTimeInterval: '',
       progressInterval: '',
       refresh: true,
-      expandClass: ''
+      expandClass: '',
+      sources: [require('../assets/test.mp3')],
+      localPlayer: '',
+      plateform: ''
     }
   },
   methods: {
@@ -75,13 +81,17 @@ export default {
       if (waiting.length !== 0) {
         this.setCurrentMusic(this.getWaitingLine[0]);
         this.musicAction({action: 'remove', index: 0, from: 'waitingLine'})
+        this.setData();
       } else {
+        this.pauseVideo();
         this.paused = true;
       }
     },
     ready (player) {
-      this.player = player;
-      this.loadVideoById(this.videoId);
+      if (this.plateform === 'yt') {
+        this.player = player;
+        this.loadVideoById(this.videoId);
+      }
     },
     playing () {
       this.watchTime();
@@ -109,16 +119,24 @@ export default {
       }
     },
     playVideo () {
-      if (this.player) {
-        this.player.playVideo();
-        console.log(this.player);
+      if (this.plateform === 'yt') {
+        if (this.player) {
+          this.player.playVideo();
+          console.log(this.player);
+        }
+      } else {
+        this.localPlayer = 'play';
       }
     },
     pauseVideo (reset) {
       reset = reset ? 0 : false;
-      if (this.player) {
-        this.player.pauseVideo();
-        this.watchTime(reset);
+      if (this.plateform === 'yt') {
+        if (this.player) {
+          this.player.pauseVideo();
+          this.watchTime(reset);
+        }
+      } else {
+        this.localPlayer = 'pause';
       }
     },
     loadVideoById (id) {
@@ -170,14 +188,23 @@ export default {
       this.player.seekTo(this.currentTime + 50);
     },
     expand (hide) {
-      //TODO quand expand, changer de route
       this.expandClass = this.expandClass === 'expanded' || hide ? '' : 'expanded';
       this.$emit('expanded', (this.expandClass !== ''));
+    },
+    setData () {
+      this.currentMusic = this.getCurrentMusic;
+      this.plateform = this.currentMusic.plateform;
+      this.duration = this.currentMusic.duration;
+      if (this.plateform === 'yt') {
+        this.videoId = getIdFromURL(this.currentMusic.url);
+      } else {
+        /*console.log(this.getCurrentMusic.url)
+        this.sources = [this.getCurrentMusic.url];*/
+      }
     }
   },
   mounted () {
-    this.videoId = getIdFromURL(this.currentMusic.url);
-    this.duration = this.currentMusic.duration;
+    this.setData();
   },
   computed: {
     ...mapGetters({
@@ -185,11 +212,6 @@ export default {
       getWaitingLine: 'manageStore/getWaitingLine'
     })
   },
-  //TODO
-  // detect onPause (modif this.paused)
-  // set quality to low/small
-  // submenu headbox
-  // animation hide thumbnail
   watch: {
     player: function (val) {
       if (val) {
@@ -213,8 +235,15 @@ export default {
       })
     },
     videoId: function (id) {
-      this.loadVideoById(id);
-      this.setProgressByGet();
+      this.setData();
+      if (this.getCurrentMusic.plateform === 'yt') {
+        this.loadVideoById(id);
+        this.setProgressByGet();
+      } else {
+        this.$nextTick(function () {
+          this.playVideo();
+        })
+      }
     },
     $route: function () {
       this.expand(true);

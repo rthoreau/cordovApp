@@ -17,7 +17,7 @@
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
 
-    <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="musicAction({action: (music.favorite ? 'remove' : 'add'), to: 'favorite', from: 'favorite', id: music.id})"><svg viewBox="0 0 23.125 23.129">
+    <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="favorite()"><svg viewBox="0 0 23.125 23.129">
       <use v-if="music.favorite" xlink:href="#icon-favorited"></use>
       <use v-if="!music.favorite" xlink:href="#icon-favorite"></use>
     </svg></button>
@@ -93,8 +93,8 @@ export default {
       this.musicAction({action: 'add', to: 'playlist', id: this.music.id, playlistIds: this.checkedPlaylists});
       this.popupVisible = false;
     },
-    addToFavorite () {
-      this.musicAction({action: 'add', to: 'favorite', id: this.music.id, source: this.source, music: this.music});
+    favorite () {
+      this.musicAction({action: (this.music.favorite ? 'remove' : 'add'), to: 'favorite', from: 'favorite', id: this.music.id, source: this.source, music: this.music});
       this.$emit('refresh', true);
     },
     addToCurrent () {

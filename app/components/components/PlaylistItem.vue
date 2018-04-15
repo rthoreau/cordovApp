@@ -1,6 +1,6 @@
 <template>
   <div class="playlist-item item" v-bind:class="submenuVisible ? 'active' : ''">
-    <div class="playlist-content" @click="play()">
+    <div class="playlist-content" @click="handleClick()">
       <span class="playlist-name">{{playlist.name}}</span>
       <ul class="playlist-music-list">
         <li
@@ -35,6 +35,7 @@ export default {
       submenuVisible: false,
       links: [
         {text: 'Accéder à la playlist', action: 'Playlist/' + this.playlist.id, mode: 'router'},
+        {text: 'Lecture aléatoire', action: () => this.musicAction({action: 'randomize', to: 'waitingLine', ids: this.playlist.musics})},
         {text: 'Ajouter à la file', action: () => this.musicAction({action: 'add', to: 'waitingLine', ids: this.playlist.musics, from: 'playlist'})},
         {text: 'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
@@ -42,7 +43,9 @@ export default {
       popupParams: {
         okAction: () => this.callDeletePlaylist(true),
         cancelAction: () => this.popupVisible = false
-      }
+      },
+      clicks: 0,
+      timer: null
     }
   },
   methods: {
@@ -63,6 +66,20 @@ export default {
       var musics = [...this.playlist.musics];
       this.setCurrentMusic(musics.pop());
       this.musicAction({action: 'add', ids: musics, to: 'waitingLine'});
+    },
+    handleClick: function (event) {
+      this.clicks++
+      if (this.clicks === 1) {
+        var self = this
+        this.timer = setTimeout(function () {
+          self.play();
+          self.clicks = 0
+        }, 500);
+      } else {
+        clearTimeout(this.timer);
+        this.$router.push({path: '/Playlist/' + this.playlist.id})
+        this.clicks = 0;
+      }
     }
   },
   computed: {
