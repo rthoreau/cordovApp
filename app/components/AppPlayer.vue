@@ -30,7 +30,7 @@
       <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
     </div>
     <waitingline></waitingline>
-    <test v-if="plateform === 'lo' && sources !== ''" :music="getCurrentMusic" :sources="sources" :event="localPlayer" @ended="ended"></test>
+    <test v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayer" @ended="ended"></test>
   </div>
 </template>
 
@@ -66,7 +66,7 @@ export default {
       progressInterval: '',
       refresh: true,
       expandClass: '',
-      sources: [require('../assets/test.mp3')],
+      sources: [],
       localPlayer: '',
       plateform: ''
     }

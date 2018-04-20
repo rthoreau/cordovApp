@@ -22,6 +22,7 @@ export default {
     }
   },
   mounted () {
+
   },
   methods: {
     ...mapActions({

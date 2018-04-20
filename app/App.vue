@@ -36,10 +36,10 @@ export default {
 </script>
 
 <style lang="sass">
-@font-face {
+/*@font-face {
   font-family: 'Segoe UI';
   src: url(assets/seguiemj.ttf);
-}
+}*/
 html, body{
   height:100%;
 }

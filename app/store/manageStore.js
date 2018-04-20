@@ -14,7 +14,7 @@ const state = {
     {id: 'zertert6', url: 'https://www.youtube.com/watch?v=RXiRpiOcWWI', title: 'Beirut - Port Of Call', author: 'candypoulaink', date: '2011-08-06', duration: '259', thumbnail: 'https://i.ytimg.com/vi/RXiRpiOcWWI/maxresdefault.jpg', plateform: 'yt', favorite: true},
     {id: 'azdedbgyu', url: 'https://www.youtube.com/watch?v=Z5BuZQGoJF4', title: 'Beirut - Cherbourg', author: 'Pulse8', date: '2017-12-14', duration: '211', thumbnail: 'https://i.ytimg.com/vi/Z5BuZQGoJF4/hqdefault.jpg', plateform: 'yt', favorite: true},
     {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', date: '2016-04-15', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false},
-    {id: 'loaoijfaa3', url: '../assets/test.mp3', title: 'SKARBLOWN MUSIC - 03_PALE SUNSHINE', author: '', date: '', duration: 0, thumbnail: 'https://i.ytimg.com/vi/4QmaOYg_jRA/maxresdefault.jpg', plateform: 'lo', favorite: true}
+    {id: 'loaoijfaa3', url: '', title: 'SKARBLOWN MUSIC - 03_PALE SUNSHINE', author: '', date: '', duration: 0, thumbnail: '', plateform: 'lo', favorite: true}
   ],
   playlists: [
     {id: '14', name: 'Sleep', musics: ['5er84t568e', 'azdedbgyu']},
@@ -100,7 +100,7 @@ const mutations = {
     state.waitingLine.map(id => keepIds.push(id));
 
     //get ids favorite
-    if (params.from !== 'favorite') {
+    if (!params || params.from !== 'favorite') {
       state.musics.map(function (music) {
         if (music.favorite) {
           keepIds.push(music.id);
@@ -241,7 +241,6 @@ const mutations = {
   mutateMusic: (state, params) => {
     state.musics.map(function (music) {
       if (params.id === music.id) {
-        console.log('mutateMusic')
         if (music.duration === 0 && params.duration) {
           music.duration = params.duration;
           console.log(music)
@@ -249,6 +248,12 @@ const mutations = {
       }
       return music;
     })
+  },
+  mutateAddLocalFiles: (state, musics) => {
+    musics.map(function (music) {
+      console.log(music)
+      state.searchResult.push(music);
+    });
   }
 }
 
@@ -294,6 +299,12 @@ const actions = {
     } else {
       console.log('missing arg, do what ?')
     }
+  },
+  filterMusics (context, params) {
+    context.commit('mutateFilterMusics', params)
+  },
+  addLocalFiles (context, musics) {
+    context.commit('mutateAddLocalFiles', musics)
   }
 }
 

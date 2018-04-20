@@ -10,6 +10,11 @@
         @keyup.enter="search()"
         v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon"><use xlink:href="#icon-search"></use></svg></label>
       </span>
+      <file-base64 id="filer"
+        v-bind:multiple="true"
+        v-bind:done="importMusic">
+      </file-base64>
+      <label for="filer"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-playlist"></use></svg></label>
     </header>
     <div class="page-content">
       <musicitem 
@@ -27,12 +32,14 @@
 <script>
 import musicitem from '../components/MusicItem'
 import errormessage from '../components/ErrorMessage'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
+import fileBase64 from 'vue-file-base64'
 export default {
   name: 'Search',
   components: {
     musicitem,
-    errormessage
+    errormessage,
+    fileBase64
   },
   data () {
     return {
@@ -42,6 +49,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      addLocalFiles: 'manageStore/addLocalFiles'
+    }),
     search (refresh) {
       var searchValueParsed = this.searchValue.toLowerCase()
       if (!refresh) {
@@ -58,6 +68,35 @@ export default {
       } else {
         this.$refs.searchInput.focus()
       }
+    },
+    makeid () {
+      var text;
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+      for (var i = 0; i < 16; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    },
+    makedate (date) {
+      date = new Date(date);
+      var month = date.getMonth();
+      var day = date.getDay();
+      return date.getFullYear() + '-' + (month > 9 ? month : '0' + month) + '-' + (day > 9 ? day : '0' + day);
+    },
+    importMusic (files) {
+      var newMusics = [];
+      var self = this;
+      files.map(function (file) {
+        //test file type
+        if (true) {
+          newMusics.push({id: self.makeid(), url: '', title: file.file.name, author: '', date: self.makedate(file.file.lastModified), duration: 0, thumbnail: '', plateform: 'lo', favorite: false, source: file.base64});
+        }
+      });
+      this.addLocalFiles(newMusics);
+      this.searchResult.push(newMusics);
+      //todo remove from app
+      //this.sources = [files[0].base64];
     }
   },
   mounted () {
@@ -87,7 +126,7 @@ export default {
     padding:0.1rem 2%;
     margin-right:2%;
     &.fill{
-      width:80%;
+      width:70%;
     }
     &:focus{
       width:80%;
@@ -111,5 +150,19 @@ export default {
   }
   #search .page-content{
     text-align:center;
+  }
+  #filer{
+    position:absolute;
+    left:-99rem;
+    & + label{
+      float:right;
+      display:inline-block;
+      width:auto;
+      height:2rem;
+      margin:0.8rem 0.5rem;
+      svg{
+        height:100%;
+      }
+    }
   }
 </style>
