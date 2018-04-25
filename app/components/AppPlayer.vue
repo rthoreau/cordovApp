@@ -146,6 +146,13 @@ export default {
         this.setProgressByGet();
       }
     },
+    seekTo (time) {
+      if (this.plateform === 'yt') {
+        this.player.seekTo(time);
+      } else {
+        this.localPlayer = 'seekTo' + time;
+      }
+    },
     watchTime (active) {
       active = active !== false;
       if (active) {
