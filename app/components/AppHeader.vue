@@ -31,7 +31,13 @@ export default {
   data () {
     return {
       submenuVisible: false,
-      links: [{action: '', text: 'Soon more features here'}]
+      links: [{action: () => this.reload(), text: 'Réinitialiser les données'}]
+    }
+  },
+  methods: {
+    reload () {
+      window.localStorage.clear();
+      window.location.reload()
     }
   }
 }
@@ -42,7 +48,7 @@ export default {
     position:fixed;
     top:0;
     width:100%;
-    height:4rem;
+    height:10vh;
     background-color:rgba(0,0,0,0.7);
     z-index:100;
     .nav{
@@ -83,10 +89,12 @@ export default {
           background-color:#215292;
           transition:width 0.5s;
         }
-        &.router-link-exact-active:after{
-          width:100%;
+        &.router-link-exact-active{
           svg{
             fill:#207bd2;
+          }
+          &:after{
+            width:100%;
           }
         }
       }

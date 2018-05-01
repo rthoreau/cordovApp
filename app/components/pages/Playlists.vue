@@ -2,15 +2,16 @@
   <div id="playlists">
     <header class="page-header">
       <span class="page-title">Playlists</span>
-      <router-link v-bind:to="nextIdLink">
+      <router-link :to="nextIdLink">
         <svg class="submenu-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-plus"></use></svg>
       </router-link>
     </header>
     <div class="page-content">
+      <span class="empty-message" v-if="getPlaylists.length === 0">Vous n'avez aucune playlist pour l'instant&nbsp;! <router-link :to="nextIdLink">Ajouter une playlist <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-plus"></use></svg></router-link></span>
       <playlistitem 
       v-for="(data) in getPlaylists" 
-      v-bind:key="data.id" 
-      v-bind:playlist="data"></playlistitem>
+      :key="data.id" 
+      :playlist="data"></playlistitem>
     </div>
   </div>
 </template>

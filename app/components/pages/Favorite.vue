@@ -9,6 +9,7 @@
       :key="index" 
       :music="data"
       :page="'favorite'"></musicitem>
+      <span class="empty-message" v-if="getFavorites.length === 0">Vous n'avez aucune musique favorite ! N'hésitez plus, cliquez sur le <svg viewBox="0 0 23.125 23.129" alt="Coeur"><use xlink:href="#icon-favorite"></use></svg> de ce que vous aimez !</span>
     </div>
   </div>
 </template>

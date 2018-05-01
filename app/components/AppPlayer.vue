@@ -1,7 +1,8 @@
 <template>
   <div id="appPlayer" :class="expandClass">
     <div class="player-container">
-      <div class="progress" :style="currentTimeValue"></div>
+      <div v-if="expandClass === ''" class="progress" :style="'width:' + currentTimeValue + '%'"></div>
+      <timeslider v-else :time="currentTimeValue" @settime="seekTo"></timeslider>
 
       <div class="music-plateform" v-bind:class="plateform">
         <plateformicon v-bind:plateform="plateform"></plateformicon>
@@ -19,18 +20,22 @@
 
       <button @click="playPause()" class="play">
         <transition name="switch" mode="out-in">
-            <svg viewBox="0 0 23.125 23.129" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
-            <svg viewBox="0 0 23.125 23.129" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
+          <svg viewBox="0 0 23.125 23.129" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
+          <svg viewBox="0 0 23.125 23.129" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
         </transition>
       </button>
 
       <button @click="nextVideo()" class="next"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></button>
-      <button @click="test()" class="next">test</button>
-      <span class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+
+      <p class="music-infos">
+        <span class="music-title">{{getCurrentMusic.title}}</span>
+        <span class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+      </p>
+
       <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
     </div>
     <waitingline></waitingline>
-    <test v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayer" @ended="ended"></test>
+    <localplayer v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayer" @ended="ended"></localplayer>
   </div>
 </template>
 
@@ -41,7 +46,8 @@ import plateformicon from './components/PlateformIcon'
 import waitingline from './pages/WaitingLine'
 import VueYouTubeEmbed, {getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
 import {mapGetters, mapActions} from 'vuex'
-import test from './components/test'
+import localplayer from './components/localplayer'
+import timeslider from './components/timeslider'
 
 Vue.use(VueYouTubeEmbed)
 export default {
@@ -49,11 +55,12 @@ export default {
   components: {
     plateformicon,
     waitingline,
-    test
+    localplayer,
+    timeslider
   },
   data () {
     return {
-      currentMusic: this.$store.getters['manageStore/getCurrentMusic'],
+      currentMusic: {},
       url: '',
       videoId: '',
       startTime: 15,
@@ -61,7 +68,7 @@ export default {
       paused: true,
       currentTime: 0,
       duration: 0,
-      currentTimeValue: '',
+      currentTimeValue: 0,
       currentTimeInterval: '',
       progressInterval: '',
       refresh: true,
@@ -78,14 +85,15 @@ export default {
     }),
     nextVideo () {
       var waiting = this.getWaitingLine;
-      if (waiting.length !== 0) {
-        this.setCurrentMusic(this.getWaitingLine[0]);
-        this.musicAction({action: 'remove', index: 0, from: 'waitingLine'})
-        this.setData();
-      } else {
+      if (waiting.length === 0) {
         this.pauseVideo();
         this.paused = true;
+        this.setCurrentMusic('');
+      } else {
+        this.setCurrentMusic(this.getWaitingLine[0]);
+        this.musicAction({action: 'remove', index: 0, from: 'waitingLine'})
       }
+      this.setData();
     },
     ready (player) {
       if (this.plateform === 'yt') {
@@ -146,7 +154,8 @@ export default {
         this.setProgressByGet();
       }
     },
-    seekTo (time) {
+    seekTo (ratio) {
+      var time = this.currentMusic.duration * ratio / 100;
       if (this.plateform === 'yt') {
         this.player.seekTo(time);
       } else {
@@ -200,17 +209,27 @@ export default {
     },
     setData () {
       this.currentMusic = this.getCurrentMusic;
+      console.log(this.currentMusic)
       this.plateform = this.currentMusic.plateform;
       this.duration = this.currentMusic.duration;
       if (this.plateform === 'yt') {
         this.videoId = getIdFromURL(this.currentMusic.url);
+        this.sources = []
       } else {
-        /*console.log(this.getCurrentMusic.url)
-        this.sources = [this.getCurrentMusic.url];*/
+        if (this.currentMusic.file && this.currentMusic.file.name) {
+          let reader = new window.FileReader()
+          reader.readAsDataURL(this.currentMusic.file)
+          reader.onload = () => {
+            this.sources = [reader.result]
+          }
+        } else {
+          console.log('local music unloaded')
+        }
       }
     }
   },
   mounted () {
+    this.currentMusic = this.getCurrentMusic;
     this.setData();
   },
   computed: {
@@ -230,10 +249,10 @@ export default {
       if (time > 100) {
         time = 100;
       }
-      this.currentTimeValue = 'width:' + time + '%';
+      this.currentTimeValue = time;
     },
     getCurrentMusic: function (music) {
-      this.videoId = getIdFromURL(music.url);
+      this.videoId = music.url ? getIdFromURL(music.url) : '';
       this.duration = music.duration;
       this.currentTime = 0;
       this.refresh = false;
@@ -262,35 +281,52 @@ export default {
 <style lang="sass">
 #appPlayer{
   position:fixed;
-  bottom:0;
-  height:3.85rem;
+  bottom:calc(-70vh);
   width:100%;
-  background:linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 4rem, transparent 4rem, transparent);
+  height:calc(90vh);
+  background:linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 6.3rem, transparent 6.3rem, transparent);
   text-align:left;
   color:white;
   z-index:100;
-  transition:height 0.5s;
+  transform-origin:bottom;
+  transform:translate(0, 10vh);
+  transition: transform 0.8s;
   &.expanded{
     border-top:1px solid rgba(33,82,146,0.15);
-    height:calc(100% - 4rem);
-    z-index:0;
+    transform:translate(0, -70vh);
+    transition: transform 0.5s;
+    .player-container{
+      height:14vh;
+    }
+    .video-container{
+      top:2.8rem;
+    }
   }
 }
 .player-container{
+  position:relative;
+  z-index:100;
+  height:10vh;
   padding:0.5rem 4%;
   .music-plateform{
     top:0.5rem;
     height:2.85rem;
     position:static;
     display:inline-block;
-    margin-right:0.5rem;
+    margin-right:0.25rem;
+    vertical-align:middle;
   }
   button{
     position:relative;
     display:inline-block;
-    vertical-align:top;
+    vertical-align:middle;
     width:1.8rem;
-    height:auto;
+  }
+  .expand-link{
+    position:absolute;
+    top:1.2rem;
+    right:0.5rem;
+    height:2rem;
   }
 }
 .progress{
@@ -311,6 +347,7 @@ export default {
   margin-left:0.5rem;
   top:0.5rem;
   left:4%;
+  overflow:hidden;
 }
 .video{
   position:absolute;
@@ -342,16 +379,29 @@ export default {
 .time{
   font-size:0.8rem;
 }
-.expand-link{
-  height:1.5rem;
-  float:right;
-}
 .play{
-  height:1.8rem;
+  height:2rem;
   svg{
     top:0;
     left:0;
     position:absolute;
+  }
+}
+.music-infos{
+  display:inline-block;
+  white-space:nowrap;
+  width:46%;
+  vertical-align:middle;
+  margin-left:0.3rem;
+  span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    position:relative;
+    top:-0.1rem;
+    display:block;
+    & + span{
+      margin-top:0.4rem;
+    }
   }
 }
 </style>

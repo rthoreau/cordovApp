@@ -175,6 +175,7 @@ export default {
   width:calc(83% - 4.8rem);
   font-size:1rem;
   vertical-align: top;
+  word-break: break-word;
   &.favorite{
     width:73%;
     width:calc(95% - 4.8rem);
@@ -196,6 +197,9 @@ export default {
 }
 .music-title{
   font-weight:bold;
+}
+.music-author{
+  opacity:0.7;
 }
 .favorite-link, .remove-link, .move-link{
   display:inline-block;

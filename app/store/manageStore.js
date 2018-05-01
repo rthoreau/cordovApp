@@ -1,36 +1,38 @@
 const state = {
-  currentMusic: 'loaoijfaa3',
+  currentMusic: '',
   waitingLine: ['5er84t568e', 'ert5784ert'],
   musics: [
-    {id: 'ze7857586', url: 'https://www.youtube.com/watch?v=rVeMiVU77wo', title: 'alt-J (∆) Breezeblocks', author: 'alt-J', date: '2012-03-23', duration: '226', thumbnail: 'http://www.konbini.com/wp-content/blogs.dir/3/files/2012/06/Alt-j-Breezeblocks-480x279.jpg', plateform: 'yt', favorite: true},
-    {id: 'z7281z6', url: 'https://www.youtube.com/watch?v=mEBrRSa7BaM', title: 'Klangnomad - Promo 2013', author: 'Klangnomad Music', date: '2013-08-09', duration: '2916', thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uL93WD0W8J_S1aLlE_cZVBxJ89RGQD4JvB8zZotXE7XvvW7v', plateform: 'yt', favorite: true},
-     {id: '5er84t568e', url: 'https://www.youtube.com/watch?v=pliDsyfUXcg', title: 'Indie Indie Folk - Summer 2015 Tracklist Included', author: 'Fernando Bueno', date: '2015-07-18', duration: '6949', thumbnail: 'https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw', plateform: 'yt', favorite: false},
-    {id: 'ert54e', url: 'https://www.youtube.com/watch?v=x_X6QrPM_O8', title: "Payne's Bay", author: 'Polskimg', date: '2011-07-15', duration: '228', thumbnail: 'http://images.genius.com/1d8c6ddea011aa89d7cdbeef8a78e0eb.1000x1000x1.jpg', plateform: 'yt', favorite: true},
-    {id: 'ze5750785z6', url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', date: '2017-12-14', duration: '6183', thumbnail: 'https://i.ytimg.com/vi/D6TawVna7PQ/maxresdefault.jpg', plateform: 'yt', favorite: true},
-    {id: 'a65468e468v4', url: 'https://www.youtube.com/watch?v=wYNAZz86DVo', title: 'C418 - One [full album] (2012)', author: '2nMusic', date: '2013-02-12', duration: '5743', thumbnail: 'https://f4.bcbits.com/img/a1911559443_10.jpg', plateform: 'yt', favorite: true},
-    {id: 'ert5784ert', url: 'https://www.youtube.com/watch?v=6KKKGpAZHAA', title: 'OVERWERK - Daybreak', author: 'EMH Music', date: '2012-10-17', duration: '304', thumbnail: 'https://i.ytimg.com/vi/6KKKGpAZHAA/maxresdefault.jpg', plateform: 'yt', favorite: true},
-    {id: 'bertertb', url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse des Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite: false},
-    {id: '8ea4zv168', url: 'https://www.youtube.com/watch?v=HJzp2SRs0Ak', title: 'Agnes Obel - Dorian', author: 'AgnesObelVEVO', date: '2013-11-10', duration: '341', thumbnail: 'https://i.ytimg.com/vi/HJzp2SRs0Ak/maxresdefault.jpg', plateform: 'yt', favorite: true},
-    {id: 'zertert6', url: 'https://www.youtube.com/watch?v=RXiRpiOcWWI', title: 'Beirut - Port Of Call', author: 'candypoulaink', date: '2011-08-06', duration: '259', thumbnail: 'https://i.ytimg.com/vi/RXiRpiOcWWI/maxresdefault.jpg', plateform: 'yt', favorite: true},
-    {id: 'azdedbgyu', url: 'https://www.youtube.com/watch?v=Z5BuZQGoJF4', title: 'Beirut - Cherbourg', author: 'Pulse8', date: '2017-12-14', duration: '211', thumbnail: 'https://i.ytimg.com/vi/Z5BuZQGoJF4/hqdefault.jpg', plateform: 'yt', favorite: true},
-    {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', date: '2016-04-15', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false},
-    {id: 'loaoijfaa3', url: '', title: 'SKARBLOWN MUSIC - 03_PALE SUNSHINE', author: '', date: '', duration: 0, thumbnail: '', plateform: 'lo', favorite: true}
+    {id: 'ze7857586', url: 'https://www.youtube.com/watch?v=rVeMiVU77wo', title: 'alt-J (∆) Breezeblocks', author: 'alt-J', duration: '226', thumbnail: 'http://www.konbini.com/wp-content/blogs.dir/3/files/2012/06/Alt-j-Breezeblocks-480x279.jpg', plateform: 'yt', favorite: true},
+    {id: 'z7281z6', url: 'https://www.youtube.com/watch?v=mEBrRSa7BaM', title: 'Klangnomad - Promo 2013', author: 'Klangnomad Music', duration: '2916', thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uL93WD0W8J_S1aLlE_cZVBxJ89RGQD4JvB8zZotXE7XvvW7v', plateform: 'yt', favorite: true},
+     {id: '5er84t568e', url: 'https://www.youtube.com/watch?v=pliDsyfUXcg', title: 'Indie Indie Folk - Summer 2015 Tracklist Included', author: 'Fernando Bueno', duration: '6949', thumbnail: 'https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw', plateform: 'yt', favorite: false},
+    {id: 'ert54e', url: 'https://www.youtube.com/watch?v=x_X6QrPM_O8', title: "Payne's Bay", author: 'Polskimg', duration: '228', thumbnail: 'http://images.genius.com/1d8c6ddea011aa89d7cdbeef8a78e0eb.1000x1000x1.jpg', plateform: 'yt', favorite: true},
+    {id: 'ze5750785z6', url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', duration: '6183', thumbnail: 'https://i.ytimg.com/vi/D6TawVna7PQ/maxresdefault.jpg', plateform: 'yt', favorite: true},
+    {id: 'a65468e468v4', url: 'https://www.youtube.com/watch?v=wYNAZz86DVo', title: 'C418 - One [full album] (2012)', author: '2nMusic', duration: '5743', thumbnail: 'https://f4.bcbits.com/img/a1911559443_10.jpg', plateform: 'yt', favorite: true},
+    {id: 'ert5784ert', url: 'https://www.youtube.com/watch?v=6KKKGpAZHAA', title: 'OVERWERK - Daybreak', author: 'EMH Music', duration: '304', thumbnail: 'https://i.ytimg.com/vi/6KKKGpAZHAA/maxresdefault.jpg', plateform: 'yt', favorite: true},
+    {id: 'bertertb', url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse des Monstres" (full Album)', author: 'srtanada08', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite: false},
+    {id: '8ea4zv168', url: 'https://www.youtube.com/watch?v=HJzp2SRs0Ak', title: 'Agnes Obel - Dorian', author: 'AgnesObelVEVO', duration: '341', thumbnail: 'https://i.ytimg.com/vi/HJzp2SRs0Ak/maxresdefault.jpg', plateform: 'yt', favorite: true},
+    {id: 'zertert6', url: 'https://www.youtube.com/watch?v=RXiRpiOcWWI', title: 'Beirut - Port Of Call', author: 'candypoulaink', duration: '259', thumbnail: 'https://i.ytimg.com/vi/RXiRpiOcWWI/maxresdefault.jpg', plateform: 'yt', favorite: true},
+    {id: 'azdedbgyu', url: 'https://www.youtube.com/watch?v=Z5BuZQGoJF4', title: 'Beirut - Cherbourg', author: 'Pulse8', duration: '211', thumbnail: 'https://i.ytimg.com/vi/Z5BuZQGoJF4/hqdefault.jpg', plateform: 'yt', favorite: true},
+    {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false}
   ],
   playlists: [
-    {id: '14', name: 'Sleep', musics: ['5er84t568e', 'azdedbgyu']},
-    {id: '22', name: 'Test', musics: ['bertertb', 'a65468e468v4', 'stlkapml']}
+    {id: '14', name: 'Sleep', musics: ['5er84t568e', 'azdedbgyu'], colors: [{hex: '#207bd2'}, {hex: '#359710'}, {hex: '#684a32'}]},
+    {id: '22', name: 'Test', musics: ['bertertb', 'a65468e468v4', 'stlkapml'], colors: [{hex: '#4074BF'}, {hex: '#A440BF'}, {hex: '#195500'}]}
   ],
   searchResult: [
-    {id: 'ert54e', url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite: true},
-    {id: 'ze5750785z6', url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', date: '2017-12-14', duration: '6183', thumbnail: 'https://i9.ytimg.com/sb/D6TawVna7PQ/storyboard3_L1/M2.jpg?sigh=rs%24AOn4CLDmljK3QQnUIad1F1p0KD8x3zZL_w', plateform: 'yt', favorite: false},
-    {id: 'a65468e468v4', url: 'https://www.youtube.com/watch?v=wYNAZz86DVo', title: 'C418 - One [full album] (2012)', author: '2nMusic', date: '2013-02-12', duration: '5743', thumbnail: 'https://f4.bcbits.com/img/a1911559443_10.jpg', plateform: 'yt', favorite: false},
-    {id: 'ert5784ert', url: 'https://www.youtube.com/watch?v=pliDsyfUXcg', title: 'Indie Indie Folk - Summer 2015 Tracklist Included', author: 'Fernando Bueno', date: '2015-07-18', duration: '6949', thumbnail: 'https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw', plateform: 'yt', favorite: true},
-    {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', date: '2016-04-15', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false}
+    {id: 'ert54e', url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite: true},
+    {id: 'ze5750785z6', url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', duration: '6183', thumbnail: 'https://i9.ytimg.com/sb/D6TawVna7PQ/storyboard3_L1/M2.jpg?sigh=rs%24AOn4CLDmljK3QQnUIad1F1p0KD8x3zZL_w', plateform: 'yt', favorite: false},
+    {id: 'a65468e468v4', url: 'https://www.youtube.com/watch?v=wYNAZz86DVo', title: 'C418 - One [full album] (2012)', author: '2nMusic', duration: '5743', thumbnail: 'https://f4.bcbits.com/img/a1911559443_10.jpg', plateform: 'yt', favorite: false},
+    {id: 'ert5784ert', url: 'https://www.youtube.com/watch?v=pliDsyfUXcg', title: 'Indie Indie Folk - Summer 2015 Tracklist Included', author: 'Fernando Bueno', duration: '6949', thumbnail: 'https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw', plateform: 'yt', favorite: true},
+    {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false}
   ]
 }
 
 const getters = {
-  getCurrentMusic: state => state.musics.filter(music => music.id === state.currentMusic)[0],
+  getCurrentMusic: function (state) {
+    var filtered = state.musics.filter(music => music.id === state.currentMusic);
+    return filtered.length ? filtered[0] : {id: '', plateform: 'lo', url: '', title: '- - - - - - - - - - - - - - -', duration: 0};
+  },
   getMusics: state => state.musics,
   getMusic: function (state) {
     return function (id) {
@@ -41,7 +43,7 @@ const getters = {
   getPlaylist: function (state) {
     return function (id) {
       var playlist = state.playlists.filter(playlist => playlist.id === id);
-      return playlist.length ? playlist[0] : {id: id, name: '', musics: []};
+      return playlist.length ? playlist[0] : {id: id, name: '', musics: [], colors: []};
     };
   },
   getFavorites: state => state.musics.filter(music => music.favorite),
@@ -76,7 +78,9 @@ const mutations = {
     var exists = false;
     state.playlists.map(function (pl) {
       if (pl.id === playlist.id) {
-        pl = playlist;
+        pl.colors = playlist.colors.filter(color => color);
+        pl.name = playlist.name;
+        pl.musics = playlist.musics.filter(music => music);
         exists = true
       }
       return playlist;
@@ -120,14 +124,44 @@ const mutations = {
     }
   },
   mutateAddMusic: (state, params) => {
+    function makeid () {
+      var text = '';
+      var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      for (var i = 0; i < 16; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    }
     var created = false;
     //if call from search, add music if not exists
-    if (params.source === 'search' && state.musics.filter(music => music.id === params.music.id).length === 0) {
-      if (params.to === 'favorite') {
-        params.music.favorite = true;
+    if (params.source === 'search') {
+      //if add from local, no id, generate it
+      if (params.music.id === '') {
+        var ids = [];
+        state.musics.map(function (music) {
+          if (ids.length !== state.musics.length && ids.indexOf(music.id) === -1) {
+            ids.push(music.id)
+          }
+          if (music.title === params.music.title) {
+            params.music.id = music.id;
+            return params.music;
+          }
+          return music
+        });
+        if (params.music.id === '') {
+          do {
+            params.music.id = makeid();
+          } while (ids.indexOf(params.music.id) !== -1)
+        }
+        params.id = params.music.id
       }
-      state.musics.push(params.music);
-      created = true;
+      if (state.musics.filter(music => music.id === params.music.id).length === 0) {
+        if (params.to === 'favorite') {
+          params.music.favorite = true;
+        }
+        state.musics.push(params.music);
+        created = true;
+      }
     }
 
     if (params.to === 'playlist') {
@@ -243,16 +277,30 @@ const mutations = {
       if (params.id === music.id) {
         if (music.duration === 0 && params.duration) {
           music.duration = params.duration;
-          console.log(music)
         }
       }
       return music;
     })
   },
   mutateAddLocalFiles: (state, musics) => {
+    var exist;
+    musics = musics.map(function (music) {
+      exist = false;
+      state.searchResult.map(function (storedMusic) {
+        if (storedMusic.name === music.name) {
+          exist = true;
+          return music;
+        }
+        return storedMusic;
+      });
+      if (!exist) {
+        return music
+      }
+    });
     musics.map(function (music) {
-      console.log(music)
-      state.searchResult.push(music);
+      if (music) {
+        state.searchResult.push(music);
+      }
     });
   }
 }

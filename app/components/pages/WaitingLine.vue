@@ -58,7 +58,7 @@ export default {
 <style lang="sass">
 #waitingLine{
   position:relative;
-  height:calc(100% - 4rem);
+  height:76vh;
   .page-content{
     margin:0;
     padding-top:0;

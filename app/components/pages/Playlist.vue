@@ -1,22 +1,34 @@
 <template>
   <div id="playlist">
-    <header class="page-header">
+    <header class="page-header" :class="mode">
 
       <button @click="back()" class="back-link"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></button>
+
+      <playlisticon :colors="playlist.colors" :class="mode" @click="showColorEditer()"></playlisticon>
 
       <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Pop, Jazz ..." v-model="playlist.name" v-on:keyup.enter="save()"/>
 
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
 
-      <svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
+      <button class="submenu-link" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></button>
 
       <button @click="save()" class="right save-link" v-if="mode === 'edit'"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
     </header>
     
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
 
+    <div class="color-editer" v-if="colorEditing === true">
+      <button class="color" :style="'background-color:' + playlist.colors[0].hex" @click="editColor = 0"></button>
+      <button class="color" :style="'background-color:' + playlist.colors[1].hex" @click="editColor = 1"></button>
+      <button class="color" :style="'background-color:' + playlist.colors[2].hex" @click="editColor = 2"></button>
+      <button class="color" @click="colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
+      <colorpicker v-model="playlist.colors[editColor]"></colorpicker>
+    </div>
+
     <div class="page-content">
-      <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
+      <span class="empty-message" v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister&nbsp;!<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
+      <span class="empty-message" v-if="mode === 'edit' && !getPlaylist(id).name">Donnez un nom à votre playlist, puis validez. Vous pourrez ensuite y ajouter des musqiues&nbsp;!</span>
+      <span class="empty-message" v-if="playlist.musics.length === 0 && getPlaylist(id).name">Ajoutez des musiques à cette playlist depuis vos <router-link to="/Favorite">Favoris <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-favorite"></use></svg></router-link> ou depuis la page de <router-link to="/Search">Recherche <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-search"></use></svg></router-link></span>
       <draggable v-model="playlist.musics" :options="{draggable:'.editing', scroll: true}">
         <transition-group>
           <musicitem 
@@ -43,8 +55,10 @@ import {mapGetters, mapActions} from 'vuex'
 import musicitem from '../components/MusicItem'
 import submenu from '../components/SubMenu'
 import errormessage from '../components/ErrorMessage'
+import playlisticon from '../components/PlaylistIcon'
 import popup from '../components/Popup'
 import draggable from 'vuedraggable'
+import {Chrome} from 'vue-color'
 export default {
   name: 'Playlist',
   components: {
@@ -52,13 +66,15 @@ export default {
     submenu,
     popup,
     errormessage,
-    draggable
+    draggable,
+    colorpicker: Chrome,
+    playlisticon
   },
   data () {
     return {
       id: this.$route.params.id,
       mode: this.$route.params.mode || '',
-      playlist: {name: '', musics: []},
+      playlist: {name: '', musics: [], colors: [{hex: '#000000'}, {hex: '#FFFFFF'}, {hex: '#207bd2'}]},
       submenuVisible: false,
       error: false,
       editInput: '',
@@ -69,7 +85,9 @@ export default {
       ],
       popupVisible: false,
       popupText: '',
-      popupParams: {}
+      popupParams: {},
+      editColor: 0,
+      colorEditing: false
     }
   },
   methods: {
@@ -110,14 +128,15 @@ export default {
       this.playlist = {
         id: playlistStored.id,
         name: playlistStored.name,
-        musics: playlistStored.musics
+        musics: playlistStored.musics,
+        colors: playlistStored.colors.filter(color => color)
       };
-
+      this.colorEditing = false;
       return true;
     },
     back (confirmed, save) {
       function comparePlaylists (p1, p2) {
-        return p1.id === p2.id && p1.name === p2.name && p1.musics === p2.musics;
+        return p1.id === p2.id && p1.name === p2.name && p1.musics === p2.musics && p1.colors === p2.colors;
       }
       //if save fail, cancel back
       if (confirmed && save) {
@@ -145,6 +164,7 @@ export default {
     },
     changeMode () {
       this.mode = this.mode === 'edit' ? '' : 'edit';
+      this.colorEditing = this.mode !== 'edit' ? this.colorEditing : false;
       if (this.mode === 'edit') {
         this.$nextTick(() => this.$refs.editInput.focus());
       }
@@ -153,6 +173,11 @@ export default {
       this.deleteIds.push(id);
 
       this.playlist.musics = this.playlist.musics.filter(musicId => musicId !== id);
+    },
+    showColorEditer () {
+      if (this.mode === 'edit') {
+        this.colorEditing = !this.colorEditing;
+      }
     }
   },
   computed: {
@@ -167,7 +192,8 @@ export default {
     this.playlist = {
       id: playlistStored.id,
       name: playlistStored.name,
-      musics: playlistStored.musics
+      musics: playlistStored.musics,
+      colors: playlistStored.colors.filter(color => color)
     };
     this.editInput = this.$refs.editInput;
   }
@@ -179,6 +205,9 @@ export default {
   .page-header{
     padding-left:0.4rem;
     font-size:0;
+    &.edit{
+      padding-top:0.75rem;
+    }
     button{
       vertical-align: middle;
       height:2.5rem;
@@ -191,12 +220,24 @@ export default {
       text-align:left;
       padding:0 0.8rem;
     }
+    .submenu-link{
+      width:auto;
+      height:50%;
+      right:2.5%;
+      svg{
+        height:100%;
+        width:auto;
+      }
+    }
+    .playlisticon{
+      margin-right:0.5rem;
+    }
   }
   input.page-title{
     background-color:transparent;
-    height:1.5em;
-    margin:0.6rem 2%;
-    width:64%;
+    height:3rem;
+    margin:0 2% 0;
+    width:49%;
     outline:none;
     vertical-align:middle;
   }
@@ -219,5 +260,34 @@ input.page-title:focus{
 }
 .save-link svg{
   width:80%;
+}
+.color-editer{
+  background-color:black;
+  text-align:center;
+  margin-top:10vh;
+  padding:1rem;
+  .color{
+    width:2rem;
+    height:2rem;
+    margin:0 1rem 1rem;
+  }
+  .vc-chrome{
+    width:100%;
+    background:transparent;
+    box-shadow:none;
+  }
+  .vc-chrome-alpha-wrap, .vc-chrome-fields-wrap, .vc-chrome-color-wrap{
+    display:none;
+  }
+  .vc-chrome-saturation-wrap{
+    border-radius:0;
+  }
+  .vc-saturation-pointer{
+    margin-left: -3px;
+    margin-top: -3px;
+  }
+  .vc-chrome-body{
+    background-color:transparent;
+  }
 }
 </style>

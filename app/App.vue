@@ -40,10 +40,12 @@ export default {
   font-family: 'Segoe UI';
   src: url(assets/seguiemj.ttf);
 }*/
-html, body{
+html{
   height:100%;
+  background-color:black;
 }
 body{
+  height:100%;
   background: url(assets/bg.jpg) no-repeat fixed;
   background-size:cover;
   margin:0;
@@ -52,7 +54,7 @@ body{
   color: #c8d6e8;
 }
 #app{
-  padding:4em 0;
+  padding:10vh 0;
   height:100%;
 }
 *{
@@ -84,28 +86,26 @@ svg{
 .page{
   position:relative;
   height:100%;
-  z-index:0;
-  transition:height 0.5s;
+  transition:opacity 0.5s;
   overflow:hidden;
   z-index:10;
   &.hidden{
-    height:0;
+    opacity:0;
     overflow:hidden;
     .page-header{
-      height:0;
       overflow:hidden;
     }
   }
 }
 .page-header{
   position:fixed;
-  top:4rem;
-  height:4rem;
+  top:10vh;
+  height:10vh;
   width:100%;
   background-color:rgba(0,0,0,0.7);
   box-sizing:border-box;
   border-top:1px solid rgba(33,82,146,0.15);
-  z-index:100;
+  z-index:90;
   text-align:left;
   padding-left:2.4rem;
   transition:opacity 0.5s;
@@ -121,22 +121,29 @@ svg{
   }
 }
 .page-content{
+  position:relative;
+  z-index:0;
   display:inline-block;
   padding:0.8rem 0;
   width:100%;
   overflow:scroll;
-  margin:4rem 0;
+  margin:10vh 0;
   text-align:left;
-  height:calc(100% - 4rem);
+  height:calc(100% - 10vh);
   & + .page-content{
-    margin-top:4em;
+    margin-top:10vh;
   }
 }
 .page-title{
+  display:inline-block;
   font-size:1.8rem;
-  line-height:4rem;
+  line-height:10vh;
   color:white;
   vertical-align: middle;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  overflow:hidden;
+  max-width:60%;
 }
 
 *::-webkit-input-placeholder {
@@ -247,7 +254,7 @@ ul.selection li{
     background-color:rgba(130, 153, 195, 0.31);
   }
   .submenu-link{
-    height:1rem;
+    height:1.5rem;
     vertical-align: middle;
     width:2%;
     text-align:center;
@@ -266,5 +273,19 @@ ul.selection li{
 .empty-message{
   padding:1.4rem;
   color:#c8d6e8;
+  display:inline-block;
+  font-size:1.2rem;
+  svg{
+      height:1.4rem;
+      position:relative;
+      top:0.25rem;
+    }
+  a{
+    font-size:1.4rem;
+    color:#207bd2;
+    svg{
+      fill:#207bd2;
+    }
+  }
 }
 </style>

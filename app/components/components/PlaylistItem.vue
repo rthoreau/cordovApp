@@ -1,12 +1,13 @@
 <template>
   <div class="playlist-item item" v-bind:class="submenuVisible ? 'active' : ''">
+    <playlisticon :colors="playlist.colors"></playlisticon>
     <div class="playlist-content" @click="handleClick()">
       <span class="playlist-name">{{playlist.name}}</span>
       <ul class="playlist-music-list">
         <li
         v-for="(id, index) in playlist.musics" 
-        v-bind:key="index" 
-        v-bind:id="id">{{index}} : {{getMusic(id).title}}</li>
+        :key="index" 
+        :id="id">{{index + 1}} : {{getMusic(id).title}}</li>
       </ul>
     </div>
     <svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
@@ -21,6 +22,7 @@
 import submenu from '../components/SubMenu'
 import {mapActions, mapGetters} from 'vuex'
 import popup from '../components/Popup'
+import playlisticon from '../components/PlaylistIcon'
 export default {
   name: 'MusicItem',
   props: {
@@ -28,7 +30,8 @@ export default {
   },
   components: {
     submenu,
-    popup
+    popup,
+    playlisticon
   },
   data () {
     return {
@@ -99,12 +102,16 @@ export default {
 .playlist-content{
   display:inline-block;
   font-size:1rem;
-  width:97%;
+  width:calc(96% - 3rem);
   vertical-align: middle;
-  margin-right:1%;
+  margin:0 1%;
 }
 .playlist-name{
   font-weight:bold;
+  display:block;
+  word-break:break-word;
+  max-height:2.6rem;
+  overflow:hidden;
 }
 .playlist-music-list li{
   white-space:nowrap;

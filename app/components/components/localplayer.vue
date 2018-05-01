@@ -1,5 +1,5 @@
 <template>
-  <div id="test">
+  <div id="localplayer">
     <span>Total duration: {{ duration }} seconds</span>
     <span>Progress: {{ (progress * 100) }}%</span>
     <button @click="togglePlayback">{{ playing ? 'Pause' : 'Play' }}</button>
@@ -10,7 +10,7 @@
 import VueHowler from 'vue-howler'
 import {mapActions} from 'vuex'
 export default {
-  name: 'test',
+  name: 'localplayer',
   mixins: [VueHowler],
   props: {
     event: String,
@@ -18,7 +18,8 @@ export default {
   },
   data () {
     return {
-      submenuVisible: false
+      submenuVisible: false,
+      seek: undefined
     }
   },
   mounted () {
@@ -31,12 +32,13 @@ export default {
   },
   watch: {
     event: function (val) {
-      console.log(val)
-      switch (val) {
-        case 'play':
-        case 'pause':
-          this.togglePlayback();
-          break
+      if (val === 'play' || val === 'pause') {
+        this.togglePlayback();
+        return;
+      }
+      if (val.indexOf('seekto') !== -1) {
+        val.replace('seekto', '');
+        this.seek = parseInt(val);
       }
     },
     duration: function (val) {
@@ -47,9 +49,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  #waitingLine{
-    height:50%;
-  }
-</style>

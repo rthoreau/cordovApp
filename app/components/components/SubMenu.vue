@@ -62,7 +62,7 @@ export default {
   position:fixed;
   top:8rem;
   right:0.5rem;
-  z-index:50;
+  z-index:100;
   color:#222;
   ul{
     list-style-type:none;
