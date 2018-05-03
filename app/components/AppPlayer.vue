@@ -390,7 +390,7 @@ export default {
 .music-infos{
   display:inline-block;
   white-space:nowrap;
-  width:46%;
+  width:calc(100% - 10.5rem);
   vertical-align:middle;
   margin-left:0.3rem;
   span{

@@ -36,10 +36,10 @@ export default {
 </script>
 
 <style lang="sass">
-/*@font-face {
-  font-family: 'Segoe UI';
-  src: url(assets/seguiemj.ttf);
-}*/
+@font-face {
+  font-family: 'Gadugi';
+  src: url(assets/gadugi.ttf);
+}
 html{
   height:100%;
   background-color:black;
@@ -49,7 +49,7 @@ body{
   background: url(assets/bg.jpg) no-repeat fixed;
   background-size:cover;
   margin:0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Gadugi', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   color: #c8d6e8;
 }
