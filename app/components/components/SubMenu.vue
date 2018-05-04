@@ -56,23 +56,23 @@ export default {
 }
 </script>
 
-<style lang="sass">
-.submenu{
-  background-color:white;
-  position:fixed;
-  top:8rem;
-  right:0.5rem;
-  z-index:100;
-  color:#222;
-  ul{
-    list-style-type:none;
-    margin:0;
-    padding:0.5rem;
-    text-align:right;
-  }
-  li{
-    padding:0.3rem;
-    font-size:1rem;
-  }
+<style>
+.submenu {
+  background-color: white;
+  position: fixed;
+  top: 8rem;
+  right: 0.5rem;
+  z-index: 1000;
+  color: #222;
+}
+.submenu ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0.5rem;
+  text-align: right;
+}
+.submenu li {
+  padding: 0.3rem;
+  font-size: 1rem;
 }
 </style>

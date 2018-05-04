@@ -144,73 +144,80 @@ export default {
 }
 </script>
 
-<style lang="sass">
-.music-item{
-  position:relative;
-  font-size:0;
-  padding:0.5rem 4%;
+<style>
+.music-item {
+  position: relative;
+  font-size: 0;
+  padding: 0.5rem 4%;
 }
-.music-thumbnail-container{
-  position:relative;
-  width:3.5rem;
-  height:3.5rem;
-  display:inline-block;
-  margin:0 0.8rem 0 0.5rem;
-  text-align:right;
+
+.music-thumbnail-container {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: inline-block;
+  margin: 0 0.8rem 0 0.5rem;
+  text-align: right;
   vertical-align: middle;
 }
-.music-thumbnail{
-  width:100%;
-  height:100%;
-  display:inline-block;
-  background-color:#545436;
-  object-fit:cover;
+
+.music-thumbnail {
+  width: 100%;
+  height: 100%;
+  display: inline-block;
+  background-color: #545436;
+  object-fit: cover;
 }
-.music-content{
-  display:inline-block;
-  text-align:left;
-  width:61%;
-  margin-right:3%;
+
+.music-content {
+  display: inline-block;
+  text-align: left;
+  width: 61%;
+  margin-right: 3%;
   vertical-align: middle;
-  width:calc(83% - 4.8rem);
-  font-size:1rem;
+  width: calc(83% - 4.8rem);
+  font-size: 1rem;
   vertical-align: top;
   word-break: break-word;
-  &.favorite{
-    width:73%;
-    width:calc(95% - 4.8rem);
-  }
-  span{
-    display:block;
-  }
 }
-.editing{
-  .music-thumbnail-container{
-    margin-left:0.1rem;
-  }
-  .music-content{
-    width:54%;
-  }
-  .music-plateform{
-    left:12%;
-  }
+.music-content.favorite {
+  width: 73%;
+  width: calc(95% - 4.8rem);
 }
-.music-title{
-  font-weight:bold;
+.music-content span {
+  display: block;
 }
-.music-author{
-  opacity:0.7;
+
+.editing .music-thumbnail-container {
+  margin-left: 0.1rem;
 }
-.favorite-link, .remove-link, .move-link{
-  display:inline-block;
+.editing .music-content {
+  width: 54%;
+}
+.editing .music-plateform {
+  left: 12%;
+}
+
+.music-title {
+  font-weight: bold;
+}
+
+.music-author {
+  opacity: 0.7;
+}
+
+.favorite-link, .remove-link, .move-link {
+  display: inline-block;
   vertical-align: middle;
-  width:8%;
+  width: 8%;
 }
-.favorite-link{
-  margin-right:4%;
+
+.favorite-link {
+  margin-right: 4%;
 }
-.move-link{
-  width:6%;
-  margin-right:5%;
+
+.move-link {
+  width: 6%;
+  margin-right: 5%;
 }
 </style>

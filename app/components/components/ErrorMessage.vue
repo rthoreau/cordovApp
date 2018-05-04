@@ -33,29 +33,29 @@ export default {
 }
 </script>
 
-<style lang="sass">
-.error-message{
-  position:absolute;
-  top:4rem;
-  width:100%;
-  opacity:1;
-  transition:opacity 0.5s;
-  text-align:left;
-  &.disappear{
-    opacity:0;
-  }
-  p{
-    width:100%;
-    padding: 0.8rem 2.6rem 0.8rem 0.8rem;
-    margin:0;
-    background-color:black;
-    color:white;
-  }
-  svg{
-    width:1.2rem;
-    position:absolute;
-    right:0.6rem;
-    top:0;
-  }
+<style>
+.error-message {
+  position: absolute;
+  top: 4rem;
+  width: 100%;
+  opacity: 1;
+  transition: opacity 0.5s;
+  text-align: left;
+}
+.error-message.disappear {
+  opacity: 0;
+}
+.error-message p {
+  width: 100%;
+  padding: 0.8rem 2.6rem 0.8rem 0.8rem;
+  margin: 0;
+  background-color: black;
+  color: white;
+}
+.error-message svg {
+  width: 1.2rem;
+  position: absolute;
+  right: 0.6rem;
+  top: 0;
 }
 </style>

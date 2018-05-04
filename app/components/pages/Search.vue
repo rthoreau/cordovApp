@@ -94,57 +94,60 @@ export default {
 }
 </script>
 
-<style lang="sass">
-  .search-input{
-    font-size:1.8rem;
-    background-color:transparent;
-    -webkit-appearance: none;
-    box-shadow: none;
-    border:none;
-    outline:none;
-    color:white;
-    border-bottom:2px solid transparent;
-    width:56%;
-    transition:width 0.8s;
-    vertical-align: middle;
-    padding:0.1rem 2%;
-    margin-right:2%;
-    &.fill{
-      width:70%;
-    }
-    &:focus{
-      width:70%;
-      border-bottom-color:#215292;
-    }
-  }
-  #search .page-title label{
-    background-color:transparent;
-    -webkit-appearance: none;
-    border:none;
-    padding:0;
-    vertical-align: middle;
-    display:inline-block;
-    height:2rem;
-    width:8%;
-    font-size:0;
-  }
-  .search-icon{
-    fill:white;
-    height:100%;
-  }
-  #filer{
-    position:absolute;
-    left:-99rem;
-    & + label{
-      float:right;
-      vertical-align:middle;
-      display:inline-block;
-      width:auto;
-      height:2rem;
-      margin:0.8rem 0.5rem;
-      svg{
-        height:100%;
-      }
-    }
-  }
+<style>
+.search-input {
+  font-size: 1.8rem;
+  background-color: transparent;
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  color: white;
+  border-bottom: 2px solid transparent;
+  width: 56%;
+  transition: width 0.8s;
+  vertical-align: middle;
+  padding: 0.1rem 2%;
+  margin-right: 2%;
+}
+.search-input.fill {
+  width: 70%;
+}
+.search-input:focus {
+  width: 70%;
+  border-bottom-color: #215292;
+}
+
+#search .page-title label {
+  background-color: transparent;
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+  vertical-align: middle;
+  display: inline-block;
+  height: 2rem;
+  width: 8%;
+  font-size: 0;
+}
+
+.search-icon {
+  fill: white;
+  height: 100%;
+}
+
+#filer {
+  position: absolute;
+  left: -99rem;
+}
+#filer + label {
+  float: right;
+  vertical-align: middle;
+  display: inline-block;
+  width: auto;
+  height: 2rem;
+  margin: 0.8rem 0.5rem;
+}
+#filer + label svg {
+  height: 100%;
+}
 </style>

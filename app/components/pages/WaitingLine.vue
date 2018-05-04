@@ -55,25 +55,27 @@ export default {
 }
 </script>
 
-<style lang="sass">
-#waitingLine{
-  position:relative;
-  height:76vh;
-  .page-content{
-    margin:0;
-    padding-top:0;
-    height:100%;
-    transition:none;
-  }
+<style>
+#waitingLine {
+  position: relative;
+  height: 76vh;
 }
-.subtitle{
-  display:inline-block;
-  padding:0.5rem;
+#waitingLine .page-content {
+  margin: 0;
+  padding-top: 0;
+  height: 100%;
+  transition: none;
 }
-.empty-link{
-  width:1.2rem;
-  float:right;
-  margin:0.5rem;
-  font-size:0;
+
+.subtitle {
+  display: inline-block;
+  padding: 0.5rem;
+}
+
+.empty-link {
+  width: 1.2rem;
+  float: right;
+  margin: 0.5rem;
+  font-size: 0;
 }
 </style>

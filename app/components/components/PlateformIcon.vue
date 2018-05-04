@@ -15,17 +15,17 @@ export default {
 }
 </script>
 
-<style lang="sass">
-.plateform-icon{
-  width:100%;
-  height:100%;
-  position:relative;
-  svg{
-    position:absolute;
-    top:50%;
-    height:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-  }
+<style>
+.plateform-icon {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.plateform-icon svg {
+  position: absolute;
+  top: 50%;
+  height: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>

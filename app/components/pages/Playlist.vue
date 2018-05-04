@@ -200,100 +200,105 @@ export default {
 }
 </script>
 
-<style lang="sass">
-#playlist{
-  .page-header{
-    padding-left:0.4rem;
-    font-size:0;
-    &.edit{
-      padding-top:0.75rem;
-    }
-    button{
-      vertical-align: middle;
-      height:2.5rem;
-      color:white;
-      font-size:1.4rem;
-      padding:0 0.4rem;
-      width:16%;
-    }
-    .back-link{
-      text-align:left;
-      padding:0 0.8rem;
-    }
-    .submenu-link{
-      width:auto;
-      height:50%;
-      right:2.5%;
-      svg{
-        height:100%;
-        width:auto;
-      }
-    }
-    .playlisticon{
-      margin-right:0.5rem;
-    }
-  }
-  input.page-title{
-    background-color:transparent;
-    height:3rem;
-    margin:0 2% 0;
-    width:49%;
-    outline:none;
-    vertical-align:middle;
-  }
+<style>
+#playlist .page-header {
+  padding-left: 0.4rem;
+  font-size: 0;
 }
-input.page-title:focus{
-  background-color:rgba(255,255,255,0.2);
+#playlist .page-header.edit {
+  padding-top: 0.75rem;
 }
-.page-title.edit{
-  border:2px dashed white;
-  padding:0.5rem;
+#playlist .page-header button {
+  vertical-align: middle;
+  height: 2.5rem;
+  color: white;
+  font-size: 1.4rem;
+  padding: 0 0.4rem;
+  width: 16%;
 }
-.item.sortable-chosen{
-  background-color:rgba(60,95,132,0.3);
+#playlist .page-header .back-link {
+  text-align: left;
+  padding: 0 0.8rem;
 }
-.item.sortable-ghost{
-  opacity:0.3;
-} 
-.back-link svg{
-  width:100%;
+#playlist .page-header .submenu-link {
+  width: auto;
+  height: 50%;
+  right: 2.5%;
 }
-.save-link svg{
-  width:80%;
+#playlist .page-header .submenu-link svg {
+  height: 100%;
+  width: auto;
 }
-.color-editer{
-  background-color:black;
-  text-align:center;
-  margin-top:10vh;
-  padding:1rem;
-  .color{
-    width:2rem;
-    height:2rem;
-    margin:0 1rem 1rem;
-    border:0.15rem solid transparent;
-    border-radius:0.1rem;
-    transition:border-color 0.5s;
-    &.selected{
-      border-color:white;
-    }
-  }
-  .vc-chrome{
-    width:100%;
-    background:transparent;
-    box-shadow:none;
-  }
-  .vc-chrome-alpha-wrap, .vc-chrome-fields-wrap, .vc-chrome-color-wrap{
-    display:none;
-  }
-  .vc-chrome-saturation-wrap{
-    border-radius:0;
-  }
-  .vc-saturation-pointer{
-    margin-left: -3px;
-    margin-top: -3px;
-  }
-  .vc-chrome-body{
-    background-color:transparent;
-  }
+#playlist .page-header .playlisticon {
+  margin-right: 0.5rem;
+}
+#playlist input.page-title {
+  background-color: transparent;
+  height: 3rem;
+  margin: 0 2% 0;
+  width: 49%;
+  outline: none;
+  vertical-align: middle;
+}
+
+input.page-title:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.page-title.edit {
+  border: 2px dashed white;
+  padding: 0.5rem;
+}
+
+.item.sortable-chosen {
+  background-color: rgba(60, 95, 132, 0.3);
+}
+
+.item.sortable-ghost {
+  opacity: 0.3;
+}
+
+.back-link svg {
+  width: 100%;
+}
+
+.save-link svg {
+  width: 80%;
+}
+
+.color-editer {
+  background-color: black;
+  text-align: center;
+  margin-top: 10vh;
+  padding: 1rem;
+}
+.color-editer .color {
+  width: 2rem;
+  height: 2rem;
+  margin: 0 1rem 1rem;
+  border: 0.15rem solid transparent;
+  border-radius: 0.1rem;
+  transition: border-color 0.5s;
+}
+.color-editer .color.selected {
+  border-color: white;
+}
+.color-editer .vc-chrome {
+  width: 100%;
+  background: transparent;
+  box-shadow: none;
+}
+.color-editer .vc-chrome-alpha-wrap, .color-editer .vc-chrome-fields-wrap, .color-editer .vc-chrome-color-wrap {
+  display: none;
+}
+.color-editer .vc-chrome-saturation-wrap {
+  border-radius: 0;
+}
+.color-editer .vc-saturation-pointer {
+  margin-left: -3px;
+  margin-top: -3px;
+}
+.color-editer .vc-chrome-body {
+  background-color: transparent;
 }
 </style>

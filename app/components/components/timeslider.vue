@@ -36,62 +36,113 @@ export default {
 }
 </script>
 
-<style lang="sass">
-  .slider-container{
-    position:relative;
-    width:100%;
-    height:0.8rem;
-    margin:0.5rem 0 1rem;
-    background-color:rgba(255,255,255,0.4);
-    font-size:0;
-  }
-  @mixin thumb{
-    -webkit-appearance: none;
-    appearance: none;
-    width: 0.5rem;
-    height: 1.8rem;
-    background: #207bd2;
-    cursor: pointer;
-    border-radius:0;
-    box-shadow:none;
-    border:none;
-  }
-  @mixin track{
-    width: 100%;
-    height: 200%;
-    cursor: pointer;
-    box-shadow: none;
-    background: transparent;
-    border-radius: 0;
-    border: none;
-  }
-  .slider {
-    position:relative;
-    -webkit-appearance: none;
-    width: 100%;
-    height: 100%;
-    border-radius: 0;   
-    background: transparent;
-    outline: none;
-    padding:0;
-    font-size:0;
-    margin:0;
-    &::-webkit-slider-thumb {@include thumb;}
-    &::-moz-range-thumb {@include thumb;}
-    &::-ms-thumb {@include thumb;}
-    
-    &::-webkit-slider-runnable-track {@include track;}
-    &::-moz-range-track {@include track;}
-    &::-ms-track {@include track;}
-    &::-ms-fill-lower {@include track;}
-    &::-ms-fill-upper {@include track;}
-  }
-  .progressbar{
-    height:100%;
-    position:absolute;
-    top:0;
-    left:0;
-    background-color:white;
-  }
+<style>
+.slider-container {
+  position: relative;
+  width: 100%;
+  height: 0.8rem;
+  margin: 0.5rem 0 1rem;
+  background-color: rgba(255, 255, 255, 0.4);
+  font-size: 0;
+}
+
+.slider {
+  position: relative;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  background: transparent;
+  outline: none;
+  padding: 0;
+  font-size: 0;
+  margin: 0;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0.5rem;
+  height: 1.8rem;
+  background: #207bd2;
+  cursor: pointer;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+}
+.slider::-moz-range-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0.5rem;
+  height: 1.8rem;
+  background: #207bd2;
+  cursor: pointer;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+}
+.slider::-ms-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 0.5rem;
+  height: 1.8rem;
+  background: #207bd2;
+  cursor: pointer;
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
+}
+.slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 200%;
+  cursor: pointer;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+}
+.slider::-moz-range-track {
+  width: 100%;
+  height: 200%;
+  cursor: pointer;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+}
+.slider::-ms-track {
+  width: 100%;
+  height: 200%;
+  cursor: pointer;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+}
+.slider::-ms-fill-lower {
+  width: 100%;
+  height: 200%;
+  cursor: pointer;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+}
+.slider::-ms-fill-upper {
+  width: 100%;
+  height: 200%;
+  cursor: pointer;
+  box-shadow: none;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+}
+
+.progressbar {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: white;
+}
 
 </style>

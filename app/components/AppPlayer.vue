@@ -278,130 +278,144 @@ export default {
 }
 </script>
 
-<style lang="sass">
-#appPlayer{
-  position:fixed;
-  bottom:calc(-70vh);
-  width:100%;
-  height:calc(90vh);
-  background:linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.7) 6.3rem, transparent 6.3rem, transparent);
-  text-align:left;
-  color:white;
-  z-index:100;
-  transform-origin:bottom;
-  transform:translate(0, 10vh);
+<style>
+#appPlayer {
+  position: fixed;
+  bottom: calc(-70vh);
+  width: 100%;
+  height: calc(90vh);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) 6.3rem, transparent 6.3rem, transparent);
+  text-align: left;
+  color: white;
+  z-index: 100;
+  transform-origin: bottom;
+  transform: translate(0, 10vh);
   transition: transform 0.8s;
-  &.expanded{
-    border-top:1px solid rgba(33,82,146,0.15);
-    transform:translate(0, -70vh);
-    transition: transform 0.5s;
-    .player-container{
-      height:14vh;
-    }
-    .video-container{
-      top:2.8rem;
-    }
-  }
 }
-.player-container{
-  position:relative;
-  z-index:100;
-  height:10vh;
-  padding:0.5rem 4%;
-  .music-plateform{
-    top:0.5rem;
-    height:2.85rem;
-    position:static;
-    display:inline-block;
-    margin-right:0.25rem;
-    vertical-align:middle;
-  }
-  button{
-    position:relative;
-    display:inline-block;
-    vertical-align:middle;
-    width:1.8rem;
-  }
-  .expand-link{
-    position:absolute;
-    top:1.2rem;
-    right:0.5rem;
-    height:2rem;
-  }
+#appPlayer.expanded {
+  border-top: 1px solid rgba(33, 82, 146, 0.15);
+  transform: translate(0, -70vh);
+  transition: transform 0.5s;
 }
-.progress{
-  position:absolute;
-  top:-0.15rem;
-  left:0;
-  height:0.15rem;
-  background-color:white;
-  transition:width 0.5s linear;
+#appPlayer.expanded .player-container {
+  height: 14vh;
 }
-.expanded .progress{
-  top:0;
-}
-.video-container{
-  height:2.85rem;
-  position:absolute;
-  width:3.5rem;
-  margin-left:0.5rem;
-  top:0.5rem;
-  left:4%;
-  overflow:hidden;
-}
-.video{
-  position:absolute;
-  display:inline-block;
-  height:100%;
-  width:100%;
-  right:0;
-  top:0;
-  object-fit:cover;
-}
-.overlay{
-  position:absolute;
-  left:0;
-  right:0;
-  top:0;
-  z-index:10;
-}
-.video iframe{
-  width:100%!important;
-  height:100%!important;
+#appPlayer.expanded .video-container {
+  top: 2.8rem;
 }
 
-.switch-enter-active, .switch-leave-active{
+.player-container {
+  position: relative;
+  z-index: 100;
+  height: 10vh;
+  padding: 0.5rem 4%;
+}
+.player-container .music-plateform {
+  top: 0.5rem;
+  height: 2.85rem;
+  position: static;
+  display: inline-block;
+  margin-right: 0.25rem;
+  vertical-align: middle;
+}
+.player-container button {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  width: 1.8rem;
+}
+.player-container .expand-link {
+  position: absolute;
+  top: 1.2rem;
+  right: 0.5rem;
+  height: 2rem;
+}
+
+.progress {
+  position: absolute;
+  top: -0.15rem;
+  left: 0;
+  height: 0.15rem;
+  background-color: white;
+  transition: width 0.5s linear;
+}
+
+.expanded .progress {
+  top: 0;
+}
+
+.video-container {
+  height: 2.85rem;
+  position: absolute;
+  width: 3.5rem;
+  margin-left: 0.5rem;
+  top: 0.5rem;
+  left: 4%;
+  overflow: hidden;
+}
+
+.video {
+  position: absolute;
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  right: 0;
+  top: 0;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.video iframe {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.switch-enter-active, .switch-leave-active {
   transition: all 0.3s ease;
 }
-.switch-enter, .switch-leave-to{
+
+.switch-enter, .switch-leave-to {
   opacity: 0;
 }
-.time{
-  font-size:0.8rem;
+
+.time {
+  font-size: 0.8rem;
 }
-.play{
-  height:2rem;
-  svg{
-    top:0;
-    left:0;
-    position:absolute;
-  }
+
+.play {
+  height: 2rem;
 }
-.music-infos{
-  display:inline-block;
-  white-space:nowrap;
-  width:calc(100% - 10.5rem);
-  vertical-align:middle;
-  margin-left:0.3rem;
-  span{
-    overflow:hidden;
-    text-overflow:ellipsis;
-    position:relative;
-    top:-0.1rem;
-    display:block;
-    & + span{
-      margin-top:0.4rem;
-    }
-  }
+.play svg {
+  top: 0;
+  left: 0;
+  position: absolute;
+}
+
+.music-infos {
+  display: inline-block;
+  white-space: nowrap;
+  width: calc(100% - 10.5rem);
+  vertical-align: middle;
+  margin-left: 0.3rem;
+}
+.music-infos.empty{
+  text-overflow: unset;
+}
+.music-infos span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
+  top: -0.1rem;
+  display: block;
+}
+.music-infos span + span {
+  margin-top: 0.4rem;
 }
 </style>
