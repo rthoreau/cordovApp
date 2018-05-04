@@ -18,9 +18,9 @@
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
 
     <div class="color-editer" v-if="colorEditing === true">
-      <button class="color" :style="'background-color:' + playlist.colors[0].hex" @click="editColor = 0"></button>
-      <button class="color" :style="'background-color:' + playlist.colors[1].hex" @click="editColor = 1"></button>
-      <button class="color" :style="'background-color:' + playlist.colors[2].hex" @click="editColor = 2"></button>
+      <button class="color" :style="'background-color:' + playlist.colors[0].hex" @click="editColor = 0" :class="editColor === 0 ? 'selected' : ''"></button>
+      <button class="color" :style="'background-color:' + playlist.colors[1].hex" @click="editColor = 1" :class="editColor === 1 ? 'selected' : ''"></button>
+      <button class="color" :style="'background-color:' + playlist.colors[2].hex" @click="editColor = 2" :class="editColor === 2 ? 'selected' : ''"></button>
       <button class="color" @click="colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
       <colorpicker v-model="playlist.colors[editColor]"></colorpicker>
     </div>
@@ -201,7 +201,7 @@ export default {
 </script>
 
 <style lang="sass">
-#playlist {
+#playlist{
   .page-header{
     padding-left:0.4rem;
     font-size:0;
@@ -270,6 +270,12 @@ input.page-title:focus{
     width:2rem;
     height:2rem;
     margin:0 1rem 1rem;
+    border:0.15rem solid transparent;
+    border-radius:0.1rem;
+    transition:border-color 0.5s;
+    &.selected{
+      border-color:white;
+    }
   }
   .vc-chrome{
     width:100%;

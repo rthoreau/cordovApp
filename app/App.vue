@@ -43,6 +43,7 @@ export default {
 html{
   height:100%;
   background-color:black;
+  font-size:15px;
 }
 body{
   height:100%;

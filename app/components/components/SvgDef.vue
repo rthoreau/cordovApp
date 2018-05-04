@@ -79,6 +79,3 @@ export default {
   name: 'SvgDef'
 }
 </script>
-
-<style>
-</style>

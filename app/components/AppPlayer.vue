@@ -27,7 +27,7 @@
 
       <button @click="nextVideo()" class="next"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></button>
 
-      <p class="music-infos">
+      <p class="music-infos" :class="getCurrentMusic.id ? '' : 'empty'">
         <span class="music-title">{{getCurrentMusic.title}}</span>
         <span class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
       </p>
