@@ -1,7 +1,7 @@
 <template>
   <div class="error-message" :class="transitionClass">
     <p>{{error}}</p>
-    <svg viewBox="0 0 23.125 23.129" @click="closeMessage()"><use xlink:href="#icon-next"></use></svg>
+    <svg viewBox="0 0 23.125 23.129" @click="closeMessage()"><use xlink:href="#icon-delete"></use></svg>
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
 <style>
 .error-message {
   position: absolute;
-  top: 4rem;
+  top: 0;
   width: 100%;
   opacity: 1;
   transition: opacity 0.5s;
@@ -49,7 +49,7 @@ export default {
   width: 100%;
   padding: 0.8rem 2.6rem 0.8rem 0.8rem;
   margin: 0;
-  background-color: black;
+  background-color: #506175;
   color: white;
 }
 .error-message svg {

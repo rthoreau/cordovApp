@@ -9,7 +9,7 @@
 
 <script>
 export default {
-  name: 'timeslider',
+  name: 'TimeSlider',
   props: {
     time: Number
   },

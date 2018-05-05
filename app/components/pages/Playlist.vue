@@ -21,7 +21,7 @@
       <button class="color" :style="'background-color:' + playlist.colors[0].hex" @click="editColor = 0" :class="editColor === 0 ? 'selected' : ''"></button>
       <button class="color" :style="'background-color:' + playlist.colors[1].hex" @click="editColor = 1" :class="editColor === 1 ? 'selected' : ''"></button>
       <button class="color" :style="'background-color:' + playlist.colors[2].hex" @click="editColor = 2" :class="editColor === 2 ? 'selected' : ''"></button>
-      <button class="color" @click="colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
+      <button class="confirm-color" @click="colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
       <colorpicker v-model="playlist.colors[editColor]"></colorpicker>
     </div>
 
@@ -74,7 +74,7 @@ export default {
     return {
       id: this.$route.params.id,
       mode: this.$route.params.mode || '',
-      playlist: {name: '', musics: [], colors: [{hex: '#000000'}, {hex: '#FFFFFF'}, {hex: '#207bd2'}]},
+      playlist: {name: '', musics: [], colors: [{hex: ''}, {hex: ''}, {hex: ''}]},
       submenuVisible: false,
       error: false,
       editInput: '',
@@ -114,6 +114,7 @@ export default {
       return this.playlist.name && this.playlist.name.split(' ').join('') !== '';
     },
     save () {
+      this.colorEditing = false;
       if (!this.hasValidName()) {
         this.error = 'Donnez un nom à votre playlist !';
         this.$refs.editInput.focus();
@@ -131,7 +132,6 @@ export default {
         musics: playlistStored.musics,
         colors: playlistStored.colors.filter(color => color)
       };
-      this.colorEditing = false;
       return true;
     },
     back (confirmed, save) {
@@ -196,6 +196,35 @@ export default {
       colors: playlistStored.colors.filter(color => color)
     };
     this.editInput = this.$refs.editInput;
+    //generate random color combination for new playlists
+    if (this.playlist.colors[0].hex === '') {
+      var randomComb = [[{hex: '#ffffff'}, {hex: '#000000'}, {hex: '#0532ff'}],
+        [{hex: '#91a5ff'}, {hex: '#000000'}, {hex: '#0532ff'}],
+        [{hex: '#e64aa9'}, {hex: '#ecdde8'}, {hex: '#ed0019'}],
+        [{hex: '#ffa200'}, {hex: '#0400ff'}, {hex: '#ff0091'}],
+        [{hex: '#00ff2f'}, {hex: '#0400ff'}, {hex: '#ff0091'}],
+        [{hex: '#ff2700'}, {hex: '#0054fa'}, {hex: '#00660b'}],
+        [{hex: '#ff0000'}, {hex: '#0d00ff'}, {hex: '#ff0091'}],
+        [{hex: '#ff0000'}, {hex: '#ffaa00'}, {hex: '#ff4800'}],
+        [{hex: '#ffffff'}, {hex: '#3c3939'}, {hex: '#000000'}],
+        [{hex: '#cd77e8'}, {hex: '#c20076'}, {hex: '#290119'}],
+        [{hex: '#ffffff'}, {hex: '#0532ff'}, {hex: '#000000'}],
+        [{hex: '#ffb300'}, {hex: '#00897b'}, {hex: '#3f51b5'}]];
+
+      randomComb = randomComb[Math.floor(Math.random() * randomComb.length)];
+      var j
+      var x
+      var i
+      for (i = randomComb.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = randomComb[i];
+        randomComb[i] = randomComb[j];
+        randomComb[j] = x;
+      }
+      this.playlist.colors[0] = randomComb[0];
+      this.playlist.colors[1] = randomComb[1];
+      this.playlist.colors[2] = randomComb[2];
+    }
   }
 }
 </script>
@@ -267,21 +296,26 @@ input.page-title:focus {
 }
 
 .color-editer {
-  background-color: black;
+  background-color: rgba(0, 0, 0, 0.7);
   text-align: center;
   margin-top: 10vh;
   padding: 1rem;
 }
-.color-editer .color {
+.color-editer .color, .color-editer .confirm-color {
   width: 2rem;
   height: 2rem;
   margin: 0 1rem 1rem;
-  border: 0.15rem solid transparent;
+  border: 0.15rem double rgba(255, 255, 255, 0.1);
   border-radius: 0.1rem;
   transition: border-color 0.5s;
 }
 .color-editer .color.selected {
   border-color: white;
+  box-shadow:0 0 0.8rem white;
+}
+
+.color-editer .confirm-color{
+  border-color:transparent;
 }
 .color-editer .vc-chrome {
   width: 100%;

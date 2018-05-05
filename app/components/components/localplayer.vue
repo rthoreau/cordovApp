@@ -1,8 +1,5 @@
 <template>
   <div id="localplayer">
-    <span>Total duration: {{ duration }} seconds</span>
-    <span>Progress: {{ (progress * 100) }}%</span>
-    <button @click="togglePlayback">{{ playing ? 'Pause' : 'Play' }}</button>
   </div>
 </template>
 
@@ -10,7 +7,7 @@
 import VueHowler from 'vue-howler'
 import {mapActions} from 'vuex'
 export default {
-  name: 'localplayer',
+  name: 'LocalPlayer',
   mixins: [VueHowler],
   props: {
     event: String,
@@ -19,11 +16,9 @@ export default {
   data () {
     return {
       submenuVisible: false,
-      seek: undefined
+      seek: undefined,
+      start: false
     }
-  },
-  mounted () {
-
   },
   methods: {
     ...mapActions({
@@ -32,19 +27,53 @@ export default {
   },
   watch: {
     event: function (val) {
-      if (val === 'play' || val === 'pause') {
-        this.togglePlayback();
+      if (val === 'play') {
+        if (!this.playing) {
+          this.togglePlayback();
+        }
+        return;
+      }
+      if (val === 'pause') {
+        if (this.playing) {
+          this.togglePlayback();
+        }
         return;
       }
       if (val.indexOf('seekto') !== -1) {
-        val.replace('seekto', '');
-        this.seek = parseInt(val);
+        val = val.replace('seekto', '');
+        this.setSeek(parseInt(val));
+        return
+      }
+      if (val === 'currenttime') {
+        if (!this.started) {
+          this.togglePlayback();
+          this.$emit('currenttime', 0);
+          return;
+        }
+        if (!this.playing) {
+          this.$emit('paused');
+          this.$emit('currenttime', 0);
+          return;
+        }
+        this.$emit('currenttime', this.progress * this.duration);
       }
     },
     duration: function (val) {
       if (this.music.duration === 0) {
         this.setMusic({id: this.music.id, duration: this.duration})
+        this.$emit('duration', this.duration);
+        this.togglePlayback();
       }
+    },
+    playing: function (val) {
+      if (val === true) {
+        this.started = true;
+        this.$emit('playing', true);
+      }
+    },
+    sources: function (val) {
+      this.started = false;
+      this.togglePlayback();
     }
   }
 }

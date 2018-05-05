@@ -16,8 +16,8 @@ const state = {
     {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false}
   ],
   playlists: [
-    {id: '14', name: 'Sleep', musics: ['5er84t568e', 'azdedbgyu'], colors: [{hex: '#207bd2'}, {hex: '#359710'}, {hex: '#684a32'}]},
-    {id: '22', name: 'Test', musics: ['bertertb', 'a65468e468v4', 'stlkapml'], colors: [{hex: '#4074BF'}, {hex: '#A440BF'}, {hex: '#195500'}]}
+    {id: '14', name: 'Sleep', musics: ['5er84t568e', 'azdedbgyu'], colors: [{hex: '#ff4800'}, {hex: '#ff0000'}, {hex: '#ffaa00'}]},
+    {id: '22', name: 'Test', musics: ['bertertb', 'a65468e468v4', 'stlkapml'], colors: [{hex: '#000000'}, {hex: '#0532ff'}, {hex: '#FFFFFF'}]}
   ],
   searchResult: [
     {id: 'ert54e', url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite: true},
@@ -43,7 +43,7 @@ const getters = {
   getPlaylist: function (state) {
     return function (id) {
       var playlist = state.playlists.filter(playlist => playlist.id === id);
-      return playlist.length ? playlist[0] : {id: id, name: '', musics: [], colors: []};
+      return playlist.length ? playlist[0] : {id: id, name: '', musics: [], colors: [{hex: ''}, {hex: ''}, {hex: ''}]};
     };
   },
   getFavorites: state => state.musics.filter(music => music.favorite),
@@ -247,7 +247,6 @@ const mutations = {
     var i
     var a = state.waitingLine;
     if (params.from === 'waitingLine') {
-      a = state.waitingLine
       state.waitingLine = [];
     } else if (params.to === 'waitingLine') {
       a = [...params.ids]
@@ -287,7 +286,7 @@ const mutations = {
     musics = musics.map(function (music) {
       exist = false;
       state.searchResult.map(function (storedMusic) {
-        if (storedMusic.name === music.name) {
+        if (storedMusic.title === music.title) {
           exist = true;
           return music;
         }

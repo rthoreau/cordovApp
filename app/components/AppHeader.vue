@@ -70,15 +70,20 @@ export default {
   display: inline-block;
   width: 3.6%;
 }
+#appHeader .nav li:last-child a{
+  padding: 100%;
+}
+#appHeader .nav li:last-child a:after {
+  content:none;
+}
 #appHeader .nav li:last-child svg {
-  height: 2rem;
+  height: 100%;
   position: relative;
-  top: -0.2rem;
 }
 #appHeader .nav a {
   position: relative;
   display: inline-block;
-  padding: 1rem;
+  padding: 17%;
   height: 100%;
 }
 #appHeader .nav a:after {

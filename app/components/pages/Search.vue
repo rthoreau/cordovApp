@@ -8,18 +8,19 @@
         ref="searchInput" 
         v-model="searchValue"
         @keyup.enter="search()"
-        v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon"><use xlink:href="#icon-search"></use></svg></label>
+        :class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon"><use xlink:href="#icon-search"></use></svg></label>
       </span>
       <input type="file" id="filer" multiple @change="importMusic" accept="audio/*">
-      <label for="filer"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-playlist"></use></svg></label>
+      <label for="filer"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-fold"></use></svg></label>
     </header>
     <div class="page-content">
       <musicitem 
       v-for="(music, index) in searchResult" 
-      v-bind:key="index" 
-      v-bind:music="music"
-      v-bind:page="'search'"
-      @refresh="search(true)"></musicitem>
+      :key="index" 
+      :music="music"
+      :page="'search'"
+      :searchvalue="searchValue"
+      @refresh="search"></musicitem>
       <span v-if="searchResult.length === 0" class="empty-message">Pour écouter les musiques de votre téléphone, cliquez sur le dossier&nbsp;!<br><br>Pour rechercher des musiques sur Youtube, utilisez le champ de recherche&nbsp;!</span>
       <errormessage :error="error" v-if="error" @closemessage="error = false"></errormessage>
     </div>
@@ -104,30 +105,38 @@ export default {
   outline: none;
   color: white;
   border-bottom: 2px solid transparent;
-  width: 56%;
+  width: 55%;
   transition: width 0.8s;
   vertical-align: middle;
   padding: 0.1rem 2%;
-  margin-right: 2%;
+  height:6vh;
+  margin:2vh 2% 2vh 0;
 }
 .search-input.fill {
-  width: 70%;
+  width: 88%;
 }
 .search-input:focus {
-  width: 70%;
+  width: 88%;
   border-bottom-color: #215292;
+}
+
+#search .page-title {
+  width:80%;
+  max-width:none;
 }
 
 #search .page-title label {
   background-color: transparent;
   -webkit-appearance: none;
   border: none;
-  padding: 0;
   vertical-align: middle;
   display: inline-block;
   height: 2rem;
-  width: 8%;
+  width: 2rem;
   font-size: 0;
+}
+#search .page-title label svg {
+  vertical-align: top;
 }
 
 .search-icon {
@@ -140,12 +149,13 @@ export default {
   left: -99rem;
 }
 #filer + label {
-  float: right;
-  vertical-align: middle;
+  position:absolute;
+  top:50%;
+  right:1rem;
   display: inline-block;
   width: auto;
   height: 2rem;
-  margin: 0.8rem 0.5rem;
+  transform:translate(0,-50%)
 }
 #filer + label svg {
   height: 100%;

@@ -8,18 +8,18 @@
     </div>
     <div class="music-thumbnail-container" @click="addToCurrent()">
       <transition name="appear">
-        <img :src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
+        <img v-if="music.thumbnail && loaded" :src="music.thumbnail" alt="" class="music-thumbnail">
       </transition>
     </div>
     <div class="music-content" :class="page" @click="addToCurrent()">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
-      <span class="music-duration">{{hmsDuration(music.duration)}}</span>
+      <span class="music-duration" v-if="music.duration !== 0">{{hmsDuration(music.duration)}}</span>
     </div>
 
     <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="favorite()"><svg viewBox="0 0 23.125 23.129">
-      <use v-if="music.favorite" xlink:href="#icon-favorited"></use>
-      <use v-if="!music.favorite" xlink:href="#icon-favorite"></use>
+      <use v-if="music.favorite || forceFavorite" xlink:href="#icon-favorited"></use>
+      <use v-if="!music.favorite || forceFavorite === false" xlink:href="#icon-favorite"></use>
     </svg></button>
 
     <button v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link"  @click="submenuVisible = !submenuVisible"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></button>
@@ -50,7 +50,8 @@ export default {
     page: String,
     playlistid: String,
     mode: String,
-    index: Number
+    index: Number,
+    searchvalue: String
   },
   components: {
     plateformicon,
@@ -73,7 +74,8 @@ export default {
         okAction: () => this.addToPlaylists(),
         cancelAction: () => this.popupVisible = false
       },
-      classe: ''
+      classe: '',
+      forceFavorite: undefined
     }
   },
   methods: {
@@ -94,8 +96,15 @@ export default {
       this.popupVisible = false;
     },
     favorite () {
+      var refresh = this.searchvalue !== '';
       this.musicAction({action: (this.music.favorite ? 'remove' : 'add'), to: 'favorite', from: 'favorite', id: this.music.id, source: this.source, music: this.music});
-      this.$emit('refresh', true);
+      if (refresh) {
+        console.log('n')
+        this.$emit('refresh', true);
+      } else {
+        console.log('y')
+        this.forceFavorite = !this.forceFavorite;
+      }
     },
     addToCurrent () {
       this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music})

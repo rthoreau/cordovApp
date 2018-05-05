@@ -1,21 +1,20 @@
 <template>
   <div id="appPlayer" :class="expandClass">
     <div class="player-container">
-      <div v-if="expandClass === ''" class="progress" :style="'width:' + currentTimeValue + '%'"></div>
-      <timeslider v-else :time="currentTimeValue" @settime="seekTo"></timeslider>
+      <div v-if="expandClass === '' && duration !== 0" class="progress" :style="'width:' + currentTimeValue + '%'"></div>
+      <timeslider v-if="expandClass !== ''" :time="currentTimeValue" @settime="seekTo"></timeslider>
 
       <div class="music-plateform" v-bind:class="plateform">
         <plateformicon v-bind:plateform="plateform"></plateformicon>
-      </div>
-
-      <div class="video-container">
-        <transition name="appear">
-          <youtube v-if="plateform === 'yt'" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
-        </transition>
-        <transition name="appear">
-          <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
-        </transition>
-        <div class="overlay"></div>
+        <div class="video-container">
+          <transition name="appear">
+            <youtube v-if="plateform === 'yt'" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
+          </transition>
+          <transition name="appear">
+            <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
+          </transition>
+          <div class="overlay"></div>
+        </div>
       </div>
 
       <button @click="playPause()" class="play">
@@ -29,13 +28,14 @@
 
       <p class="music-infos" :class="getCurrentMusic.id ? '' : 'empty'">
         <span class="music-title">{{getCurrentMusic.title}}</span>
-        <span class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+        <span key="t" v-if="!unloaded" class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+        <span key="u" v-else class="unloaded">Musique inaccessible ! :'(</span>
       </p>
 
       <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
     </div>
     <waitingline></waitingline>
-    <localplayer v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayer" @ended="ended"></localplayer>
+    <localplayer v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayerEvent" @ended="ended" @playing="playing" @currenttime="setProgressByGet" @duration="setDuration" @paused="pauseVideo"></localplayer>
   </div>
 </template>
 
@@ -46,8 +46,8 @@ import plateformicon from './components/PlateformIcon'
 import waitingline from './pages/WaitingLine'
 import VueYouTubeEmbed, {getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
 import {mapGetters, mapActions} from 'vuex'
-import localplayer from './components/localplayer'
-import timeslider from './components/timeslider'
+import localplayer from './components/LocalPlayer'
+import timeslider from './components/TimeSlider'
 
 Vue.use(VueYouTubeEmbed)
 export default {
@@ -74,8 +74,9 @@ export default {
       refresh: true,
       expandClass: '',
       sources: [],
-      localPlayer: '',
-      plateform: ''
+      localPlayerEvent: '',
+      plateform: '',
+      unloaded: false
     }
   },
   methods: {
@@ -133,7 +134,7 @@ export default {
           console.log(this.player);
         }
       } else {
-        this.localPlayer = 'play';
+        this.localPlayerEvent = 'play';
       }
     },
     pauseVideo (reset) {
@@ -141,11 +142,12 @@ export default {
       if (this.plateform === 'yt') {
         if (this.player) {
           this.player.pauseVideo();
-          this.watchTime(reset);
         }
       } else {
-        this.localPlayer = 'pause';
+        this.paused = true;
+        this.localPlayerEvent = 'pause';
       }
+      this.watchTime(reset);
     },
     loadVideoById (id) {
       if (this.player) {
@@ -159,8 +161,9 @@ export default {
       if (this.plateform === 'yt') {
         this.player.seekTo(time);
       } else {
-        this.localPlayer = 'seekTo' + time;
+        this.localPlayerEvent = 'seekto' + time;
       }
+      this.setProgress(time);
     },
     watchTime (active) {
       active = active !== false;
@@ -176,18 +179,31 @@ export default {
         this.progressInterval = '';
       }
     },
-    setProgress () {
+    setProgress (time) {
       if (this.paused) {
         this.watchTime(false);
       } else {
+        if (time) {
+          this.currentTime = time;
+          return;
+        }
         this.currentTime = this.currentTime + 0.5;
       }
     },
-    setProgressByGet () {
-      if (this.player) {
-        var time = this.player.getCurrentTime();
-        if (time) {
-          this.currentTime = time;
+    setProgressByGet (timeValue) {
+      console.log('hey')
+      if (this.plateform === 'yt') {
+        if (this.player) {
+          var time = this.player.getCurrentTime();
+          if (time) {
+            this.currentTime = time;
+          }
+        }
+      } else {
+        if (!timeValue) {
+          this.localPlayerEvent = 'currenttime';
+        } else {
+          this.currentTime = parseInt(timeValue);
         }
       }
     },
@@ -209,12 +225,15 @@ export default {
     },
     setData () {
       this.currentMusic = this.getCurrentMusic;
-      console.log(this.currentMusic)
       this.plateform = this.currentMusic.plateform;
       this.duration = this.currentMusic.duration;
+      this.currentTime = 0;
+      this.unloaded = false;
       if (this.plateform === 'yt') {
-        this.videoId = getIdFromURL(this.currentMusic.url);
-        this.sources = []
+        if (this.currentMusic.url) {
+          this.videoId = getIdFromURL(this.currentMusic.url);
+          this.sources = []
+        }
       } else {
         if (this.currentMusic.file && this.currentMusic.file.name) {
           let reader = new window.FileReader()
@@ -223,9 +242,13 @@ export default {
             this.sources = [reader.result]
           }
         } else {
-          console.log('local music unloaded')
+          this.unloaded = true;
+          this.pauseVideo();
         }
       }
+    },
+    setDuration (duration) {
+      this.duration = duration;
     }
   },
   mounted () {
@@ -284,7 +307,7 @@ export default {
   bottom: calc(-70vh);
   width: 100%;
   height: calc(90vh);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) 6.3rem, transparent 6.3rem, transparent);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) 15vh, transparent 15vh, transparent);
   text-align: left;
   color: white;
   z-index: 100;
@@ -300,8 +323,11 @@ export default {
 #appPlayer.expanded .player-container {
   height: 14vh;
 }
-#appPlayer.expanded .video-container {
-  top: 2.8rem;
+#appPlayer.expanded .music-infos {
+  height:calc(100% - 1.8rem);
+}
+#appPlayer.expanded .expand-link {
+  top:calc(50% + 1.4rem);
 }
 
 .player-container {
@@ -311,9 +337,10 @@ export default {
   padding: 0.5rem 4%;
 }
 .player-container .music-plateform {
-  top: 0.5rem;
+  top: 0;
+  left:0;
   height: 2.85rem;
-  position: static;
+  position: relative;
   display: inline-block;
   margin-right: 0.25rem;
   vertical-align: middle;
@@ -326,7 +353,8 @@ export default {
 }
 .player-container .expand-link {
   position: absolute;
-  top: 1.2rem;
+  top:50%;
+  transform:translate(0,-50%);
   right: 0.5rem;
   height: 2rem;
 }
@@ -349,8 +377,8 @@ export default {
   position: absolute;
   width: 3.5rem;
   margin-left: 0.5rem;
-  top: 0.5rem;
-  left: 4%;
+  top: 0;
+  left: 0;
   overflow: hidden;
 }
 
@@ -404,6 +432,8 @@ export default {
   width: calc(100% - 10.5rem);
   vertical-align: middle;
   margin-left: 0.3rem;
+  height:100%;
+  padding-top:calc((10vh - 4rem)/2);
 }
 .music-infos.empty{
   text-overflow: unset;
@@ -417,5 +447,8 @@ export default {
 }
 .music-infos span + span {
   margin-top: 0.4rem;
+}
+.music-infos .unloaded{
+  color:#ff3f3f;
 }
 </style>
