@@ -191,7 +191,6 @@ export default {
       }
     },
     setProgressByGet (timeValue) {
-      console.log('hey')
       if (this.plateform === 'yt') {
         if (this.player) {
           var time = this.player.getCurrentTime();
@@ -229,22 +228,34 @@ export default {
       this.duration = this.currentMusic.duration;
       this.currentTime = 0;
       this.unloaded = false;
+      this.sources = [];
       if (this.plateform === 'yt') {
         if (this.currentMusic.url) {
           this.videoId = getIdFromURL(this.currentMusic.url);
-          this.sources = []
         }
+        if (this.currentMusic.videId) {
+          this.videoId = this.currentMusic.videId
+        }
+        this.loadVideoById(this.videoId);
+        this.setProgressByGet();
       } else {
-        if (this.currentMusic.file && this.currentMusic.file.name) {
-          let reader = new window.FileReader()
-          reader.readAsDataURL(this.currentMusic.file)
-          reader.onload = () => {
-            this.sources = [reader.result]
+        var self = this;
+        this.$nextTick(function () {
+          if (self.currentMusic.file && self.currentMusic.file.name) {
+            let reader = new window.FileReader()
+            reader.readAsDataURL(self.currentMusic.file)
+            reader.onload = () => {
+              self.sources = [reader.result]
+            }
+          } else {
+            console.log('unloaded')
+            self.unloaded = true;
+            self.pauseVideo();
           }
-        } else {
-          this.unloaded = true;
-          this.pauseVideo();
-        }
+        })
+        this.$nextTick(function () {
+          this.playVideo();
+        })
       }
     },
     setDuration (duration) {
@@ -275,24 +286,14 @@ export default {
       this.currentTimeValue = time;
     },
     getCurrentMusic: function (music) {
-      this.videoId = music.url ? getIdFromURL(music.url) : '';
+      this.videoId = music.url ? getIdFromURL(music.url) : music.videoId;
       this.duration = music.duration;
       this.currentTime = 0;
       this.refresh = false;
       this.$nextTick(function () {
         this.refresh = true;
-      })
-    },
-    videoId: function (id) {
+      });
       this.setData();
-      if (this.getCurrentMusic.plateform === 'yt') {
-        this.loadVideoById(id);
-        this.setProgressByGet();
-      } else {
-        this.$nextTick(function () {
-          this.playVideo();
-        })
-      }
     },
     $route: function () {
       this.expand(true);

@@ -22,6 +22,11 @@
       :searchvalue="searchValue"
       @refresh="search"></musicitem>
       <span v-if="searchResult.length === 0" class="empty-message">Pour écouter les musiques de votre téléphone, cliquez sur le dossier&nbsp;!<br><br>Pour rechercher des musiques sur Youtube, utilisez le champ de recherche&nbsp;!</span>
+      <div class="authentication" v-if="!connected">
+        <button @click="connect">Authorize access</button>
+      </div>
+      <button @click="parse" v-if="connected">Parse it dude</button>
+      <div class="ok" v-if="searchAuthorized">Connection pour recherche ok</div>
       <errormessage :error="error" v-if="error" @closemessage="error = false"></errormessage>
     </div>
   </div>
@@ -41,7 +46,14 @@ export default {
     return {
       searchValue: '',
       searchResult: [],
-      error: false
+      error: false,
+      OAUTH2_CLIENT_ID: '',
+      OAUTH2_SCOPES: ['https://www.googleapis.com/auth/youtube'],
+      connected: false,
+      searchAuthorized: false,
+      searchIn: 'youtube',
+      youtubeSearchResult: '',
+      gapi: null
     }
   },
   methods: {
@@ -55,6 +67,20 @@ export default {
           this.error = 'Entrez au moins 3 caractères !';
           return;
         }
+      }
+      if (this.searchIn === 'youtube') {
+        var request = this.gapi.client.youtube.search.list({
+          q: searchValueParsed,
+          part: 'snippet',
+          type: 'video',
+          videoDuration: 'any'
+        });
+
+        var self = this;
+        request.execute(function (response) {
+          self.youtubeSearchResult = JSON.stringify(response.result);
+        });
+        return;
       }
       this.searchResult = this.getSearchResult().filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1))
     },
@@ -82,6 +108,63 @@ export default {
           self.searchResult.push(music);
         });
       }
+    },
+    //YOUTUBE API
+    connect () {
+      console.log('connect')
+      var self = this;
+      this.gapi = window.gapi;
+      this.gapi.auth.authorize({
+        client_id: self.OAUTH2_CLIENT_ID,
+        scope: self.OAUTH2_SCOPES,
+        immediate: false
+      }, self.handleAuthResult);
+    },
+    googleApiClientReady () {
+      console.log('googleApiClientReady')
+      var self = this;
+      this.gapi = window.gapi;
+      this.gapi.auth.init(function () {
+        self.$nextTick(function () {
+          self.checkAuth();
+        });
+      });
+    },
+    checkAuth () {
+      console.log('checkAuth')
+      var self = this;
+      this.gapi.auth.authorize({
+        client_id: self.OAUTH2_CLIENT_ID,
+        scope: self.OAUTH2_SCOPES,
+        immediate: true
+      }, self.handleAuthResult);
+    },
+    handleAuthResult (authResult) {
+      console.log('handleAuthResult')
+      if (authResult && !authResult.error) {
+        this.connected = true;
+        this.loadAPIClientInterfaces();
+      }
+    },
+    loadAPIClientInterfaces () {
+      console.log('loadAPIClientInterfaces')
+      var self = this;
+      this.gapi.client.load('youtube', 'v3', function () {
+        self.handleAPILoaded();
+      });
+    },
+    handleAPILoaded () {
+      console.log('handleAPILoaded')
+      this.searchAuthorized = true;
+    },
+    parse () {
+      this.youtubeSearchResult = JSON.parse(this.youtubeSearchResult)
+      console.log(this.youtubeSearchResult);
+      var self = this;
+      this.youtubeSearchResult.items.forEach(function (musicInfo) {
+        console.log(musicInfo)
+        self.searchResult.push({id: 'yt' + musicInfo.id.videoId, videoId: musicInfo.id.videoId, title: musicInfo.title, author: musicInfo.snippet.channelTitle, duration: 0, thumbnail: musicInfo.snippet.thumbnails.default.url, plateform: 'yt', favorite: false})
+      })
     }
   },
   mounted () {

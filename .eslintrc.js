@@ -18,6 +18,6 @@ module.exports = {
     //rth rules
     'semi': 0,
     'no-return-assign': 0,
-    'spaced-comment': 0,
+    'spaced-comment': 0
   }
 }

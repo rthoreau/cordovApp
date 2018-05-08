@@ -39,7 +39,19 @@ const getters = {
       return state.musics.filter(music => music.id === id)[0];
     };
   },
-  getPlaylists: state => state.playlists,
+  getPlaylists: function (state) {
+    var musics = [];
+    state.musics.map(function (music) {
+      musics[music.id] = parseInt(music.duration);
+    });
+    return state.playlists.map(function (playlist) {
+      playlist.duration = 0
+      playlist.musics.map(function (musicId) {
+        playlist.duration += musics[musicId];
+      });
+      return playlist;
+    });
+  },
   getPlaylist: function (state) {
     return function (id) {
       var playlist = state.playlists.filter(playlist => playlist.id === id);
@@ -287,8 +299,8 @@ const mutations = {
       exist = false;
       state.searchResult.map(function (storedMusic) {
         if (storedMusic.title === music.title) {
+          storedMusic.file = music.file;
           exist = true;
-          return music;
         }
         return storedMusic;
       });

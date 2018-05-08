@@ -48,8 +48,9 @@ html {
 
 body {
   height: 100%;
-  background: url(assets/bg.jpg) no-repeat fixed;
+  background: url(assets/background.jpg) no-repeat fixed;
   background-size: cover;
+  background-color:black;
   margin: 0;
   font-family: "Gadugi", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
