@@ -298,7 +298,7 @@ input.page-title:focus {
 .color-editer {
   background-color: rgba(0, 0, 0, 0.7);
   text-align: center;
-  margin-top: 10vh;
+  margin-top: 4rem;
   padding: 1rem;
 }
 .color-editer .color, .color-editer .confirm-color {

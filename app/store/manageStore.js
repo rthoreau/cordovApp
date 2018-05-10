@@ -145,10 +145,12 @@ const mutations = {
       return text;
     }
     var created = false;
+    var waitNextCall = false;
     //if call from search, add music if not exists
     if (params.source === 'search') {
       //if add from local, no id, generate it
       if (params.music.id === '') {
+        console.log('ici')
         var ids = [];
         state.musics.map(function (music) {
           if (ids.length !== state.musics.length && ids.indexOf(music.id) === -1) {
@@ -166,6 +168,21 @@ const mutations = {
           } while (ids.indexOf(params.music.id) !== -1)
         }
         params.id = params.music.id
+      }
+      if (params.music.plateform === 'lo') {
+        state.musics.map(function (music) {
+          if (music.id === params.music.id && !music.file.name) {
+            music.file = params.music.file;
+            if (state.currentMusic === music.id) {
+              state.currentMusic = '';
+              waitNextCall = true;
+            }
+          }
+          return music
+        });
+        if (waitNextCall) {
+          return;
+        }
       }
       if (state.musics.filter(music => music.id === params.music.id).length === 0) {
         if (params.to === 'favorite') {

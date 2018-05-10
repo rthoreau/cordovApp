@@ -67,11 +67,20 @@ export default {
     },
     playing: function (val) {
       if (val === true) {
-        this.started = true;
+        if (!this.started) {
+          this.started = true;
+        } else {
+          this.$emit('currenttime', this.progress * this.duration);
+        }
         this.$emit('playing', true);
+      } else {
+        if (this.seek === 0) {
+          this.$emit('ended', true);
+        }
       }
     },
     sources: function (val) {
+      console.log('hey')
       this.started = false;
       this.togglePlayback();
     }

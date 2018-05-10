@@ -47,12 +47,12 @@ export default {
       searchValue: '',
       searchResult: [],
       error: false,
-      OAUTH2_CLIENT_ID: '',
+      OAUTH2_CLIENT_ID: '950123233154-e612r294nh3jfrhmierb8c0s80ao39g2.apps.googleusercontent.com',
       OAUTH2_SCOPES: ['https://www.googleapis.com/auth/youtube'],
-      connected: false,
+      connected: true,
       searchAuthorized: false,
       searchIn: 'youtube',
-      youtubeSearchResult: '',
+      youtubeSearchResult: '{"kind": "youtube#searchListResponse","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/pR85xSUYsctjpvj3tCENwe6Td6c","nextPageToken": "CAUQAA","regionCode": "FR","pageInfo": {"totalResults": 302170,"resultsPerPage": 5},"items": [{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/aYCHz1COoSHWTXiBZanqNLoko7I","id": {"kind": "youtube#video","videoId": "vdaXWg3TfuY"},"snippet": {"publishedAt": "2017-09-17T05:17:03.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Funeral","description": "Continuing his tradition of riveting dance music, OVERWERK presents his first full-length album, State. - Share to support! Spotify : http://spoti.fi/2fc1vgk Apple ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/08FJgmg1k24mE6Ydbs0kfEFJHrA","id": {"kind": "youtube#video","videoId": "6KKKGpAZHAA"},"snippet": {"publishedAt": "2012-10-17T14:17:41.000Z","channelId": "UCkeJqeBQOwpN3MsomDAKy1g","title": "OVERWERK - Daybreak (GoPro Edit) [Electro House]","description": "EMH Music / Electro, Minimal House » Subscribe for more music: http://bit.ly/EMHmusic » Facebook: https://facebook.com/EMHmusicPromo » Soundcloud: ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "EMH Music","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/d4fbnRKBcgFhU8p2dhv-wCC8mu4","id": {"kind": "youtube#video","videoId": "N-sDbJSXnYc"},"snippet": {"publishedAt": "2018-03-16T10:31:52.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Reign (Official Video)","description": "Reign from OVERWERKs debut album, State Spotify : http://spoti.fi/2fc1vgk Apple Music : http://apple.co/2xbC1pq Google Play : https://goo.gl/xZyjqY Director ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/EqxzaH_o4EYlj6zcxuaDST28-AA","id": {"kind": "youtube#video","videoId": "DWpX4We62dg"},"snippet": {"publishedAt": "2015-11-03T08:00:01.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Canon","description": "OVERWERKs new EP, Canon is OUT NOW! iTunes/Apple Music : http://apple.co/1P8yig3 Google Play : http://bit.ly/1MgqQwU Spotify : http://bit.ly/1MbBzVZ ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/63VruFI-xOre0YbZaT2_S4rE36g","id": {"kind": "youtube#video","videoId": "ycfM6XGBE30"},"snippet": {"publishedAt": "2015-05-05T07:30:01.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Toccata","description": "OVERWERKs new EP, Canon is OUT NOW! iTunes/Apple Music : http://apple.co/1P8yig3 Google Play : http://bit.ly/1MgqQwU Spotify : http://bit.ly/1MbBzVZ ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}}]}',
       gapi: null
     }
   },
@@ -163,7 +163,7 @@ export default {
       var self = this;
       this.youtubeSearchResult.items.forEach(function (musicInfo) {
         console.log(musicInfo)
-        self.searchResult.push({id: 'yt' + musicInfo.id.videoId, videoId: musicInfo.id.videoId, title: musicInfo.title, author: musicInfo.snippet.channelTitle, duration: 0, thumbnail: musicInfo.snippet.thumbnails.default.url, plateform: 'yt', favorite: false})
+        self.searchResult.push({id: 'yt' + musicInfo.id.videoId, videoId: musicInfo.id.videoId, title: musicInfo.snippet.title, author: musicInfo.snippet.channelTitle, duration: 0, thumbnail: musicInfo.snippet.thumbnails.default.url, plateform: 'yt', favorite: false})
       })
     }
   },
@@ -188,18 +188,18 @@ export default {
   outline: none;
   color: white;
   border-bottom: 2px solid transparent;
-  width: 55%;
+  width: 68%;
   transition: width 0.8s;
   vertical-align: middle;
   padding: 0.1rem 2%;
-  height:6vh;
-  margin:2vh 2% 2vh 0;
+  height:2.4rem;
+  margin:0.8rem 2% 0.8rem 0;
 }
 .search-input.fill {
-  width: 88%;
+  width: 86%;
 }
 .search-input:focus {
-  width: 88%;
+  width: 86%;
   border-bottom-color: #215292;
 }
 

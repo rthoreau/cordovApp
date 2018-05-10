@@ -48,7 +48,7 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
-  height: 10vh;
+  height: 4rem;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 200;
 }

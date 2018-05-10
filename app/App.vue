@@ -31,6 +31,22 @@ export default {
     expand (active) {
       this.playerExpanded = active;
     }
+  },
+  mounted () {
+    var screenHeight = 0;
+    var screenWidth = 0;
+    var root = document.querySelector(':root');
+    function setFontSize () {
+      screenHeight = document.scrollingElement.offsetHeight;
+      screenWidth = document.scrollingElement.offsetWidth;
+      root.style.fontSize = (screenHeight > screenWidth ? screenHeight : screenWidth) / 40 + 'px';
+      console.log('font size set')
+    }
+
+    setFontSize();
+    this.$nextTick(function () {
+      window.addEventListener('resize', setFontSize);
+    });
   }
 }
 </script>
@@ -43,7 +59,6 @@ export default {
 html {
   height: 100%;
   background-color: black;
-  font-size: 15px;
 }
 
 body {
@@ -55,10 +70,11 @@ body {
   font-family: "Gadugi", Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   color: #c8d6e8;
+  font-size: 0.85rem;
 }
 
 #app {
-  padding: 10vh 0;
+  padding: 4rem 0;
   height: 100%;
 }
 
@@ -107,8 +123,8 @@ svg {
 
 .page-header {
   position: fixed;
-  top: 10vh;
-  height: 10vh;
+  top: 4rem;
+  height: 4rem;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   box-sizing: border-box;
@@ -136,18 +152,18 @@ svg {
   padding: 0.8rem 0;
   width: 100%;
   overflow: scroll;
-  margin: 10vh 0;
+  margin: 4rem 0;
   text-align: left;
-  height: calc(100% - 10vh);
+  height: calc(100% - 4rem);
 }
 .page-content + .page-content {
-  margin-top: 10vh;
+  margin-top: 4rem;
 }
 
 .page-title {
   display: inline-block;
   font-size: 1.8rem;
-  line-height: 10vh;
+  line-height: 4rem;
   color: white;
   vertical-align: middle;
   text-overflow: ellipsis;
@@ -248,9 +264,9 @@ ul.selection li + li:before {
 
 .music-plateform {
   position: absolute;
-  height: 3.5rem;
+  height: 3rem;
   left: 4%;
-  top: 0.5rem;
+  top: 1rem;
   z-index: 0;
   width: 4rem;
   transition: background-color 0.5s;

@@ -1,7 +1,9 @@
 <template>
   <div id="timeslider">
     <div class="slider-container">
-      <div class="progressbar" :style="'width:'+progress+'%'"></div>
+      <div class="slider-background">
+        <div class="progressbar" :style="'width:'+progress+'%'"></div>
+      </div>
       <input ref="timeslider" type="range" class="slider" min="0" max="100" @input="setTime">
     </div>
   </div>
@@ -42,7 +44,6 @@ export default {
   width: 100%;
   height: 0.8rem;
   margin: 0.5rem 0 1rem;
-  background-color: rgba(255, 255, 255, 0.4);
   font-size: 0;
 }
 
@@ -61,38 +62,42 @@ export default {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 0.5rem;
+  width: 0.7rem;
   height: 1.8rem;
   background: #207bd2;
   cursor: pointer;
   border-radius: 0;
   box-shadow: none;
   border: none;
+  margin-left:0.1rem;
 }
 .slider::-moz-range-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 0.5rem;
+  width: 0.7rem;
   height: 1.8rem;
   background: #207bd2;
   cursor: pointer;
   border-radius: 0;
   box-shadow: none;
   border: none;
+  margin-right:-2%;
 }
 .slider::-ms-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 0.5rem;
+  width: 0.7rem;
   height: 1.8rem;
   background: #207bd2;
   cursor: pointer;
   border-radius: 0;
   box-shadow: none;
   border: none;
+  margin-right:-2%;
 }
 .slider::-webkit-slider-runnable-track {
-  width: 100%;
+  width: 98%;
+  margin:0 1%;
   height: 200%;
   cursor: pointer;
   box-shadow: none;
@@ -101,7 +106,8 @@ export default {
   border: none;
 }
 .slider::-moz-range-track {
-  width: 100%;
+  width: 98%;
+  margin:0 1%;
   height: 200%;
   cursor: pointer;
   box-shadow: none;
@@ -110,7 +116,8 @@ export default {
   border: none;
 }
 .slider::-ms-track {
-  width: 100%;
+  width: 98%;
+  margin:0 1%;
   height: 200%;
   cursor: pointer;
   box-shadow: none;
@@ -137,12 +144,18 @@ export default {
   border: none;
 }
 
-.progressbar {
+.progressbar, .slider-background {
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
   background-color: white;
+}
+
+.slider-background{
+  background-color: rgba(255, 255, 255, 0.4);
+  width:96%;
+  left:2%;
 }
 
 </style>

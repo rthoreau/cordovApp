@@ -34,7 +34,7 @@
 
       <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
     </div>
-    <waitingline></waitingline>
+    <waitingline @loop="loop = !loop" :class="loop ? 'looping' : ''"></waitingline>
     <localplayer v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayerEvent" @ended="ended" @playing="playing" @currenttime="setProgressByGet" @duration="setDuration" @paused="pauseVideo"></localplayer>
   </div>
 </template>
@@ -76,16 +76,25 @@ export default {
       sources: [],
       localPlayerEvent: '',
       plateform: '',
-      unloaded: false
+      unloaded: false,
+      loop: false
     }
   },
   methods: {
     ...mapActions({
       setCurrentMusic: 'manageStore/setCurrentMusic',
-      musicAction: 'manageStore/musicAction'
+      musicAction: 'manageStore/musicAction',
+      setMusic: 'manageStore/setMusic'
     }),
     nextVideo () {
+      if (this.loop) {
+        this.seekTo(0);
+        this.playVideo();
+        console.log('loop')
+        return;
+      }
       var waiting = this.getWaitingLine;
+      this.sources = [];
       if (waiting.length === 0) {
         this.pauseVideo();
         this.paused = true;
@@ -132,8 +141,10 @@ export default {
         if (this.player) {
           this.player.playVideo();
           console.log(this.player);
+          this.player
         }
       } else {
+        console.log('play')
         this.localPlayerEvent = 'play';
       }
     },
@@ -188,6 +199,13 @@ export default {
           return;
         }
         this.currentTime = this.currentTime + 0.5;
+        if (this.duration === 0) {
+          var duration = this.player.getDuration();
+          if (duration) {
+            this.setMusic({id: this.getCurrentMusic.id, duration: duration})
+            this.setDuration(duration);
+          }
+        }
       }
     },
     setProgressByGet (timeValue) {
@@ -215,9 +233,6 @@ export default {
       s = s >= 10 ? s : '0' + s;
       return h + m + ':' + s;
     },
-    test () {
-      this.player.seekTo(this.currentTime + 50);
-    },
     expand (hide) {
       this.expandClass = this.expandClass === 'expanded' || hide ? '' : 'expanded';
       this.$emit('expanded', (this.expandClass !== ''));
@@ -229,6 +244,7 @@ export default {
       this.currentTime = 0;
       this.unloaded = false;
       this.sources = [];
+      this.localPlayerEvent = this.localPlayerEvent === 'play' ? '' : this.localPlayerEvent;
       if (this.plateform === 'yt') {
         if (this.currentMusic.url) {
           this.videoId = getIdFromURL(this.currentMusic.url);
@@ -238,7 +254,7 @@ export default {
         }
         this.loadVideoById(this.videoId);
         this.setProgressByGet();
-      } else {
+      } else if (this.currentMusic.id !== '') {
         var self = this;
         this.$nextTick(function () {
           if (self.currentMusic.file && self.currentMusic.file.name) {
@@ -246,15 +262,15 @@ export default {
             reader.readAsDataURL(self.currentMusic.file)
             reader.onload = () => {
               self.sources = [reader.result]
+              self.$nextTick(function () {
+                self.playVideo();
+              });
             }
           } else {
             console.log('unloaded')
             self.unloaded = true;
             self.pauseVideo();
           }
-        })
-        this.$nextTick(function () {
-          this.playVideo();
         })
       }
     },
@@ -286,7 +302,11 @@ export default {
       this.currentTimeValue = time;
     },
     getCurrentMusic: function (music) {
-      this.videoId = music.url ? getIdFromURL(music.url) : music.videoId;
+      if (music.plateform === 'yt') {
+        this.videoId = music.url ? getIdFromURL(music.url) : music.videoId;
+      } else {
+        this.videoId = '';
+      }
       this.duration = music.duration;
       this.currentTime = 0;
       this.refresh = false;
@@ -305,27 +325,27 @@ export default {
 <style>
 #appPlayer {
   position: fixed;
-  bottom: calc(-70vh);
+  bottom: calc(-28rem);
   width: 100%;
-  height: calc(90vh);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) 15vh, transparent 15vh, transparent);
+  height: calc(36rem);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) 6.15rem, transparent 6.15rem, transparent);
   text-align: left;
   color: white;
   z-index: 100;
   transform-origin: bottom;
-  transform: translate(0, 10vh);
+  transform: translate(0, 4rem);
   transition: transform 0.8s;
 }
 #appPlayer.expanded {
   border-top: 1px solid rgba(33, 82, 146, 0.15);
-  transform: translate(0, -70vh);
+  transform: translate(0, -28rem);
   transition: transform 0.5s;
 }
 #appPlayer.expanded .player-container {
-  height: 14vh;
+  height: 6.15rem;
 }
 #appPlayer.expanded .music-infos {
-  height:calc(100% - 1.8rem);
+  height:calc(100% - 2.2rem);
 }
 #appPlayer.expanded .expand-link {
   top:calc(50% + 1.4rem);
@@ -334,7 +354,7 @@ export default {
 .player-container {
   position: relative;
   z-index: 100;
-  height: 10vh;
+  height: 4rem;
   padding: 0.5rem 4%;
 }
 .player-container .music-plateform {
@@ -345,6 +365,10 @@ export default {
   display: inline-block;
   margin-right: 0.25rem;
   vertical-align: middle;
+  overflow:hidden;
+}
+.player-container .plateform-icon{
+  top:0;
 }
 .player-container button {
   position: relative;
@@ -445,11 +469,12 @@ export default {
   position: relative;
   top: -0.1rem;
   display: block;
+  line-height:1.3rem;
 }
 .music-infos span + span {
-  margin-top: 0.4rem;
+  margin-top: 0.2rem;
 }
-.music-infos .unloaded{
+.unloaded{
   color:#ff3f3f;
 }
 </style>

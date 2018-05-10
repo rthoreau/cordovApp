@@ -14,7 +14,8 @@
     <div class="music-content" :class="page" @click="addToCurrent()">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
-      <span class="music-duration" v-if="music.duration !== 0">{{hmsDuration(music.duration)}}</span>
+      <span key="d" class="music-duration" v-if="music.duration !== 0 && (music.plateform !== 'lo' || music.file.name)">{{hmsDuration(music.duration)}}</span>
+      <span key="e" v-if="music.plateform === 'lo' && !music.file.name" class="unloaded">Musique inaccessible ! :'(</span>
     </div>
 
     <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="favorite()"><svg viewBox="0 0 23.125 23.129">
@@ -107,7 +108,17 @@ export default {
       }
     },
     addToCurrent () {
-      this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music})
+      var currentMusic = this.getCurrentMusic;
+      var fileReload = this.music.plateform === 'lo' && currentMusic.title === this.music.title && currentMusic.file !== this.music.file;
+      console.log(fileReload);
+      var self = this;
+      this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music});
+      if (fileReload) {
+        this.getCurrentMusic;
+        this.$nextTick(function () {
+          self.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music});
+        });
+      }
     },
     deleteFromRender () {
       this.$emit('delete', true);
@@ -163,11 +174,12 @@ export default {
 .music-thumbnail-container {
   position: relative;
   width: 3.5rem;
-  height: 3.5rem;
+  height: 3rem;
   display: inline-block;
   margin: 0 0.8rem 0 0.5rem;
   text-align: right;
   vertical-align: middle;
+  top:0.5rem;
 }
 
 .music-thumbnail {
