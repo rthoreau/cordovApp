@@ -17,14 +17,14 @@
         </div>
       </div>
 
-      <button @click="playPause()" class="play">
+      <btn :click="() => playPause()" class="play">
         <transition name="switch" mode="out-in">
           <svg viewBox="0 0 23.125 23.129" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
           <svg viewBox="0 0 23.125 23.129" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
         </transition>
-      </button>
+      </btn>
 
-      <button @click="nextVideo()" class="next"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></button>
+      <btn :click="() => nextVideo(true)" class="next"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></btn>
 
       <p class="music-infos" :class="getCurrentMusic.id ? '' : 'empty'">
         <span class="music-title">{{getCurrentMusic.title}}</span>
@@ -32,7 +32,7 @@
         <span key="u" v-else class="unloaded">Musique inaccessible ! :'(</span>
       </p>
 
-      <button class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></button>
+      <div class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></div>
     </div>
     <waitingline @loop="loop = !loop" :class="loop ? 'looping' : ''"></waitingline>
     <localplayer v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayerEvent" @ended="ended" @playing="playing" @currenttime="setProgressByGet" @duration="setDuration" @paused="pauseVideo"></localplayer>
@@ -40,7 +40,6 @@
 </template>
 
 <script>
-//https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
 import plateformicon from './components/PlateformIcon'
 import waitingline from './pages/WaitingLine'
@@ -48,6 +47,7 @@ import VueYouTubeEmbed, {getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-em
 import {mapGetters, mapActions} from 'vuex'
 import localplayer from './components/LocalPlayer'
 import timeslider from './components/TimeSlider'
+import btn from './components/Bouton'
 
 Vue.use(VueYouTubeEmbed)
 export default {
@@ -56,7 +56,8 @@ export default {
     plateformicon,
     waitingline,
     localplayer,
-    timeslider
+    timeslider,
+    btn
   },
   data () {
     return {
@@ -77,7 +78,11 @@ export default {
       localPlayerEvent: '',
       plateform: '',
       unloaded: false,
-      loop: false
+      loop: false,
+      windowEventListener: false,
+      windowPlayerPaused: false,
+      documentVisible: undefined,
+      playInit: false
     }
   },
   methods: {
@@ -86,12 +91,17 @@ export default {
       musicAction: 'manageStore/musicAction',
       setMusic: 'manageStore/setMusic'
     }),
-    nextVideo () {
+    nextVideo (forced) {
+      forced = forced || false;
       if (this.loop) {
-        this.seekTo(0);
-        this.playVideo();
-        console.log('loop')
-        return;
+        if (forced) {
+          this.loop = false;
+        } else {
+          this.currentTime = 0;
+          this.seekTo(0);
+          this.playVideo();
+          return;
+        }
       }
       var waiting = this.getWaitingLine;
       this.sources = [];
@@ -112,25 +122,27 @@ export default {
       }
     },
     playing () {
-      this.watchTime();
-      if (this.paused) {
-        this.paused = false;
+      if (!this.playInit) {
+        this.pauseVideo();
+        this.paused = true;
+      } else {
+        this.watchTime();
+        if (this.paused) {
+          this.paused = false;
+        }
       }
     },
     ended () {
       this.nextVideo();
     },
     buffering () {
-      console.log('buffering');
-      if (this.paused) {
-        //this.playVideo();
-      }
       this.setProgressByGet();
     },
     playPause () {
       if (this.paused) {
         this.playVideo();
         this.paused = false;
+        this.playInit = true;
       } else {
         this.pauseVideo();
         this.paused = true;
@@ -140,11 +152,8 @@ export default {
       if (this.plateform === 'yt') {
         if (this.player) {
           this.player.playVideo();
-          console.log(this.player);
-          this.player
         }
       } else {
-        console.log('play')
         this.localPlayerEvent = 'play';
       }
     },
@@ -162,7 +171,6 @@ export default {
     },
     loadVideoById (id) {
       if (this.player) {
-        //console.log(id);
         this.player.loadVideoById(id);
         this.setProgressByGet();
       }
@@ -213,6 +221,7 @@ export default {
         if (this.player) {
           var time = this.player.getCurrentTime();
           if (time) {
+            window.player = this.player
             this.currentTime = time;
           }
         }
@@ -249,8 +258,8 @@ export default {
         if (this.currentMusic.url) {
           this.videoId = getIdFromURL(this.currentMusic.url);
         }
-        if (this.currentMusic.videId) {
-          this.videoId = this.currentMusic.videId
+        if (this.currentMusic.videoId) {
+          this.videoId = this.currentMusic.videoId
         }
         this.loadVideoById(this.videoId);
         this.setProgressByGet();
@@ -281,6 +290,13 @@ export default {
   mounted () {
     this.currentMusic = this.getCurrentMusic;
     this.setData();
+    var self = this;
+    if (!this.windowEventListener) {
+      document.addEventListener('visibilitychange', function () {
+        self.documentVisible = !document.hidden;
+      });
+      this.windowEventListener = true;
+    }
   },
   computed: {
     ...mapGetters({
@@ -290,7 +306,7 @@ export default {
   },
   watch: {
     player: function (val) {
-      if (val) {
+      if (val && this.playInit) {
         this.playVideo();
       }
     },
@@ -302,6 +318,7 @@ export default {
       this.currentTimeValue = time;
     },
     getCurrentMusic: function (music) {
+      this.playInit = true;
       if (music.plateform === 'yt') {
         this.videoId = music.url ? getIdFromURL(music.url) : music.videoId;
       } else {
@@ -317,6 +334,22 @@ export default {
     },
     $route: function () {
       this.expand(true);
+    },
+    documentVisible: function (visible) {
+      //Force to pause/play youtube player on tab switch/tab back
+      if (this.plateform === 'yt') {
+        if (!visible) {
+          if (this.paused === false) {
+            this.pauseVideo();
+            this.windowPlayerPaused = true;
+          }
+        } else {
+          if (this.windowPlayerPaused === true) {
+            this.playVideo();
+            this.windowPlayerPaused = false;
+          }
+        }
+      }
     }
   }
 }
@@ -370,7 +403,7 @@ export default {
 .player-container .plateform-icon{
   top:0;
 }
-.player-container button {
+.player-container .button {
   position: relative;
   display: inline-block;
   vertical-align: middle;
@@ -427,7 +460,7 @@ export default {
 
 .video iframe {
   width: 100% !important;
-  height: 100% !important;
+  height: 96% !important;
 }
 
 .switch-enter-active, .switch-leave-active {

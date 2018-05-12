@@ -80,7 +80,6 @@ export default {
       }
     },
     sources: function (val) {
-      console.log('hey')
       this.started = false;
       this.togglePlayback();
     }

@@ -18,14 +18,14 @@
       <span key="e" v-if="music.plateform === 'lo' && !music.file.name" class="unloaded">Musique inaccessible ! :'(</span>
     </div>
 
-    <button v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" @click="favorite()"><svg viewBox="0 0 23.125 23.129">
+    <btn v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" :click="() => favorite()"><svg viewBox="0 0 23.125 23.129">
       <use v-if="music.favorite || forceFavorite" xlink:href="#icon-favorited"></use>
       <use v-if="!music.favorite || forceFavorite === false" xlink:href="#icon-favorite"></use>
-    </svg></button>
+    </svg></btn>
 
-    <button v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link"  @click="submenuVisible = !submenuVisible"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></button>
+    <btn v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link"  :click="() => subFunction()"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></btn>
 
-    <button v-if="page === 'playlist' && mode === 'edit'" class="remove-link" @click="deleteFromRender()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-delete"></use></svg></button>
+    <btn v-if="page === 'playlist' && mode === 'edit'" class="remove-link" :click="() => deleteFromRender()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-delete"></use></svg></btn>
 
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" :params="popupParams">
@@ -42,7 +42,8 @@
 import {mapActions, mapGetters} from 'vuex'
 import plateformicon from './PlateformIcon'
 import submenu from './SubMenu'
-import popup from '../components/Popup'
+import popup from './Popup'
+import Btn from './Bouton'
 //TODO show on music item if playing
 export default {
   name: 'MusicItem',
@@ -57,7 +58,8 @@ export default {
   components: {
     plateformicon,
     submenu,
-    popup
+    popup,
+    Btn
   },
   data () {
     return {
@@ -67,13 +69,13 @@ export default {
       source: '',
       checkedPlaylists: [],
       links: [
-        {text: 'Ajouter à une playlist', action: () => this.popupVisible = true}
+        {text: 'Ajouter à une playlist', action: () => this.popupFunction(true)}
       ],
       popupVisible: false,
       popupParams: {
         title: 'Ajouter la musique dans...',
         okAction: () => this.addToPlaylists(),
-        cancelAction: () => this.popupVisible = false
+        cancelAction: () => this.popupFunction(false)
       },
       classe: '',
       forceFavorite: undefined
@@ -83,6 +85,12 @@ export default {
     ...mapActions({
       musicAction: 'manageStore/musicAction'
     }),
+    subFunction () {
+      this.submenuVisible = !this.submenuVisible;
+    },
+    popupFunction (val) {
+      this.popupVisible = val
+    },
     hmsDuration (val) {
       var h = Math.floor(val / 3600);
       h = h === 0 ? '' : h + ':';
@@ -93,7 +101,7 @@ export default {
       return h + m + ':' + s;
     },
     addToPlaylists () {
-      this.musicAction({action: 'add', to: 'playlist', id: this.music.id, playlistIds: this.checkedPlaylists});
+      this.musicAction({action: 'add', to: 'playlist', id: this.music.id, playlistIds: this.checkedPlaylists, source: this.source, music: this.music});
       this.popupVisible = false;
     },
     favorite () {
@@ -143,14 +151,14 @@ export default {
     if (this.page === 'waitingLine') {
       this.links.push({text: 'Retirer de la file', action: () => this.musicAction({action: 'remove', from: 'waitingLine', index: this.index})});
     } else {
-      this.links.push({text: 'Ajouter à la file', action: () => this.musicAction({action: 'add', to: 'waitingLine', id: this.music.id})});
+      this.links.push({text: 'Ajouter à la file', action: () => this.musicAction({action: 'add', to: 'waitingLine', id: this.music.id, source: this.source, music: this.music})});
     }
     if (this.music.favorite && this.page === 'favorite') {
-      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', id: this.music.id})});
+      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', index: this.music.id})});
     }
     if (this.page === 'playlist') {
       this.links.push({text: 'Supprimer de la playlist',
-        action: () => this.musicAction({action: 'remove', from: 'playlist', id: this.music.id, playlistId: parseInt(this.playlistid)})});
+        action: () => this.musicAction({action: 'remove', from: 'playlist', index: this.index, playlistId: parseInt(this.playlistid)})});
     }
     this.source = this.page === 'search' ? this.page : '';
     this.setClass();
@@ -179,14 +187,14 @@ export default {
   margin: 0 0.8rem 0 0.5rem;
   text-align: right;
   vertical-align: middle;
-  top:0.5rem;
+  overflow: hidden;
 }
 
 .music-thumbnail {
   width: 100%;
-  height: 100%;
+  height: 102%;
   display: inline-block;
-  background-color: #545436;
+  background-color: #5d9cec;
   object-fit: cover;
 }
 

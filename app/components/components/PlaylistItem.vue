@@ -14,7 +14,8 @@
         :id="id" v-if="index <= 3">{{index + 1}} : {{getMusic(id).title}}</li>
       </ul>
     </div>
-    <svg class="submenu-link" viewBox="0 0 8.688 23.129" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+    
+    <btn class="submenu-link" :click="() => submenuVisible = !submenuVisible"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></btn>
     <submenu v-if="submenuVisible" v-bind:links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" v-bind:params="popupParams">
       Supprimer la playlist ?
@@ -27,6 +28,7 @@ import submenu from '../components/SubMenu'
 import {mapActions, mapGetters} from 'vuex'
 import popup from '../components/Popup'
 import playlisticon from '../components/PlaylistIcon'
+import btn from '../components/Bouton'
 export default {
   name: 'MusicItem',
   props: {
@@ -35,7 +37,8 @@ export default {
   components: {
     submenu,
     popup,
-    playlisticon
+    playlisticon,
+    btn
   },
   data () {
     return {

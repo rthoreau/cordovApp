@@ -20,7 +20,8 @@ export default {
   },
   data () {
     return {
-      supClass: ''
+      supClass: '',
+      jsObj: undefined
     }
   },
   methods: {
@@ -29,7 +30,7 @@ export default {
       return true;
     },
     callAction (link) {
-      this.closeMenu()
+      this.closeMenu();
       try {
         link.action.call()
       } catch (error) {
@@ -38,20 +39,19 @@ export default {
     }
   },
   mounted () {
-    var offsetHeight = this.$el.parentElement.parentElement.offsetTop;
-    var scrollTop = document.scrollingElement.scrollTop;
-    var screenHeight = document.scrollingElement.offsetHeight;
+    this.jsObj = this.$el.parentElement.parentElement;
+    this.jsObj.addEventListener('scroll', this.closeMenu);
+    var offsetHeight = this.jsObj.offsetTop;
+    var scrollTop = this.jsObj.scrollTop;
+    var screenHeight = this.jsObj.offsetHeight;
     var itemTop = this.$el.parentElement.offsetTop;
     var menuHeight = this.$el.offsetHeight;
     if ((screenHeight - 3 * offsetHeight) < ((itemTop - scrollTop) + menuHeight + 0.5 * offsetHeight)) {
       this.supClass = 'top';
     }
   },
-  beforeMount () {
-    window.addEventListener('scroll', this.closeMenu);
-  },
   beforeDestroy () {
-    window.removeEventListener('scroll', this.closeMenu);
+    this.jsObj.removeEventListener('scroll', this.closeMenu);
   }
 }
 </script>

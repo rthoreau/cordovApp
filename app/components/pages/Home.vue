@@ -2,6 +2,7 @@
   <div id="home">
     <h1>You there ?</h1>
     <p>Next time bring me some food please :'(</p>
+    
     <!--<div class="circleContainer">
       <div class="circle tl"></div>
       <div class="circle bl"></div>
@@ -11,8 +12,12 @@
 </template>
 
 <script>
+import btn from '../components/Bouton'
 export default {
-  name: 'Home'
+  name: 'Home',
+  components: {
+    btn
+  }
 }
 </script>
 

@@ -150,7 +150,6 @@ const mutations = {
     if (params.source === 'search') {
       //if add from local, no id, generate it
       if (params.music.id === '') {
-        console.log('ici')
         var ids = [];
         state.musics.map(function (music) {
           if (ids.length !== state.musics.length && ids.indexOf(music.id) === -1) {
@@ -169,6 +168,7 @@ const mutations = {
         }
         params.id = params.music.id
       }
+      //Re-store the local file in localStorage
       if (params.music.plateform === 'lo') {
         state.musics.map(function (music) {
           if (music.id === params.music.id && !music.file.name) {
@@ -180,6 +180,7 @@ const mutations = {
           }
           return music
         });
+        //Need to empty and then fill the current to play
         if (waitNextCall) {
           return;
         }
@@ -238,7 +239,7 @@ const mutations = {
       state.playlists.map(function (playlist) {
         //from playlist where playlistID
         if (playlist.id === params.playlistId.toString()) {
-          if (params.index) {
+          if (params.index !== undefined) {
             //delete at pos (can't delete with id cause maybe 2 time same music)
             playlist.musics = playlist.musics.filter((id, index) => index !== params.index);
           } else if (params.all) {
@@ -316,7 +317,9 @@ const mutations = {
       exist = false;
       state.searchResult.map(function (storedMusic) {
         if (storedMusic.title === music.title) {
-          storedMusic.file = music.file;
+          if (music.plateform === 'lo') {
+            storedMusic.file = music.file;
+          }
           exist = true;
         }
         return storedMusic;

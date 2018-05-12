@@ -23,9 +23,9 @@
       @refresh="search"></musicitem>
       <span v-if="searchResult.length === 0" class="empty-message">Pour écouter les musiques de votre téléphone, cliquez sur le dossier&nbsp;!<br><br>Pour rechercher des musiques sur Youtube, utilisez le champ de recherche&nbsp;!</span>
       <div class="authentication" v-if="!connected">
-        <button @click="connect">Authorize access</button>
+        <btn :click="() => connect">Authorize access</btn>
       </div>
-      <button @click="parse" v-if="connected">Parse it dude</button>
+      <btn :click="() => parse" v-if="connected">Parse it dude</btn>
       <div class="ok" v-if="searchAuthorized">Connection pour recherche ok</div>
       <errormessage :error="error" v-if="error" @closemessage="error = false"></errormessage>
     </div>
@@ -36,23 +36,25 @@
 import musicitem from '../components/MusicItem'
 import errormessage from '../components/ErrorMessage'
 import {mapGetters, mapActions} from 'vuex'
+import btn from '../components/Bouton'
 export default {
   name: 'Search',
   components: {
     musicitem,
-    errormessage
+    errormessage,
+    btn
   },
   data () {
     return {
       searchValue: '',
       searchResult: [],
       error: false,
-      OAUTH2_CLIENT_ID: '950123233154-e612r294nh3jfrhmierb8c0s80ao39g2.apps.googleusercontent.com',
+      OAUTH2_CLIENT_ID: '',
       OAUTH2_SCOPES: ['https://www.googleapis.com/auth/youtube'],
       connected: true,
       searchAuthorized: false,
       searchIn: 'youtube',
-      youtubeSearchResult: '{"kind": "youtube#searchListResponse","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/pR85xSUYsctjpvj3tCENwe6Td6c","nextPageToken": "CAUQAA","regionCode": "FR","pageInfo": {"totalResults": 302170,"resultsPerPage": 5},"items": [{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/aYCHz1COoSHWTXiBZanqNLoko7I","id": {"kind": "youtube#video","videoId": "vdaXWg3TfuY"},"snippet": {"publishedAt": "2017-09-17T05:17:03.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Funeral","description": "Continuing his tradition of riveting dance music, OVERWERK presents his first full-length album, State. - Share to support! Spotify : http://spoti.fi/2fc1vgk Apple ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/08FJgmg1k24mE6Ydbs0kfEFJHrA","id": {"kind": "youtube#video","videoId": "6KKKGpAZHAA"},"snippet": {"publishedAt": "2012-10-17T14:17:41.000Z","channelId": "UCkeJqeBQOwpN3MsomDAKy1g","title": "OVERWERK - Daybreak (GoPro Edit) [Electro House]","description": "EMH Music / Electro, Minimal House » Subscribe for more music: http://bit.ly/EMHmusic » Facebook: https://facebook.com/EMHmusicPromo » Soundcloud: ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "EMH Music","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/d4fbnRKBcgFhU8p2dhv-wCC8mu4","id": {"kind": "youtube#video","videoId": "N-sDbJSXnYc"},"snippet": {"publishedAt": "2018-03-16T10:31:52.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Reign (Official Video)","description": "Reign from OVERWERKs debut album, State Spotify : http://spoti.fi/2fc1vgk Apple Music : http://apple.co/2xbC1pq Google Play : https://goo.gl/xZyjqY Director ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/EqxzaH_o4EYlj6zcxuaDST28-AA","id": {"kind": "youtube#video","videoId": "DWpX4We62dg"},"snippet": {"publishedAt": "2015-11-03T08:00:01.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Canon","description": "OVERWERKs new EP, Canon is OUT NOW! iTunes/Apple Music : http://apple.co/1P8yig3 Google Play : http://bit.ly/1MgqQwU Spotify : http://bit.ly/1MbBzVZ ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/63VruFI-xOre0YbZaT2_S4rE36g","id": {"kind": "youtube#video","videoId": "ycfM6XGBE30"},"snippet": {"publishedAt": "2015-05-05T07:30:01.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Toccata","description": "OVERWERKs new EP, Canon is OUT NOW! iTunes/Apple Music : http://apple.co/1P8yig3 Google Play : http://bit.ly/1MgqQwU Spotify : http://bit.ly/1MbBzVZ ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}}]}',
+      youtubeSearchResult: '',
       gapi: null
     }
   },
@@ -158,13 +160,13 @@ export default {
       this.searchAuthorized = true;
     },
     parse () {
-      this.youtubeSearchResult = JSON.parse(this.youtubeSearchResult)
-      console.log(this.youtubeSearchResult);
-      var self = this;
+      this.youtubeSearchResult = JSON.parse(this.youtubeSearchResult);
+      var parsedResult = [];
       this.youtubeSearchResult.items.forEach(function (musicInfo) {
-        console.log(musicInfo)
-        self.searchResult.push({id: 'yt' + musicInfo.id.videoId, videoId: musicInfo.id.videoId, title: musicInfo.snippet.title, author: musicInfo.snippet.channelTitle, duration: 0, thumbnail: musicInfo.snippet.thumbnails.default.url, plateform: 'yt', favorite: false})
+        parsedResult.push({id: 'yt' + musicInfo.id.videoId, videoId: musicInfo.id.videoId, title: musicInfo.snippet.title, author: musicInfo.snippet.channelTitle, duration: 0, thumbnail: musicInfo.snippet.thumbnails.default.url, plateform: 'yt', favorite: false})
       })
+      this.addLocalFiles(parsedResult);
+      this.searchResult = parsedResult;
     }
   },
   mounted () {

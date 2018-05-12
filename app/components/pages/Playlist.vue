@@ -2,7 +2,7 @@
   <div id="playlist">
     <header class="page-header" :class="mode">
 
-      <button @click="back()" class="back-link"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></button>
+      <btn :click="() => back()" class="back-link"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></btn>
 
       <playlisticon :colors="playlist.colors" :class="mode" @click="showColorEditer()"></playlisticon>
 
@@ -10,18 +10,18 @@
 
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
 
-      <button class="submenu-link" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></button>
+      <btn class="submenu-link" :click="() => submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></btn>
 
-      <button @click="save()" class="right save-link" v-if="mode === 'edit'"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
+      <btn :click="() => save()" class="right save-link" v-if="mode === 'edit'"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></btn>
     </header>
     
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
 
     <div class="color-editer" v-if="colorEditing === true">
-      <button class="color" :style="'background-color:' + playlist.colors[0].hex" @click="editColor = 0" :class="editColor === 0 ? 'selected' : ''"></button>
-      <button class="color" :style="'background-color:' + playlist.colors[1].hex" @click="editColor = 1" :class="editColor === 1 ? 'selected' : ''"></button>
-      <button class="color" :style="'background-color:' + playlist.colors[2].hex" @click="editColor = 2" :class="editColor === 2 ? 'selected' : ''"></button>
-      <button class="confirm-color" @click="colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></button>
+      <btn class="color" :style="'background-color:' + playlist.colors[0].hex" :click="() => editColor = 0" :class="editColor === 0 ? 'selected' : ''"></btn>
+      <btn class="color" :style="'background-color:' + playlist.colors[1].hex" :click="() => editColor = 1" :class="editColor === 1 ? 'selected' : ''"></btn>
+      <btn class="color" :style="'background-color:' + playlist.colors[2].hex" :click="() => editColor = 2" :class="editColor === 2 ? 'selected' : ''"></btn>
+      <btn class="confirm-color" :click="() => colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></btn>
       <colorpicker v-model="playlist.colors[editColor]"></colorpicker>
     </div>
 
@@ -38,6 +38,7 @@
           :playlistid="id"
           :page="'playlist'"
           :mode="mode"
+          :index="index"
           :class="mode === 'edit' ? 'editing' : ''"
           @delete="deleteFromPlaylist(musicId)"></musicitem>
         </transition-group>
@@ -57,6 +58,7 @@ import submenu from '../components/SubMenu'
 import errormessage from '../components/ErrorMessage'
 import playlisticon from '../components/PlaylistIcon'
 import popup from '../components/Popup'
+import btn from '../components/Bouton'
 import draggable from 'vuedraggable'
 import {Chrome} from 'vue-color'
 export default {
@@ -68,7 +70,8 @@ export default {
     errormessage,
     draggable,
     colorpicker: Chrome,
-    playlisticon
+    playlisticon,
+    btn
   },
   data () {
     return {
@@ -136,7 +139,7 @@ export default {
     },
     back (confirmed, save) {
       function comparePlaylists (p1, p2) {
-        return p1.id === p2.id && p1.name === p2.name && p1.musics === p2.musics && p1.colors === p2.colors;
+        return p1.id === p2.id && p1.name === p2.name && p1.musics === p2.musics && p1.colors[0] === p2.colors[0] && p1.colors[1] === p2.colors[1] && p1.colors[2] === p2.colors[2];
       }
       //if save fail, cancel back
       if (confirmed && save) {
@@ -235,9 +238,9 @@ export default {
   font-size: 0;
 }
 #playlist .page-header.edit {
-  padding-top: 0.75rem;
+  padding-top: 0.5rem;
 }
-#playlist .page-header button {
+#playlist .page-header .button {
   vertical-align: middle;
   height: 2.5rem;
   color: white;
@@ -247,7 +250,8 @@ export default {
 }
 #playlist .page-header .back-link {
   text-align: left;
-  padding: 0 0.8rem;
+  padding: 0 0.4rem;
+  width:12%;
 }
 #playlist .page-header .submenu-link {
   width: auto;
@@ -265,9 +269,10 @@ export default {
   background-color: transparent;
   height: 3rem;
   margin: 0 2% 0;
-  width: 49%;
+  width: 52%;
   outline: none;
   vertical-align: middle;
+  font-size:1.4rem;
 }
 
 input.page-title:focus {

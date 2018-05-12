@@ -1,21 +1,21 @@
 <template>
   <header id="appHeader">
     <ul class="nav">
-      <li><router-link to="/">
+      <li><router-link to="/" class="link">
         <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-home"></use></svg>
       </router-link></li>
-      <li><router-link to="/Playlists">
+      <li><router-link to="/Playlists" class="link">
         <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-playlist"></use></svg>
       </router-link></li>
-      <li><router-link to="/Favorite">
+      <li><router-link to="/Favorite" class="link">
         <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-favorite"></use></svg>
       </router-link></li>
-      <li><router-link to="/Search">
+      <li><router-link to="/Search" class="link">
         <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-search"></use></svg>
       </router-link></li>
-      <li><a @click="submenuVisible = !submenuVisible">
+      <li><btn :click="() => submenuVisible = !submenuVisible" class="link">
         <svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg>
-      </a></li>
+      </btn></li>
     </ul>
     <submenu v-if="submenuVisible" v-bind:links="links" @closemenu="submenuVisible = false"></submenu>
   </header>
@@ -23,10 +23,12 @@
 
 <script>
 import submenu from './components/SubMenu'
+import btn from './components/Bouton'
 export default {
   name: 'App_header',
   components: {
-    submenu
+    submenu,
+    btn
   },
   data () {
     return {
@@ -70,23 +72,23 @@ export default {
   display: inline-block;
   width: 3.6%;
 }
-#appHeader .nav li:last-child a{
-  padding: 100%;
+#appHeader .nav li:last-child .link{
+  padding: 0;
 }
-#appHeader .nav li:last-child a:after {
+#appHeader .nav li:last-child .link:after {
   content:none;
 }
 #appHeader .nav li:last-child svg {
   height: 100%;
   position: relative;
 }
-#appHeader .nav a {
+#appHeader .nav .link {
   position: relative;
   display: inline-block;
   padding: 17%;
   height: 100%;
 }
-#appHeader .nav a:after {
+#appHeader .nav .link:after {
   position: absolute;
   left: 50%;
   bottom: -0.25rem;
@@ -97,10 +99,10 @@ export default {
   background-color: #215292;
   transition: width 0.5s;
 }
-#appHeader .nav a.router-link-exact-active svg {
+#appHeader .nav .link.router-link-exact-active svg {
   fill: #207bd2;
 }
-#appHeader .nav a.router-link-exact-active:after {
+#appHeader .nav .link.router-link-exact-active:after {
   width: 100%;
 }
 #appHeader .submenu {

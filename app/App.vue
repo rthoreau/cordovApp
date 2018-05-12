@@ -36,11 +36,11 @@ export default {
     var screenHeight = 0;
     var screenWidth = 0;
     var root = document.querySelector(':root');
+    //Set font size for same render ratio on any device
     function setFontSize () {
       screenHeight = document.scrollingElement.offsetHeight;
       screenWidth = document.scrollingElement.offsetWidth;
       root.style.fontSize = (screenHeight > screenWidth ? screenHeight : screenWidth) / 40 + 'px';
-      console.log('font size set')
     }
 
     setFontSize();
@@ -82,16 +82,15 @@ body {
   box-sizing: border-box;
 }
 
-button {
+.button {
+  display:inline-block;
+  position:relative;
   font-size: 1em;
   color: inherit;
   padding: 0;
-  background-color: transparent;
-  border: none;
-  -webkit-appearance: none;
-  outline: none;
+  text-align:center;
 }
-button svg {
+.button svg {
   width: 100%;
   height: auto;
 }
@@ -151,10 +150,31 @@ svg {
   display: inline-block;
   padding: 0.8rem 0;
   width: 100%;
-  overflow: scroll;
+  overflow: auto;
   margin: 4rem 0;
   text-align: left;
   height: calc(100% - 4rem);
+}
+.page-content::-webkit-scrollbar {
+  position:relative;
+  width: 0.6rem;
+  background-color:transparent;
+  border-radius:0;
+  height:0.6rem;
+}
+
+.page-content::-webkit-scrollbar-track {
+  width:100%;
+  border-radius: 0;
+}
+
+.page-content::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  background:linear-gradient(to right, rgba(61, 133, 181, 0.2) 0%, rgba(61, 133, 181, 0.2) 60%, transparent 60%, transparent 100%);
+  background-position:left;
+}
+.page-content::-webkit-scrollbar-corner{
+  background-color:transparent;
 }
 .page-content + .page-content {
   margin-top: 4rem;
@@ -266,10 +286,11 @@ ul.selection li + li:before {
   position: absolute;
   height: 3rem;
   left: 4%;
-  top: 1rem;
+  top: 0.5rem;
   z-index: 0;
   width: 4rem;
   transition: background-color 0.5s;
+  overflow: hidden;
 }
 
 .appear-enter-active,
@@ -298,7 +319,7 @@ ul.selection li + li:before {
 }
 .item .submenu {
   position: absolute;
-  top: 100%;
+  top: 80%;
   right: 0.6rem;
   margin: 0.4rem 0;
 }

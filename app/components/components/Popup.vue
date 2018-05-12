@@ -8,18 +8,22 @@
         <slot></slot>
       </div>
       <footer>
-        <button @click="defaultParams.okAction">{{defaultParams.okText}}</button>
-        <button @click="defaultParams.cancelAction">{{defaultParams.cancelText}}</button>
+        <btn :click="() => callAction(defaultParams.okAction)">{{defaultParams.okText}}</btn>
+        <btn :click="() => callAction(defaultParams.cancelAction)">{{defaultParams.cancelText}}</btn>
       </footer>
     </div>
   </div>
 </template>
 
 <script>
+import btn from './Bouton'
 export default {
   name: 'SubMenu',
   props: {
     params: Object
+  },
+  components: {
+    btn
   },
   data () {
     return {
@@ -29,6 +33,15 @@ export default {
         cancelText: 'Annuler',
         cancelAction: '',
         title: ''
+      }
+    }
+  },
+  methods: {
+    callAction (action) {
+      try {
+        action.call()
+      } catch (error) {
+        console.log('Bad action in popup', error)
       }
     }
   },
@@ -61,7 +74,7 @@ export default {
   padding: 0;
   transform: translate(-50%, -50%);
 }
-.popup button {
+.popup .button {
   width: 45%;
   padding: 0.4rem;
   text-transform: uppercase;
