@@ -9,6 +9,7 @@
     <div class="music-thumbnail-container" @click="addToCurrent()">
       <transition name="appear">
         <img v-if="music.thumbnail && loaded" :src="music.thumbnail" alt="" class="music-thumbnail">
+        <div v-if="!music.thumbnail && loaded" class="music-thumbnail empty"><svg viewBox="0 0 28.643 33.622"><use xlink:href="#icon-lo"></use></svg></div>
       </transition>
     </div>
     <div class="music-content" :class="page" @click="addToCurrent()">
@@ -118,7 +119,6 @@ export default {
     addToCurrent () {
       var currentMusic = this.getCurrentMusic;
       var fileReload = this.music.plateform === 'lo' && currentMusic.title === this.music.title && currentMusic.file !== this.music.file;
-      console.log(fileReload);
       var self = this;
       this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music});
       if (fileReload) {
@@ -196,6 +196,16 @@ export default {
   display: inline-block;
   background-color: #5d9cec;
   object-fit: cover;
+}
+.music-thumbnail.empty{
+  background-color:#071a2d;
+}
+.music-thumbnail svg{
+  position: absolute;
+  top: 50%;
+  height: 50%;
+  left: 43%;
+  transform: translate(-50%, -50%);
 }
 
 .music-content {

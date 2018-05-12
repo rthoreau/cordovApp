@@ -4,14 +4,15 @@
       <div v-if="expandClass === '' && duration !== 0" class="progress" :style="'width:' + currentTimeValue + '%'"></div>
       <timeslider v-if="expandClass !== ''" :time="currentTimeValue" @settime="seekTo"></timeslider>
 
-      <div class="music-plateform" v-bind:class="plateform">
-        <plateformicon v-bind:plateform="plateform"></plateformicon>
+      <div class="music-plateform" :class="plateform">
+        <plateformicon :plateform="plateform"></plateformicon>
         <div class="video-container">
           <transition name="appear">
             <youtube v-if="plateform === 'yt'" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
           </transition>
           <transition name="appear">
-            <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
+            <img :src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh && getCurrentMusic.thumbnail">
+            <div class="video empty" v-if="player && refresh && !getCurrentMusic.thumbnail"><svg viewBox="0 0 28.643 33.622"><use xlink:href="#icon-lo"></use></svg></div>
           </transition>
           <div class="overlay"></div>
         </div>
@@ -116,7 +117,7 @@ export default {
       this.setData();
     },
     ready (player) {
-      if (this.plateform === 'yt') {
+      if (this.plateform === 'yt' && this.videoId) {
         this.player = player;
         this.loadVideoById(this.videoId);
       }
@@ -170,7 +171,7 @@ export default {
       this.watchTime(reset);
     },
     loadVideoById (id) {
-      if (this.player) {
+      if (this.player && id) {
         this.player.loadVideoById(id);
         this.setProgressByGet();
       }
@@ -221,7 +222,6 @@ export default {
         if (this.player) {
           var time = this.player.getCurrentTime();
           if (time) {
-            window.player = this.player
             this.currentTime = time;
           }
         }
@@ -247,6 +247,8 @@ export default {
       this.$emit('expanded', (this.expandClass !== ''));
     },
     setData () {
+      var self = this;
+      var oldPlateform = this.plateform;
       this.currentMusic = this.getCurrentMusic;
       this.plateform = this.currentMusic.plateform;
       this.duration = this.currentMusic.duration;
@@ -257,14 +259,18 @@ export default {
       if (this.plateform === 'yt') {
         if (this.currentMusic.url) {
           this.videoId = getIdFromURL(this.currentMusic.url);
+          if (oldPlateform !== 'lo') {
+            this.loadVideoById(this.videoId);
+          }
         }
         if (this.currentMusic.videoId) {
-          this.videoId = this.currentMusic.videoId
+          this.videoId = this.currentMusic.videoId;
+          this.loadVideoById(this.videoId);
         }
-        this.loadVideoById(this.videoId);
-        this.setProgressByGet();
+        if (oldPlateform !== 'lo') {
+          this.setProgressByGet();
+        }
       } else if (this.currentMusic.id !== '') {
-        var self = this;
         this.$nextTick(function () {
           if (self.currentMusic.file && self.currentMusic.file.name) {
             let reader = new window.FileReader()
@@ -276,7 +282,7 @@ export default {
               });
             }
           } else {
-            console.log('unloaded')
+            console.log('File is unloaded');
             self.unloaded = true;
             self.pauseVideo();
           }
@@ -320,6 +326,11 @@ export default {
     getCurrentMusic: function (music) {
       this.playInit = true;
       if (music.plateform === 'yt') {
+        if (music.url) {
+          this.videoId = getIdFromURL(music.url);
+        } else {
+          this.videoId = music.videoId;
+        }
         this.videoId = music.url ? getIdFromURL(music.url) : music.videoId;
       } else {
         this.videoId = '';
@@ -448,6 +459,16 @@ export default {
   right: 0;
   top: 0;
   object-fit: cover;
+}
+.video.empty{
+  background-color:#071a2d;
+}
+.video svg{
+  position: absolute;
+  top: 50%;
+  height: 50%;
+  left: 43%;
+  transform: translate(-50%, -50%);
 }
 
 .overlay {
