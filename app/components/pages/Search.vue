@@ -1,17 +1,31 @@
 <template>
   <div id="search">
     <header class="page-header">
-      <span class="page-title">
-        <input 
-        placeholder="Recherche..." 
-        class="search-input" 
-        ref="searchInput" 
-        v-model="searchValue"
-        @keyup.enter="search()"
-        :class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 23.125 23.129" class="search-icon"><use xlink:href="#icon-search"></use></svg></label>
-      </span>
-      <input type="file" id="filer" multiple @change="importMusic" accept="audio/*">
-      <label for="filer"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-fold"></use></svg></label>
+      <div class="select-container">
+        <input type="file" id="filer" multiple @change="importMusic" accept="audio/*">
+        <btn v-if="source !== 'fold' && source !== 'search'" :click="() => search()" class="source-icon" key="i"><svgfile :icon="source === 'none' ? 'search' : source"></svgfile></btn>
+        <btn v-if="source === 'none'" :click="() => select()" class="select-sources" key="s">{{sourcesText[source]}}</btn>
+        <span class="input-container" v-if="source === 'search' || source === 'yt'">
+          <input 
+          placeholder="Recherche..." 
+          class="search-input" 
+          ref="searchInput" 
+          v-model="searchValue"
+          @keyup.enter="search()"
+          :class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svgfile icon="search"></svgfile></label>
+        </span>
+        <label for="filer" v-if="source === 'fold'" class="filler"><svgfile icon="fold"></svgfile>Explorateur de fichiers</label>
+        <btn :click="() => select()" class="select-icon" key="p"><i></i></btn>
+        <div class="sources" v-if="selectSources">
+          <btn
+          v-for="(text, value) in sourcesText"
+          :key="value"
+          :click="() => select(value)"
+          class="source"
+          :class="source === value ? 'selected' : ''"
+          ><svgfile v-if="value !== 'none'" :icon="value"></svgfile>{{sourcesText[value]}}</btn>
+        </div>
+      </div>
     </header>
     <div class="page-content">
       <musicitem 
@@ -37,16 +51,23 @@ import musicitem from '../components/MusicItem'
 import errormessage from '../components/ErrorMessage'
 import {mapGetters, mapActions} from 'vuex'
 import btn from '../components/Bouton'
+import { mixin as clickaway } from 'vue-clickaway'
+import svgfile from '../components/SvgFile'
 export default {
   name: 'Search',
+  mixins: [ clickaway ],
   components: {
     musicitem,
     errormessage,
-    btn
+    btn,
+    svgfile
   },
   data () {
     return {
       searchValue: '',
+      source: 'none',
+      selectSources: false,
+      sourcesText: {'none': 'Chercher dans...', 'yt': 'Youtube', 'fold': 'Mes musiques', 'search': 'Recherches déjà effectuées'},
       searchResult: [],
       error: false,
       OAUTH2_CLIENT_ID: '950123233154-e612r294nh3jfrhmierb8c0s80ao39g2.apps.googleusercontent.com',
@@ -99,9 +120,8 @@ export default {
       var file;
       for (var i = 0; i < files.length; i++) {
         file = files[i]
-        console.log(file)
         if (true) {
-          newMusics.push({id: '', url: '', title: file.name, author: '', duration: 0, thumbnail: '', plateform: 'lo', favorite: false, file: file});
+          newMusics.push({id: '', url: '', title: file.name.substring(0, file.name.lastIndexOf('.')), author: '', duration: 0, thumbnail: '', plateform: 'lo', favorite: false, file: file});
         }
       }
       if (newMusics.length) {
@@ -168,10 +188,16 @@ export default {
       })
       this.addLocalFiles(parsedResult);
       this.searchResult = parsedResult;
+    },
+    select (value) {
+      this.selectSources = !this.selectSources;
+      if (value) {
+        this.source = value;
+        if (value === 'search' || value === 'yt') {
+          this.focusSearch();
+        }
+      }
     }
-  },
-  mounted () {
-    this.$refs.searchInput.focus()
   },
   computed: {
     ...mapGetters({
@@ -182,46 +208,120 @@ export default {
 </script>
 
 <style>
+#search .page-header{
+  padding:0 1.4rem;
+  font-size:0;
+}
+.select-container{
+  border:0.1rem solid #207cd28a;
+  margin-top:0.5rem;
+}
+.source-icon{
+  padding: 0 4%;
+  height:auto;
+  width:3.29rem;
+  vertical-align: top;
+  margin-top:0.5rem;
+}
+.source-icon + .select-sources {
+  width: calc(100% - 5.8rem);
+}
+.select-sources{
+  font-size: 1.5rem;
+  text-align:left;
+  color: #c8d6e8;
+  width: calc(100% - 2.5rem);
+  padding: 0.1rem 4%;
+  height:2.7rem;
+  vertical-align: top;
+}
+.select-icon{
+  display:inline-block;
+  height:2.7rem;
+  width:2.5rem;
+  border-left:0.1rem solid #207cd28a;
+  overflow:hidden;
+}
+.select-icon i{
+  display:inline-block;
+  width:0;
+  height:0;
+  border-width:0.7rem;
+  margin:0.8rem 0.5rem 0;
+  border-style:solid;
+  border-color:#c8d6e8 transparent transparent transparent;
+}
+.sources{
+  position:absolute;
+  top:3.4rem;
+  display:block;
+  background-color:#0c1d29;
+  width: calc(100% - 2.8rem);
+  left:1.4rem;
+  padding:0.3rem 0;
+}
+.source{
+  display:block;
+  font-size:1rem;
+  padding: 0.3rem 4%;
+  text-align:left;
+}
+.source.selected{
+  background-color:#173f5a;
+}
+.source svg{
+  display:inline-block;
+  width:1.2rem;
+  height:auto;
+  vertical-align: middle;
+  margin-right:0.5rem;
+}
 .search-input {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   background-color: transparent;
   -webkit-appearance: none;
   box-shadow: none;
   border: none;
   outline: none;
-  color: white;
+  color: #c8d6e8;
   border-bottom: 2px solid transparent;
-  width: 68%;
+  width: 100%;
   transition: width 0.8s;
-  vertical-align: middle;
-  padding: 0.1rem 2%;
-  height:2.4rem;
-  margin:0.8rem 2% 0.8rem 0;
-}
-.search-input.fill {
-  width: 86%;
+  vertical-align: top;
+  padding: 0.4rem 18% 0 4%;
+  line-height:1.15;
+  height:2.3rem;
 }
 .search-input:focus {
-  width: 86%;
   border-bottom-color: #215292;
 }
 
-#search .page-title {
-  width:80%;
+#search .input-container {
+  vertical-align: top;
+  display:inline-block;
+  position:relative;
+  width: calc(100% - 2.5rem);
   max-width:none;
 }
+#search .source-icon + .input-container {
+  width: calc(100% - 5.8rem);
+}
 
-#search .page-title label {
+#search .input-container label {
+  position:absolute;
   background-color: transparent;
   -webkit-appearance: none;
   border: none;
-  vertical-align: middle;
+  vertical-align: top;
   display: inline-block;
-  height: 2rem;
-  width: 2rem;
+  height: 1.7rem;
+  width: 1.7rem;
   font-size: 0;
+  right:0.3rem;
+  top:55%;
+  transform:translate(0,-50%);
 }
-#search .page-title label svg {
+#search .input-container label svg {
   vertical-align: top;
 }
 
@@ -234,16 +334,20 @@ export default {
   position: absolute;
   left: -99rem;
 }
-#filer + label {
-  position:absolute;
-  top:50%;
-  right:1rem;
-  display: inline-block;
-  width: auto;
-  height: 2rem;
-  transform:translate(0,-50%)
+label.filler{
+  display:inline-block;
+  font-size:1.2rem;
+  width:calc(100% - 2.5rem);
+  padding: 0.1rem 2%;
+  line-height:1.15;
+  margin-top:0.5rem;
+  vertical-align: top;
 }
-#filer + label svg {
-  height: 100%;
+label.filler svg {
+  display:inline-block;
+  width:1.2rem;
+  height:auto;
+  vertical-align: top;
+  margin:0 0.8rem 0 0.5rem;
 }
 </style>

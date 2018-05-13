@@ -1,14 +1,18 @@
 <template>
   <div class="plateform-icon">
-    <svg viewBox="0 0 28.643 33.622" v-if="plateform === 'lo'"><use xlink:href="#icon-lo"></use></svg>
-    <svg viewBox="0 0 51.869 36.433" v-if="plateform === 'yt'"><use xlink:href="#icon-yt"></use></svg>
-    <svg viewBox="0 0 36.363 36.433" v-if="plateform === 'sp'"><use xlink:href="#icon-sp"></use></svg>
+    <svgfile icon="lo" v-if="plateform === 'lo'"></svgfile>
+    <svgfile icon="yt" v-if="plateform === 'yt'"></svgfile>
+    <svgfile icon="sp" v-if="plateform === 'sp'"></svgfile>
   </div>
 </template>
 
 <script>
+import svgfile from './SvgFile'
 export default {
   name: 'PlateformIcon',
+  components: {
+    svgfile
+  },
   props: {
     plateform: String
   }

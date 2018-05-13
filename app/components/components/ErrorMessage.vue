@@ -1,15 +1,19 @@
 <template>
   <div class="error-message" :class="transitionClass">
     <p>{{error}}</p>
-    <svg viewBox="0 0 23.125 23.129" @click="closeMessage()"><use xlink:href="#icon-delete"></use></svg>
+    <svgfile icon="delete"></svgfile>
   </div>
 </template>
 
 <script>
+import svgfile from './SvgFile'
 export default {
   name: 'ErrorMessage',
   props: {
     error: String
+  },
+  components: {
+    svgfile
   },
   data () {
     return {

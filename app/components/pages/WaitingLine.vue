@@ -5,9 +5,9 @@
       <p class="empty-message" v-if="getWaitingLine.length === 0">
          Vous n'avez rien prévu d'écouter pour le moment&nbsp;!<br> Laissez faire la lecture automatique ou ajoutez des musiques à la file&nbsp;!
       </p>
-      <btn v-if="getWaitingLine.length !== 0" :click="() => popupVisible = true" class="action"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-delete"></use></svg></btn>
-      <btn v-if="getWaitingLine.length > 0" :click="() => loop()" class="action loop"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-loop"></use></svg></btn>
-      <btn v-if="getWaitingLine.length > 4" :click="() => musicAction({action: 'randomize', from: 'waitingLine'})" class="action"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-random"></use></svg></btn>
+      <btn v-if="getWaitingLine.length !== 0" :click="() => popupVisible = true" class="action"><svgfile icon="delete"></svgfile></btn>
+      <btn v-if="getWaitingLine.length > 0" :click="() => loop()" class="action loop"><svgfile icon="loop"></svgfile></btn>
+      <btn v-if="getWaitingLine.length > 4" :click="() => musicAction({action: 'randomize', from: 'waitingLine'})" class="action"><svgfile icon="random"></svgfile></btn>
       <musicitem 
       v-for="(id, index) in getWaitingLine" 
       :key="index" :index="index"
@@ -23,13 +23,15 @@ import musicitem from '../components/MusicItem'
 import popup from '../components/Popup'
 import {mapGetters, mapActions} from 'vuex'
 import btn from '../components/Bouton'
+import svgfile from '../components/SvgFile'
 
 export default {
   name: 'WaitingLine',
   components: {
     musicitem,
     popup,
-    btn
+    btn,
+    svgfile
   },
   data () {
     return {

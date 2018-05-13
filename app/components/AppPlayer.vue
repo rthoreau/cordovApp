@@ -8,11 +8,11 @@
         <plateformicon :plateform="plateform"></plateformicon>
         <div class="video-container">
           <transition name="appear">
-            <youtube v-if="plateform === 'yt'" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
+            <youtube v-if="plateform === 'yt'" class="video" :player-vars="{start: 0, autoplay: 0, controls:0, iv_load_policy: 3}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh !== false"></youtube>
           </transition>
           <transition name="appear">
             <img :src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh && getCurrentMusic.thumbnail">
-            <div class="video empty" v-if="player && refresh && !getCurrentMusic.thumbnail"><svg viewBox="0 0 28.643 33.622"><use xlink:href="#icon-lo"></use></svg></div>
+            <div class="video empty" v-if="refresh && !getCurrentMusic.thumbnail"><svgfile icon="lo"></svgfile></div>
           </transition>
           <div class="overlay"></div>
         </div>
@@ -20,12 +20,12 @@
 
       <btn :click="() => playPause()" class="play">
         <transition name="switch" mode="out-in">
-          <svg viewBox="0 0 23.125 23.129" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
-          <svg viewBox="0 0 23.125 23.129" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
+          <svgfile icon="play" v-if="paused" key="play"></svgfile>
+          <svgfile icon="pause" v-if="!paused" key="pause"></svgfile>
         </transition>
       </btn>
 
-      <btn :click="() => nextVideo(true)" class="next"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-next" ></use></svg></btn>
+      <btn :click="() => nextVideo(true)" class="next"><svgfile icon="next"></svgfile></btn>
 
       <p class="music-infos" :class="getCurrentMusic.id ? '' : 'empty'">
         <span class="music-title">{{getCurrentMusic.title}}</span>
@@ -33,7 +33,7 @@
         <span key="u" v-else class="unloaded">Musique inaccessible ! :'(</span>
       </p>
 
-      <div class="expand-link" @click="expand()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable" ></use></svg></div>
+      <div class="expand-link" @click="expand()"><svgfile icon="draggable"></svgfile></div>
     </div>
     <waitingline @loop="loop = !loop" :class="loop ? 'looping' : ''"></waitingline>
     <localplayer v-if="plateform === 'lo' && sources && sources.length" :music="getCurrentMusic" :sources="sources" :event="localPlayerEvent" @ended="ended" @playing="playing" @currenttime="setProgressByGet" @duration="setDuration" @paused="pauseVideo"></localplayer>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import svgfile from './components/SvgFile'
 import Vue from 'vue'
 import plateformicon from './components/PlateformIcon'
 import waitingline from './pages/WaitingLine'
@@ -58,7 +59,8 @@ export default {
     waitingline,
     localplayer,
     timeslider,
-    btn
+    btn,
+    svgfile
   },
   data () {
     return {
@@ -172,8 +174,10 @@ export default {
     },
     loadVideoById (id) {
       if (this.player && id) {
-        this.player.loadVideoById(id);
+        this.player.loadVideoById({videoId: id, suggestedQuality: 'small', start: 0});
         this.setProgressByGet();
+        window.player = this.player
+        this.showVideo();
       }
     },
     seekTo (ratio) {
@@ -209,10 +213,12 @@ export default {
         }
         this.currentTime = this.currentTime + 0.5;
         if (this.duration === 0) {
-          var duration = this.player.getDuration();
-          if (duration) {
-            this.setMusic({id: this.getCurrentMusic.id, duration: duration})
-            this.setDuration(duration);
+          if (this.plateform === 'yt') {
+            var duration = this.player.getDuration();
+            if (duration) {
+              this.setMusic({id: this.getCurrentMusic.id, duration: duration})
+              this.setDuration(duration);
+            }
           }
         }
       }
@@ -247,7 +253,6 @@ export default {
       this.$emit('expanded', (this.expandClass !== ''));
     },
     setData () {
-      var self = this;
       var oldPlateform = this.plateform;
       this.currentMusic = this.getCurrentMusic;
       this.plateform = this.currentMusic.plateform;
@@ -272,7 +277,8 @@ export default {
         }
       } else if (this.currentMusic.id !== '') {
         this.$nextTick(function () {
-          if (self.currentMusic.file && self.currentMusic.file.name) {
+          if (this.currentMusic.file && this.currentMusic.file.name) {
+            var self = this;
             let reader = new window.FileReader()
             reader.readAsDataURL(self.currentMusic.file)
             reader.onload = () => {
@@ -283,14 +289,22 @@ export default {
             }
           } else {
             console.log('File is unloaded');
-            self.unloaded = true;
-            self.pauseVideo();
+            this.unloaded = true;
+            this.pauseVideo();
           }
         })
       }
     },
     setDuration (duration) {
       this.duration = duration;
+    },
+    showVideo () {
+      if (this.plateform === 'yt') {
+        var self = this;
+        window.setTimeout(function () {
+          self.refresh = 0;
+        }, 1500);
+      }
     }
   },
   mounted () {
@@ -480,8 +494,10 @@ export default {
 }
 
 .video iframe {
+  position:relative;
+  top:-1%;
   width: 100% !important;
-  height: 96% !important;
+  height: 102% !important;
 }
 
 .switch-enter-active, .switch-leave-active {

@@ -68,7 +68,6 @@ body {
   background-color:black;
   margin: 0;
   font-family: "Gadugi", Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
   color: #c8d6e8;
   font-size: 0.85rem;
 }
@@ -151,9 +150,9 @@ svg {
   padding: 0.8rem 0;
   width: 100%;
   overflow: auto;
-  margin: 4rem 0;
+  margin: 0 0 4rem 0;
   text-align: left;
-  height: calc(100% - 4rem);
+  height: 100%;
 }
 .page-content::-webkit-scrollbar {
   position:relative;
@@ -176,8 +175,9 @@ svg {
 .page-content::-webkit-scrollbar-corner{
   background-color:transparent;
 }
-.page-content + .page-content {
+.page-header + .page-content {
   margin-top: 4rem;
+  height: calc(100% - 4rem);
 }
 
 .page-title {
@@ -309,13 +309,14 @@ ul.selection li + li:before {
   transition: background-color 0.4s;
 }
 .item.active {
-  background-color: rgba(130, 153, 195, 0.31);
+  background-color: rgba(61, 133, 181, 0.3)
 }
 .item .submenu-link {
   height: 1.5rem;
   vertical-align: middle;
   width: 2%;
   text-align: center;
+  padding:0.2rem 0;
 }
 .item .submenu {
   position: absolute;

@@ -2,7 +2,7 @@
   <div id="playlist">
     <header class="page-header" :class="mode">
 
-      <btn :click="() => back()" class="back-link"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-back"></use></svg></btn>
+      <btn :click="() => back()" class="back-link"><svgfile icon="back"></svgfile></btn>
 
       <playlisticon :colors="playlist.colors" :class="mode" @click="showColorEditer()"></playlisticon>
 
@@ -10,25 +10,15 @@
 
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
 
-      <btn class="submenu-link" :click="() => submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></btn>
+      <btn class="submenu-link" :click="() => submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><submenulink></submenulink></btn>
 
-      <btn :click="() => save()" class="right save-link" v-if="mode === 'edit'"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></btn>
+      <btn :click="() => save()" class="right save-link" v-if="mode === 'edit'"><svgfile icon="ok"></svgfile></btn>
     </header>
-    
-    <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
-
-    <div class="color-editer" v-if="colorEditing === true">
-      <btn class="color" :style="'background-color:' + playlist.colors[0].hex" :click="() => editColor = 0" :class="editColor === 0 ? 'selected' : ''"></btn>
-      <btn class="color" :style="'background-color:' + playlist.colors[1].hex" :click="() => editColor = 1" :class="editColor === 1 ? 'selected' : ''"></btn>
-      <btn class="color" :style="'background-color:' + playlist.colors[2].hex" :click="() => editColor = 2" :class="editColor === 2 ? 'selected' : ''"></btn>
-      <btn class="confirm-color" :click="() => colorEditing = false"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-ok"></use></svg></btn>
-      <colorpicker v-model="playlist.colors[editColor]"></colorpicker>
-    </div>
 
     <div class="page-content">
       <span class="empty-message" v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister&nbsp;!<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
       <span class="empty-message" v-if="mode === 'edit' && !getPlaylist(id).name">Donnez un nom à votre playlist, puis validez. Vous pourrez ensuite y ajouter des musqiues&nbsp;!</span>
-      <span class="empty-message" v-if="playlist.musics.length === 0 && getPlaylist(id).name">Ajoutez des musiques à cette playlist depuis vos <router-link to="/Favorite">Favoris <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-favorite"></use></svg></router-link> ou depuis la page de <router-link to="/Search">Recherche <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-search"></use></svg></router-link></span>
+      <span class="empty-message" v-if="playlist.musics.length === 0 && getPlaylist(id).name">Ajoutez des musiques à cette playlist depuis vos <router-link to="/Favorite">Favoris <svgfile icon="favorite"></svgfile></router-link> ou depuis la page de <router-link to="/Search">Recherche <svgfile icon="search"></svgfile></router-link></span>
       <draggable v-model="playlist.musics" :options="{draggable:'.editing', scroll: true}">
         <transition-group>
           <musicitem 
@@ -44,6 +34,16 @@
         </transition-group>
       </draggable>
       <errormessage :error="error" v-if="error" @closemessage="error = false"></errormessage>
+    </div>
+    
+    <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
+
+    <div class="color-editer" v-if="colorEditing === true">
+      <btn class="color" :style="'background-color:' + playlist.colors[0].hex" :click="() => editColor = 0" :class="editColor === 0 ? 'selected' : ''"></btn>
+      <btn class="color" :style="'background-color:' + playlist.colors[1].hex" :click="() => editColor = 1" :class="editColor === 1 ? 'selected' : ''"></btn>
+      <btn class="color" :style="'background-color:' + playlist.colors[2].hex" :click="() => editColor = 2" :class="editColor === 2 ? 'selected' : ''"></btn>
+      <btn class="confirm-color" :click="() => colorEditing = false"><svgfile icon="ok"></svgfile></btn>
+      <colorpicker v-model="playlist.colors[editColor]"></colorpicker>
     </div>
     <popup v-if="popupVisible" :params="popupParams">
       {{popupText}}
@@ -61,6 +61,8 @@ import popup from '../components/Popup'
 import btn from '../components/Bouton'
 import draggable from 'vuedraggable'
 import {Chrome} from 'vue-color'
+import svgfile from '../components/SvgFile'
+import submenulink from '../components/SubMenuLink'
 export default {
   name: 'Playlist',
   components: {
@@ -71,7 +73,9 @@ export default {
     draggable,
     colorpicker: Chrome,
     playlisticon,
-    btn
+    btn,
+    svgfile,
+    submenulink
   },
   data () {
     return {
@@ -301,6 +305,10 @@ input.page-title:focus {
 }
 
 .color-editer {
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
   background-color: rgba(0, 0, 0, 0.7);
   text-align: center;
   margin-top: 4rem;
@@ -313,6 +321,7 @@ input.page-title:focus {
   border: 0.15rem double rgba(255, 255, 255, 0.1);
   border-radius: 0.1rem;
   transition: border-color 0.5s;
+  vertical-align: top;
 }
 .color-editer .color.selected {
   border-color: white;

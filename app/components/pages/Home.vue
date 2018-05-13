@@ -1,8 +1,28 @@
 <template>
   <div id="home">
-    <h1>You there ?</h1>
-    <p>Next time bring me some food please :'(</p>
-    
+    <div class="page-content">
+      <h1 v-if="getLastMusics.length === 0 && getLastPlaylist.length === 0">Bienvenue sur Playlith&nbsp;!</h1>
+      <span class="empty-message" v-if="getLastMusics.length === 0 && getLastPlaylist.length === 0">
+      Pour commencer à écouter de la musique, ça se passe dans l'onglet de <router-link to="/Search">Recherche <svgfile icon="search"></svgfile></router-link>&nbsp;!</span>
+
+      <section class="last music" v-if="getLastMusics.length !== 0">
+        <h2>Vos dernières écoutes&nbsp;:</h2>
+        <musicitem 
+          v-for="(musicId, index) in getLastMusics"
+          v-if="getMusic(musicId) !== false" 
+          :key="index" 
+          :music="getMusic(musicId)"
+          :page="'home'"></musicitem>
+      </section>
+      <section class="last playlist" v-if="getLastPlaylist.length !== 0">
+        <h2>Votre dernière playlist jouée &nbsp;:</h2>
+        <playlistitem 
+          v-for="(data) in getPlaylists" 
+          :key="data.id" 
+          :playlist="data"
+          v-if="getLastPlaylist !== '' && data.id === getLastPlaylist"></playlistitem>
+      </section>
+    </div>
     <!--<div class="circleContainer">
       <div class="circle tl"></div>
       <div class="circle bl"></div>
@@ -12,19 +32,33 @@
 </template>
 
 <script>
-import btn from '../components/Bouton'
+import {mapGetters} from 'vuex'
+import musicitem from '../components/MusicItem'
+import playlistitem from '../components/PlaylistItem'
 export default {
   name: 'Home',
   components: {
-    btn
+    musicitem,
+    playlistitem
+  },
+  computed: {
+    ...mapGetters({
+      getLastMusics: 'manageStore/getLastMusics',
+      getLastPlaylist: 'manageStore/getLastPlaylist',
+      getPlaylists: 'manageStore/getPlaylists',
+      getMusic: 'manageStore/getMusic'
+    })
   }
 }
 </script>
 
 <style>
-#home {
-  text-align: center;
-  margin-top: 60px;
+h1 {
+  margin:0.8rem 4% 0.5rem;
+}
+h2{
+  padding:0 4%;
+  opacity:0.7;
 }
 /*.circleContainer{
   position:relative;

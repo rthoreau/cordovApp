@@ -1,7 +1,7 @@
 <template>
   <div class="music-item item" :class="mode ? classe + mode : classe">
 
-    <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-draggable"></use></svg>
+    <svgfile icon="draggable" v-if="page === 'playlist' && mode === 'edit'" class="move-link"></svgfile>
 
     <div class="music-plateform" :class="music.plateform" @click="addToCurrent()">
       <plateformicon :plateform="music.plateform"></plateformicon>
@@ -9,7 +9,7 @@
     <div class="music-thumbnail-container" @click="addToCurrent()">
       <transition name="appear">
         <img v-if="music.thumbnail && loaded" :src="music.thumbnail" alt="" class="music-thumbnail">
-        <div v-if="!music.thumbnail && loaded" class="music-thumbnail empty"><svg viewBox="0 0 28.643 33.622"><use xlink:href="#icon-lo"></use></svg></div>
+        <div v-if="!music.thumbnail && loaded" class="music-thumbnail empty"><svgfile icon="lo"></svgfile></div>
       </transition>
     </div>
     <div class="music-content" :class="page" @click="addToCurrent()">
@@ -24,9 +24,9 @@
       <use v-if="!music.favorite || forceFavorite === false" xlink:href="#icon-favorite"></use>
     </svg></btn>
 
-    <btn v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link"  :click="() => subFunction()"><svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg></btn>
+    <btn v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link"  :click="() => subFunction()"><submenulink></submenulink></btn>
 
-    <btn v-if="page === 'playlist' && mode === 'edit'" class="remove-link" :click="() => deleteFromRender()"><svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-delete"></use></svg></btn>
+    <btn v-if="page === 'playlist' && mode === 'edit'" class="remove-link" :click="() => deleteFromRender()"><svgfile icon="delete"></svgfile></btn>
 
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" :params="popupParams">
@@ -38,13 +38,14 @@
     </popup>
   </div>
 </template>
-
 <script>
 import {mapActions, mapGetters} from 'vuex'
 import plateformicon from './PlateformIcon'
 import submenu from './SubMenu'
 import popup from './Popup'
 import Btn from './Bouton'
+import svgfile from './SvgFile'
+import submenulink from './SubMenuLink'
 //TODO show on music item if playing
 export default {
   name: 'MusicItem',
@@ -60,7 +61,9 @@ export default {
     plateformicon,
     submenu,
     popup,
-    Btn
+    Btn,
+    svgfile,
+    submenulink
   },
   data () {
     return {
@@ -119,12 +122,11 @@ export default {
     addToCurrent () {
       var currentMusic = this.getCurrentMusic;
       var fileReload = this.music.plateform === 'lo' && currentMusic.title === this.music.title && currentMusic.file !== this.music.file;
-      var self = this;
       this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music});
       if (fileReload) {
         this.getCurrentMusic;
         this.$nextTick(function () {
-          self.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music});
+          this.musicAction({action: 'add', to: 'current', id: this.music.id, source: this.source, music: this.music});
         });
       }
     },
@@ -154,7 +156,7 @@ export default {
       this.links.push({text: 'Ajouter à la file', action: () => this.musicAction({action: 'add', to: 'waitingLine', id: this.music.id, source: this.source, music: this.music})});
     }
     if (this.music.favorite && this.page === 'favorite') {
-      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', index: this.music.id})});
+      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', id: this.music.id})});
     }
     if (this.page === 'playlist') {
       this.links.push({text: 'Supprimer de la playlist',
@@ -176,7 +178,6 @@ export default {
 .music-item {
   position: relative;
   font-size: 0;
-  padding: 0.5rem 4%;
 }
 
 .music-thumbnail-container {
@@ -239,6 +240,8 @@ export default {
 
 .music-title {
   font-weight: bold;
+  word-break: break-all;
+  word-wrap:break-word;
 }
 
 .music-author {

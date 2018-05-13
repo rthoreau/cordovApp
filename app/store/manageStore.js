@@ -1,6 +1,8 @@
 const state = {
   currentMusic: '',
   waitingLine: ['5er84t568e', 'ert5784ert'],
+  lastMusics: [],
+  lastPlaylist: '',
   musics: [
     {id: 'ze7857586', url: 'https://www.youtube.com/watch?v=rVeMiVU77wo', title: 'alt-J (∆) Breezeblocks', author: 'alt-J', duration: '226', thumbnail: 'http://www.konbini.com/wp-content/blogs.dir/3/files/2012/06/Alt-j-Breezeblocks-480x279.jpg', plateform: 'yt', favorite: true},
     {id: 'z7281z6', url: 'https://www.youtube.com/watch?v=mEBrRSa7BaM', title: 'Klangnomad - Promo 2013', author: 'Klangnomad Music', duration: '2916', thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uL93WD0W8J_S1aLlE_cZVBxJ89RGQD4JvB8zZotXE7XvvW7v', plateform: 'yt', favorite: true},
@@ -36,7 +38,7 @@ const getters = {
   getMusics: state => state.musics,
   getMusic: function (state) {
     return function (id) {
-      return state.musics.filter(music => music.id === id)[0];
+      return state.musics.filter(music => music.id === id)[0] || false;
     };
   },
   getPlaylists: function (state) {
@@ -76,11 +78,32 @@ const getters = {
       return state.searchResult;
     }
   },
-  getWaitingLine: state => state.waitingLine
+  getWaitingLine: state => state.waitingLine,
+  getLastMusics: function (state) {
+    if (state.musics.filter(music => state.lastMusics.indexOf(music.id) !== -1).length > 0) {
+      return state.lastMusics
+    } else {
+      return [];
+    }
+  },
+  getLastPlaylist: function (state) {
+    if (state.playlists.filter(playlist => state.lastPlaylist === playlist.id).length > 0) {
+      return state.lastPlaylist
+    } else {
+      return '';
+    }
+  }
 }
 
 const mutations = {
   mutateCurrentMusic: (state, currentMusic) => {
+    if (state.currentMusic) {
+      state.lastMusics = state.lastMusics.filter(musicId => musicId !== state.currentMusic);
+      state.lastMusics.unshift(state.currentMusic);
+      if (state.lastMusics.length > 3) {
+        state.lastMusics.pop();
+      }
+    }
     state.currentMusic = currentMusic;
   },
   mutatePlaylists: (state, playlists) => {
@@ -155,7 +178,7 @@ const mutations = {
           if (ids.length !== state.musics.length && ids.indexOf(music.id) === -1) {
             ids.push(music.id)
           }
-          if (music.title === params.music.title) {
+          if (music.title === params.music.title && music.plateform === params.music.plateform) {
             params.music.id = music.id;
             return params.music;
           }
@@ -209,6 +232,11 @@ const mutations = {
       });
     } else if (params.to === 'waitingLine') {
       if (params.ids) {
+        if (params.playlistId) {
+          state.lastPlaylist = params.playlistId;
+        } else {
+          console.log('missing arg playlistId')
+        }
         if (params.from === 'playlist') {
           //add all playlist at end
           params.ids.forEach(id => state.waitingLine.push(id));
@@ -229,6 +257,13 @@ const mutations = {
         return music;
       });
     } else if (params.to === 'current') {
+      if (state.currentMusic) {
+        state.lastMusics = state.lastMusics.filter(musicId => musicId !== state.currentMusic);
+        state.lastMusics.unshift(state.currentMusic);
+        if (state.lastMusics.length > 3) {
+          state.lastMusics.pop();
+        }
+      }
       state.currentMusic = params.id;
     } else {
       console.log('missing arg, add to ?')
@@ -290,6 +325,9 @@ const mutations = {
     }
 
     if (params.to === 'waitingLine') {
+      if (params.playlistId) {
+        state.lastPlaylist = params.playlistId;
+      }
       state.currentMusic = a.pop();
     }
 

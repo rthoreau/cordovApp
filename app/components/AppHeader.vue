@@ -2,19 +2,19 @@
   <header id="appHeader">
     <ul class="nav">
       <li><router-link to="/" class="link">
-        <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-home"></use></svg>
+        <svgfile :icon="'home'"></svgfile>
       </router-link></li>
       <li><router-link to="/Playlists" class="link">
-        <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-playlist"></use></svg>
+        <svgfile :icon="'playlist'"></svgfile>
       </router-link></li>
       <li><router-link to="/Favorite" class="link">
-        <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-favorite"></use></svg>
+        <svgfile :icon="'favorite'"></svgfile>
       </router-link></li>
       <li><router-link to="/Search" class="link">
-        <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-search"></use></svg>
+        <svgfile :icon="'search'"></svgfile>
       </router-link></li>
       <li><btn :click="() => submenuVisible = !submenuVisible" class="link">
-        <svg viewBox="0 0 8.688 23.129"><use xlink:href="#icon-submenu"></use></svg>
+        <submenulink></submenulink>
       </btn></li>
     </ul>
     <submenu v-if="submenuVisible" v-bind:links="links" @closemenu="submenuVisible = false"></submenu>
@@ -24,11 +24,15 @@
 <script>
 import submenu from './components/SubMenu'
 import btn from './components/Bouton'
+import svgfile from './components/SvgFile'
+import submenulink from './components/SubMenuLink'
 export default {
   name: 'App_header',
   components: {
     submenu,
-    btn
+    btn,
+    svgfile,
+    submenulink
   },
   data () {
     return {

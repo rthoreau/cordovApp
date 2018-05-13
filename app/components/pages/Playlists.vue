@@ -3,11 +3,11 @@
     <header class="page-header">
       <span class="page-title">Playlists</span>
       <router-link :to="nextIdLink">
-        <svg class="submenu-link" viewBox="0 0 23.125 23.129"><use xlink:href="#icon-plus"></use></svg>
+        <svgfile icon="plus" class="submenu-link"></svgfile>
       </router-link>
     </header>
     <div class="page-content">
-      <span class="empty-message" v-if="getPlaylists.length === 0">Vous n'avez aucune playlist pour l'instant&nbsp;! <router-link :to="nextIdLink">Ajouter une playlist <svg viewBox="0 0 23.125 23.129"><use xlink:href="#icon-plus"></use></svg></router-link></span>
+      <span class="empty-message" v-if="getPlaylists.length === 0">Vous n'avez aucune playlist pour l'instant&nbsp;! <router-link :to="nextIdLink">Ajouter une playlist <svgfile icon="plus"></svgfile></router-link></span>
       <playlistitem 
       v-for="(data) in getPlaylists" 
       :key="data.id" 
@@ -19,10 +19,12 @@
 <script>
 import playlistitem from '../components/PlaylistItem'
 import {mapGetters} from 'vuex'
+import svgfile from '../components/SvgFile'
 export default {
   name: 'Playlists',
   components: {
-    playlistitem
+    playlistitem,
+    svgfile
   },
   data () {
     return {
