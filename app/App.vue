@@ -34,19 +34,20 @@ export default {
   },
   mounted () {
     var screenHeight = 0;
-    var screenWidth = 0;
+    //var screenWidth = 0;
     var root = document.querySelector(':root');
     //Set font size for same render ratio on any device
     function setFontSize () {
       screenHeight = document.scrollingElement.offsetHeight;
-      screenWidth = document.scrollingElement.offsetWidth;
-      root.style.fontSize = (screenHeight > screenWidth ? screenHeight : screenWidth) / 40 + 'px';
+      //screenWidth = document.scrollingElement.offsetWidth;
+      //root.style.fontSize = (screenHeight > screenWidth ? screenHeight : screenWidth) / 40 + 'px';
+      root.style.fontSize = screenHeight / 40 + 'px';
     }
 
     setFontSize();
-    this.$nextTick(function () {
+    /*this.$nextTick(function () {
       window.addEventListener('resize', setFontSize);
-    });
+    });*/
   }
 }
 </script>
@@ -334,6 +335,9 @@ ul.selection li + li:before {
   color: #c8d6e8;
   display: inline-block;
   font-size: 1.2rem;
+}
+.empty-message.center{
+  text-align:center;
 }
 .empty-message svg {
   height: 1.4rem;

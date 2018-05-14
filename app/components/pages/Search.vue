@@ -12,7 +12,11 @@
           ref="searchInput" 
           v-model="searchValue"
           @keyup.enter="search()"
-          :class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svgfile icon="search"></svgfile></label>
+          :class="searchValue.length ? 'fill' : ''">
+          <btn :click="() => focusSearch()"><svgfile icon="search"></svgfile></btn>
+          <transition name="slideAppear">
+            <i v-if="source === 'yt' || source === 'search'"></i>
+          </transition>
         </span>
         <label for="filer" v-if="source === 'fold'" class="filler"><svgfile icon="fold"></svgfile>Explorateur de fichiers</label>
         <btn :click="() => select()" class="select-icon" key="p"><i></i></btn>
@@ -22,6 +26,7 @@
           :key="value"
           :click="() => select(value)"
           class="source"
+          v-if="value !== 'search' || getSearchResult().length !== 0"
           :class="source === value ? 'selected' : ''"
           ><svgfile v-if="value !== 'none'" :icon="value"></svgfile>{{sourcesText[value]}}</btn>
         </div>
@@ -35,12 +40,11 @@
       :page="'search'"
       :searchvalue="searchValue"
       @refresh="search"></musicitem>
-      <span v-if="searchResult.length === 0" class="empty-message">Pour écouter les musiques de votre téléphone, cliquez sur le dossier&nbsp;!<br><br>Pour rechercher des musiques sur Youtube, utilisez le champ de recherche&nbsp;!</span>
-      <div class="authentication" v-if="!connected">
-        <btn :click="() => connect">Authorize access</btn>
-      </div>
-      <btn :click="() => parse" v-if="connected">Parse it dude</btn>
-      <div class="ok" v-if="searchAuthorized">Connection pour recherche ok</div>
+      <span v-if="searchResult.length === 0 && source === 'none'" class="empty-message">Sélectionnez une source pour rechercher vos musiques.<br><br>Une fois trouvées, cliquez dessus pour les écouter&nbsp;!</span>
+      <span v-if="searchResult.length === 0 && source === 'fold'" class="empty-message">Cliquez sur le dossier pour ouvrir l'exlorateur de fichiers&nbsp;</span>
+      <span v-if="searchResult.length === 0 && source === 'yt'" class="empty-message">Écrivez vos mots clés puis validez afin de voir les résultats&nbsp;!</span>
+      <span v-if="searchValue.length && source === 'search'" class="empty-message center">Aucun résultat pour "{{searchValue}}"&nbsp;!</span>
+      <span v-if="source === 'yt'" class="empty-message center">hostname : {{location}}<br><btn :click="() => parse()" v-if="(location === 'localhost' || !searchAuthorized) && source === 'yt'">Simuler un résultat de recherche</btn></span>
       <errormessage :error="error" v-if="error" @closemessage="error = false"></errormessage>
     </div>
   </div>
@@ -74,9 +78,9 @@ export default {
       OAUTH2_SCOPES: ['https://www.googleapis.com/auth/youtube'],
       connected: true,
       searchAuthorized: false,
-      searchIn: 'youtube',
       youtubeSearchResult: '',
-      gapi: null
+      gapi: null,
+      location: window.location.hostname
     }
   },
   methods: {
@@ -84,14 +88,18 @@ export default {
       addLocalFiles: 'manageStore/addLocalFiles'
     }),
     search (refresh) {
-      var searchValueParsed = this.searchValue.toLowerCase()
-      if (!refresh) {
-        if (searchValueParsed.split(' ').join('').length < 3) {
-          this.error = 'Entrez au moins 3 caractères !';
-          return;
-        }
+      if (this.source === 'none') {
+        this.select();
+        return;
       }
-      if (this.searchIn === 'youtube') {
+      var searchValueParsed = this.searchValue.toLowerCase()
+      if (this.source === 'yt') {
+        if (!refresh) {
+          if (searchValueParsed.split(' ').join('').length < 3) {
+            this.error = 'Entrez au moins 3 caractères !';
+            return;
+          }
+        }
         var request = this.gapi.client.youtube.search.list({
           q: searchValueParsed,
           part: 'snippet',
@@ -102,16 +110,19 @@ export default {
         var self = this;
         request.execute(function (response) {
           self.youtubeSearchResult = JSON.stringify(response.result);
+          self.parse();
         });
         return;
       }
-      this.searchResult = this.getSearchResult().filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1))
     },
     focusSearch () {
       if (this.searchValue.length) {
         this.search()
       } else {
-        this.$refs.searchInput.focus()
+        this.$nextTick(function () {
+          this.$refs.searchInput.nextSibling.nextSibling.blur()
+          this.$refs.searchInput.focus()
+        })
       }
     },
     importMusic (e) {
@@ -134,50 +145,33 @@ export default {
     },
     //YOUTUBE API
     connect () {
-      console.log('connect')
       var self = this;
       this.gapi = window.gapi;
-      this.gapi.auth.authorize({
-        client_id: self.OAUTH2_CLIENT_ID,
-        scope: self.OAUTH2_SCOPES,
-        immediate: false
-      }, self.handleAuthResult);
-    },
-    googleApiClientReady () {
-      console.log('googleApiClientReady')
-      var self = this;
-      this.gapi = window.gapi;
-      this.gapi.auth.init(function () {
-        self.$nextTick(function () {
-          self.checkAuth();
-        });
-      });
-    },
-    checkAuth () {
-      console.log('checkAuth')
-      var self = this;
-      this.gapi.auth.authorize({
-        client_id: self.OAUTH2_CLIENT_ID,
-        scope: self.OAUTH2_SCOPES,
-        immediate: true
-      }, self.handleAuthResult);
+      if (this.location !== 'localhost' && !this.connected) {
+        this.gapi.auth.authorize({
+          client_id: self.OAUTH2_CLIENT_ID,
+          scope: self.OAUTH2_SCOPES,
+          immediate: false
+        }, self.handleAuthResult);
+      } else {
+        this.error = 'La connection à l\'API a échoué';
+      }
     },
     handleAuthResult (authResult) {
-      console.log('handleAuthResult')
-      if (authResult && !authResult.error) {
+      if (authResult && !authResult.error && !authResult.message) {
         this.connected = true;
         this.loadAPIClientInterfaces();
+      } else {
+        this.error = 'La connection à l\'API a échoué';
       }
     },
     loadAPIClientInterfaces () {
-      console.log('loadAPIClientInterfaces')
       var self = this;
       this.gapi.client.load('youtube', 'v3', function () {
         self.handleAPILoaded();
       });
     },
     handleAPILoaded () {
-      console.log('handleAPILoaded')
       this.searchAuthorized = true;
     },
     parse () {
@@ -193,8 +187,22 @@ export default {
       this.selectSources = !this.selectSources;
       if (value) {
         this.source = value;
-        if (value === 'search' || value === 'yt') {
+        if (value === 'yt') {
+          this.searchResult = [];
           this.focusSearch();
+          //if (!this.searchAuthorized && this.location !== 'localhost') {
+          if (!this.searchAuthorized) {
+            this.connect();
+          }
+          return;
+        }
+        if (value === 'fold') {
+          this.searchResult = [];
+        }
+        if (value === 'search') {
+          this.searchResult = this.getSearchResult();
+          this.focusSearch();
+          return;
         }
       }
     }
@@ -203,6 +211,17 @@ export default {
     ...mapGetters({
       getSearchResult: 'manageStore/getSearchResult'
     })
+  },
+  watch: {
+    searchValue: function (value) {
+      if (this.source === 'search') {
+        if (value.length === 0) {
+          this.searchResult = this.getSearchResult();
+        }
+        var searchValueParsed = value.toLowerCase();
+        this.searchResult = this.getSearchResult().filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1));
+      }
+    }
   }
 }
 </script>
@@ -217,21 +236,21 @@ export default {
   margin-top:0.5rem;
 }
 .source-icon{
-  padding: 0 4%;
   height:auto;
-  width:3.29rem;
+  width:1.7rem;
   vertical-align: top;
-  margin-top:0.5rem;
+  margin:0.5rem 4% 0;
 }
+
 .source-icon + .select-sources {
-  width: calc(100% - 5.8rem);
+  width: calc(92% - 4.2rem);
 }
 .select-sources{
   font-size: 1.5rem;
   text-align:left;
   color: #c8d6e8;
   width: calc(100% - 2.5rem);
-  padding: 0.1rem 4%;
+  padding: 0.2rem 4%;
   height:2.7rem;
   vertical-align: top;
 }
@@ -247,7 +266,7 @@ export default {
   width:0;
   height:0;
   border-width:0.7rem;
-  margin:0.8rem 0.5rem 0;
+  margin:1rem 0.5rem 0;
   border-style:solid;
   border-color:#c8d6e8 transparent transparent transparent;
 }
@@ -284,30 +303,27 @@ export default {
   border: none;
   outline: none;
   color: #c8d6e8;
-  border-bottom: 2px solid transparent;
   width: 100%;
   transition: width 0.8s;
   vertical-align: top;
   padding: 0.4rem 18% 0 4%;
   line-height:1.15;
-  height:2.3rem;
-}
-.search-input:focus {
-  border-bottom-color: #215292;
+  height:2.5rem;
 }
 
-#search .input-container {
+.input-container {
   vertical-align: top;
   display:inline-block;
   position:relative;
   width: calc(100% - 2.5rem);
   max-width:none;
+  padding:0 2%;
 }
-#search .source-icon + .input-container {
+.source-icon + .input-container {
   width: calc(100% - 5.8rem);
 }
 
-#search .input-container label {
+.input-container .button {
   position:absolute;
   background-color: transparent;
   -webkit-appearance: none;
@@ -317,12 +333,23 @@ export default {
   height: 1.7rem;
   width: 1.7rem;
   font-size: 0;
-  right:0.3rem;
+  right:0.4rem;
   top:55%;
   transform:translate(0,-50%);
 }
-#search .input-container label svg {
-  vertical-align: top;
+.input-container i{
+  content:'';
+  width:0%;
+  height:0.1rem;
+  position:absolute;
+  bottom:0;
+  left:2%;
+  transition: width 0.6s;
+  background-color:#c8d6e8;
+}
+
+.input-container .search-input:focus ~ i{
+  width:96%;
 }
 
 .search-icon {

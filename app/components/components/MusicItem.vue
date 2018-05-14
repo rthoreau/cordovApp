@@ -112,10 +112,8 @@ export default {
       var refresh = this.searchvalue !== '';
       this.musicAction({action: (this.music.favorite ? 'remove' : 'add'), to: 'favorite', from: 'favorite', id: this.music.id, source: this.source, music: this.music});
       if (refresh) {
-        console.log('n')
         this.$emit('refresh', true);
       } else {
-        console.log('y')
         this.forceFavorite = !this.forceFavorite;
       }
     },

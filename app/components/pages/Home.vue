@@ -35,11 +35,13 @@
 import {mapGetters} from 'vuex'
 import musicitem from '../components/MusicItem'
 import playlistitem from '../components/PlaylistItem'
+import svgfile from '../components/SvgFile'
 export default {
   name: 'Home',
   components: {
     musicitem,
-    playlistitem
+    playlistitem,
+    svgfile
   },
   computed: {
     ...mapGetters({
