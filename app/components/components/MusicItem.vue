@@ -30,11 +30,13 @@
 
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" :params="popupParams">
-      <ul class="selection">
-        <li v-for="(playlist) in playlists" :key="playlist.id">
+      <ul class="selection" v-if="getPlaylists.length">
+        <li v-for="(playlist) in getPlaylists" :key="playlist.id">
           <input type="checkbox" :id="'check' + playlist.id" :value="playlist.id" v-model="checkedPlaylists"><label class="checkbox" :for="'check'+playlist.id"> {{playlist.name}}</label>
         </li>
       </ul>
+      <span></span>
+      <input type="text" v-model="newPlaylistName"><btn :click="() => newPLaylist()"><svgfile icon="plus"></svgfile></btn>
     </popup>
   </div>
 </template>
@@ -68,7 +70,6 @@ export default {
   data () {
     return {
       loaded: false,
-      playlists: this.$store.getters['manageStore/getPlaylists'],
       submenuVisible: false,
       source: '',
       checkedPlaylists: [],
@@ -82,12 +83,15 @@ export default {
         cancelAction: () => this.popupFunction(false)
       },
       classe: '',
-      forceFavorite: undefined
+      forceFavorite: undefined,
+      newPlaylistName: '',
+      popupError: ''
     }
   },
   methods: {
     ...mapActions({
-      musicAction: 'manageStore/musicAction'
+      musicAction: 'manageStore/musicAction',
+      setPlaylist: 'manageStore/setPlaylist'
     }),
     subFunction () {
       this.submenuVisible = !this.submenuVisible;
@@ -136,12 +140,24 @@ export default {
       if (typeof this.getCurrentMusic !== 'undefined') {
         this.classe += this.music.id === this.getCurrentMusic.id ? ' playing' : '';
       }
+    },
+    hasValidName () {
+      return this.newPLaylistName && this.newPLaylistName.split(' ').join('') !== '';
+    },
+    newPLaylist () {
+      if (!this.hasValidName()) {
+        this.popupError = 'Ecrivez un nom pour créer une nouvelle playlist !';
+        return;
+      }
+      //move function that generation colorcombination in store + setPlaylist just by name
+      this.setPlaylist(this.newPLaylistName);
     }
   },
   computed: {
     ...mapGetters({
       getMusic: 'manageStore/getMusic',
-      getCurrentMusic: 'manageStore/getCurrentMusic'
+      getCurrentMusic: 'manageStore/getCurrentMusic',
+      getPlaylists: 'manageStore/getPLaylists'
     })
   },
   mounted () {
