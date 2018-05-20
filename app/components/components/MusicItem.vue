@@ -30,13 +30,17 @@
 
     <submenu v-if="submenuVisible" :links="links" @closemenu="submenuVisible = false"></submenu>
     <popup v-if="popupVisible" :params="popupParams">
+      <errormessage :error="popupError" v-if="popupError" @closemessage="popupError = false"></errormessage>
       <ul class="selection" v-if="getPlaylists.length">
         <li v-for="(playlist) in getPlaylists" :key="playlist.id">
           <input type="checkbox" :id="'check' + playlist.id" :value="playlist.id" v-model="checkedPlaylists"><label class="checkbox" :for="'check'+playlist.id"> {{playlist.name}}</label>
         </li>
       </ul>
-      <span></span>
-      <input type="text" v-model="newPlaylistName"><btn :click="() => newPLaylist()"><svgfile icon="plus"></svgfile></btn>
+      <div class="new-playlist">
+        <span class="label">Ajouter une playlist</span>
+        <input type="text" v-model="newPlaylistName" placeholder="Nom de la playlist" 
+          @keyup.enter="newPlaylist()"><btn :click="() => newPlaylist()"><svgfile icon="plus"></svgfile></btn>
+      </div>
     </popup>
   </div>
 </template>
@@ -48,6 +52,7 @@ import popup from './Popup'
 import Btn from './Bouton'
 import svgfile from './SvgFile'
 import submenulink from './SubMenuLink'
+import errormessage from '../components/ErrorMessage'
 //TODO show on music item if playing
 export default {
   name: 'MusicItem',
@@ -57,7 +62,7 @@ export default {
     playlistid: String,
     mode: String,
     index: Number,
-    searchvalue: String
+    forcedfavorite: Boolean
   },
   components: {
     plateformicon,
@@ -65,7 +70,8 @@ export default {
     popup,
     Btn,
     svgfile,
-    submenulink
+    submenulink,
+    errormessage
   },
   data () {
     return {
@@ -111,15 +117,16 @@ export default {
     addToPlaylists () {
       this.musicAction({action: 'add', to: 'playlist', id: this.music.id, playlistIds: this.checkedPlaylists, source: this.source, music: this.music});
       this.popupVisible = false;
+      return false;
     },
     favorite () {
-      var refresh = this.searchvalue !== '';
       this.musicAction({action: (this.music.favorite ? 'remove' : 'add'), to: 'favorite', from: 'favorite', id: this.music.id, source: this.source, music: this.music});
-      if (refresh) {
-        this.$emit('refresh', true);
-      } else {
+      if (this.forcedfavorite) {
         this.forceFavorite = !this.forceFavorite;
+      } else {
+        this.$emit('refresh', true);
       }
+      return false;
     },
     addToCurrent () {
       var currentMusic = this.getCurrentMusic;
@@ -142,22 +149,51 @@ export default {
       }
     },
     hasValidName () {
-      return this.newPLaylistName && this.newPLaylistName.split(' ').join('') !== '';
+      return this.newPlaylistName && this.newPlaylistName.split(' ').join('') !== '';
     },
-    newPLaylist () {
+    newPlaylist () {
       if (!this.hasValidName()) {
         this.popupError = 'Ecrivez un nom pour créer une nouvelle playlist !';
         return;
       }
-      //move function that generation colorcombination in store + setPlaylist just by name
-      this.setPlaylist(this.newPLaylistName);
+      var randomComb = [[{hex: '#ffffff'}, {hex: '#000000'}, {hex: '#0532ff'}],
+        [{hex: '#91a5ff'}, {hex: '#000000'}, {hex: '#0532ff'}],
+        [{hex: '#e64aa9'}, {hex: '#ecdde8'}, {hex: '#ed0019'}],
+        [{hex: '#ffa200'}, {hex: '#0400ff'}, {hex: '#ff0091'}],
+        [{hex: '#00ff2f'}, {hex: '#0400ff'}, {hex: '#ff0091'}],
+        [{hex: '#ff2700'}, {hex: '#0054fa'}, {hex: '#00660b'}],
+        [{hex: '#ff0000'}, {hex: '#0d00ff'}, {hex: '#ff0091'}],
+        [{hex: '#ff0000'}, {hex: '#ffaa00'}, {hex: '#ff4800'}],
+        [{hex: '#ffffff'}, {hex: '#3c3939'}, {hex: '#000000'}],
+        [{hex: '#cd77e8'}, {hex: '#c20076'}, {hex: '#290119'}],
+        [{hex: '#ffffff'}, {hex: '#0532ff'}, {hex: '#000000'}],
+        [{hex: '#ffb300'}, {hex: '#00897b'}, {hex: '#3f51b5'}]];
+
+      randomComb = randomComb[Math.floor(Math.random() * randomComb.length)];
+      var j
+      var x
+      var i
+      for (i = randomComb.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = randomComb[i];
+        randomComb[i] = randomComb[j];
+        randomComb[j] = x;
+      }
+      var newId = 0;
+      this.getPlaylists.forEach(function (pl) {
+        newId = newId < pl.id ? pl.id : newId;
+      })
+      newId = parseInt(newId) + 1;
+      this.setPlaylist({id: newId, name: this.newPlaylistName, musics: [], colors: [randomComb[0], randomComb[1], randomComb[2]]});
+      this.newPlaylistName = '';
+      this.checkedPlaylists.push(newId)
     }
   },
   computed: {
     ...mapGetters({
       getMusic: 'manageStore/getMusic',
       getCurrentMusic: 'manageStore/getCurrentMusic',
-      getPlaylists: 'manageStore/getPLaylists'
+      getPlaylists: 'manageStore/getPlaylists'
     })
   },
   mounted () {
@@ -275,5 +311,38 @@ export default {
 .move-link {
   width: 6%;
   margin-right: 5%;
+}
+
+.popup .new-playlist .label{
+  display:block;
+  opacity:0.8;
+  margin:1rem 0 0.5rem;
+}
+.popup .new-playlist input{
+  font-size: 1rem;
+  background-color: transparent;
+  -webkit-appearance: none;
+  box-shadow: none;
+  border: none;
+  outline: none;
+  color: #c8d6e8;
+  padding: 0 4%;
+  line-height:1.15;
+  width:calc(100% - 2rem);
+  vertical-align: middle;
+  margin-right:0.5rem;
+  height:2rem;
+  border:1px solid white;
+}
+.popup .new-playlist .button{
+  position:relative;
+  width:1.5rem;
+  height:1.5rem;
+  padding:0;
+  vertical-align: middle;
+}
+.popup .new-playlist .button svg{
+  width:100%;
+  height:auto;
 }
 </style>

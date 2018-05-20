@@ -63,36 +63,39 @@ export default {
   -webkit-appearance: none;
   appearance: none;
   width: 0.7rem;
-  height: 1.8rem;
+  height: 1.2rem;
   background: #207bd2;
   cursor: pointer;
   border-radius: 0;
   box-shadow: none;
   border: none;
+  margin-top:0.2rem;
   margin-left:0.1rem;
 }
 .slider::-moz-range-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 0.7rem;
-  height: 1.8rem;
+  height: 1.2rem;
   background: #207bd2;
   cursor: pointer;
   border-radius: 0;
   box-shadow: none;
   border: none;
+  margin-top:0.2rem;
   margin-right:-2%;
 }
 .slider::-ms-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 0.7rem;
-  height: 1.8rem;
+  height: 1.2rem;
   background: #207bd2;
   cursor: pointer;
   border-radius: 0;
   box-shadow: none;
   border: none;
+  margin-top:0.2rem;
   margin-right:-2%;
 }
 .slider::-webkit-slider-runnable-track {

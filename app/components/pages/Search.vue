@@ -2,10 +2,11 @@
   <div id="search">
     <header class="page-header">
       <div class="select-container">
-        <input type="file" id="filer" multiple @change="importMusic" accept="audio/*">
+        <input type="file" id="filer" multiple @change="importMusic" accept="audio/*" ref="fold">
         <btn v-if="source !== 'fold' && source !== 'search'" :click="() => search()" class="source-icon" key="i"><svgfile :icon="source === 'none' ? 'search' : source"></svgfile></btn>
         <btn v-if="source === 'none'" :click="() => select()" class="select-sources" key="s">{{sourcesText[source]}}</btn>
-        <span class="input-container" v-if="source === 'search' || source === 'yt'">
+        <span class="input-container" v-if="source === 'search' || source === 'yt'" 
+          :style="source === 'yt' && !connected ? 'opacity:0' : ''">
           <input 
           placeholder="Recherche..." 
           class="search-input" 
@@ -34,17 +35,18 @@
     </header>
     <div class="page-content">
       <musicitem 
-      v-for="(music, index) in searchResult" 
+      v-for="(music, index) in searchResult"
+      v-if="source !== 'search' || compare(music)"
       :key="index" 
       :music="music"
       :page="'search'"
-      :searchvalue="searchValue"
+      :forcedfavorite="source === 'yt' || source === 'fold'"
       @refresh="search"></musicitem>
-      <span v-if="searchResult.length === 0 && source === 'none'" class="empty-message">Sélectionnez une source pour rechercher vos musiques.<br><br>Une fois trouvées, cliquez dessus pour les écouter&nbsp;!</span>
+      <span v-if="searchResult.length === 0 && source === 'none'" class="empty-message">Sélectionnez une source pour rechercher vos musiques.</span>
       <span v-if="searchResult.length === 0 && source === 'fold'" class="empty-message">Cliquez sur le dossier pour ouvrir l'exlorateur de fichiers&nbsp;</span>
-      <span v-if="searchResult.length === 0 && source === 'yt'" class="empty-message">Écrivez vos mots clés puis validez afin de voir les résultats&nbsp;!</span>
+      <span v-if="searchResult.length === 0 && source === 'yt' && connected" class="empty-message">Écrivez vos mots clés puis validez afin de voir les résultats&nbsp;!</span>
       <span v-if="searchValue.length && source === 'search'" class="empty-message center">Aucun résultat pour "{{searchValue}}"&nbsp;!</span>
-      <span v-if="source === 'yt'" class="empty-message center">hostname : {{location}}<br><btn :click="() => parse()" v-if="(location === 'localhost' || !searchAuthorized) && source === 'yt'">Simuler un résultat de recherche</btn></span>
+      <span v-if="searchResult.length === 0 && source === 'yt' && !searchAuthorized" class="empty-message">La recherche sur Youtube ne fonctionne pas sur l'application pour le moment&nbsp;!<br><br>Vous pouvez cependant<br><btn :click="() => parse()" v-if="(location === 'localhost' || !searchAuthorized) && source === 'yt'" class="blue borders">Simuler un résultat de recherche</btn></span>
       <errormessage :error="error" v-if="error" @closemessage="error = false"></errormessage>
     </div>
   </div>
@@ -74,11 +76,11 @@ export default {
       sourcesText: {'none': 'Chercher dans...', 'yt': 'Youtube', 'fold': 'Mes musiques', 'search': 'Recherches déjà effectuées'},
       searchResult: [],
       error: false,
-      OAUTH2_CLIENT_ID: '',
+      OAUTH2_CLIENT_ID: '950123233154-e612r294nh3jfrhmierb8c0s80ao39g2.apps.googleusercontent.com',
       OAUTH2_SCOPES: ['https://www.googleapis.com/auth/youtube'],
-      connected: true,
+      connected: false,
       searchAuthorized: false,
-      youtubeSearchResult: '',
+      youtubeSearchResult: '{"kind": "youtube#searchListResponse","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/pR85xSUYsctjpvj3tCENwe6Td6c","nextPageToken": "CAUQAA","regionCode": "FR","pageInfo": {"totalResults": 302170,"resultsPerPage": 5},"items": [{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/aYCHz1COoSHWTXiBZanqNLoko7I","id": {"kind": "youtube#video","videoId": "vdaXWg3TfuY"},"snippet": {"publishedAt": "2017-09-17T05:17:03.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Funeral","description": "Continuing his tradition of riveting dance music, OVERWERK presents his first full-length album, State. - Share to support! Spotify : http://spoti.fi/2fc1vgk Apple ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/vdaXWg3TfuY/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/08FJgmg1k24mE6Ydbs0kfEFJHrA","id": {"kind": "youtube#video","videoId": "6KKKGpAZHAA"},"snippet": {"publishedAt": "2012-10-17T14:17:41.000Z","channelId": "UCkeJqeBQOwpN3MsomDAKy1g","title": "OVERWERK - Daybreak (GoPro Edit) [Electro House]","description": "EMH Music / Electro, Minimal House » Subscribe for more music: http://bit.ly/EMHmusic » Facebook: https://facebook.com/EMHmusicPromo » Soundcloud: ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/6KKKGpAZHAA/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "EMH Music","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/d4fbnRKBcgFhU8p2dhv-wCC8mu4","id": {"kind": "youtube#video","videoId": "N-sDbJSXnYc"},"snippet": {"publishedAt": "2018-03-16T10:31:52.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Reign (Official Video)","description": "Reign from OVERWERKs debut album, State Spotify : http://spoti.fi/2fc1vgk Apple Music : http://apple.co/2xbC1pq Google Play : https://goo.gl/xZyjqY Director ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/N-sDbJSXnYc/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/EqxzaH_o4EYlj6zcxuaDST28-AA","id": {"kind": "youtube#video","videoId": "DWpX4We62dg"},"snippet": {"publishedAt": "2015-11-03T08:00:01.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Canon","description": "OVERWERKs new EP, Canon is OUT NOW! iTunes/Apple Music : http://apple.co/1P8yig3 Google Play : http://bit.ly/1MgqQwU Spotify : http://bit.ly/1MbBzVZ ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/DWpX4We62dg/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}},{"kind": "youtube#searchResult","etag": "95M1zlW0txkV42I4OG1Zscxrg5A/63VruFI-xOre0YbZaT2_S4rE36g","id": {"kind": "youtube#video","videoId": "ycfM6XGBE30"},"snippet": {"publishedAt": "2015-05-05T07:30:01.000Z","channelId": "UCJPp8C9j1vIUWA4dSksfZ0g","title": "OVERWERK - Toccata","description": "OVERWERKs new EP, Canon is OUT NOW! iTunes/Apple Music : http://apple.co/1P8yig3 Google Play : http://bit.ly/1MgqQwU Spotify : http://bit.ly/1MbBzVZ ...","thumbnails": {"default": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/default.jpg","width": 120,"height": 90},"medium": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/mqdefault.jpg","width": 320,"height": 180},"high": {"url": "https://i.ytimg.com/vi/ycfM6XGBE30/hqdefault.jpg","width": 480,"height": 360}},"channelTitle": "OVERWERK","liveBroadcastContent": "none"}}]}',
       gapi: null,
       location: window.location.hostname
     }
@@ -92,6 +94,7 @@ export default {
         this.select();
         return;
       }
+      this.$refs.searchInput.blur();
       var searchValueParsed = this.searchValue.toLowerCase()
       if (this.source === 'yt') {
         if (!refresh) {
@@ -104,7 +107,8 @@ export default {
           q: searchValueParsed,
           part: 'snippet',
           type: 'video',
-          videoDuration: 'any'
+          videoDuration: 'any',
+          maxResults: 10
         });
 
         var self = this;
@@ -114,6 +118,13 @@ export default {
         });
         return;
       }
+    },
+    compare (music) {
+      var valueParsed = this.norm(this.searchValue);
+      return (this.norm(music.title).indexOf(valueParsed) > -1 || this.norm(music.author).toLowerCase().indexOf(valueParsed) > -1);
+    },
+    norm (val) {
+      return val.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     },
     focusSearch () {
       if (this.searchValue.length) {
@@ -147,14 +158,16 @@ export default {
     connect () {
       var self = this;
       this.gapi = window.gapi;
-      if (this.location !== 'localhost' && !this.connected) {
-        this.gapi.auth.authorize({
-          client_id: self.OAUTH2_CLIENT_ID,
-          scope: self.OAUTH2_SCOPES,
-          immediate: false
-        }, self.handleAuthResult);
-      } else {
-        this.error = 'La connection à l\'API a échoué';
+      if (!this.connected) {
+        if (this.location !== 'localhost') {
+          this.gapi.auth.authorize({
+            client_id: self.OAUTH2_CLIENT_ID,
+            scope: self.OAUTH2_SCOPES,
+            immediate: false
+          }, self.handleAuthResult);
+        } else {
+          this.error = 'La connection à l\'API a échoué';
+        }
       }
     },
     handleAuthResult (authResult) {
@@ -186,6 +199,7 @@ export default {
     select (value) {
       this.selectSources = !this.selectSources;
       if (value) {
+        this.searchValue = '';
         this.source = value;
         if (value === 'yt') {
           this.searchResult = [];
@@ -198,6 +212,7 @@ export default {
         }
         if (value === 'fold') {
           this.searchResult = [];
+          this.$refs.fold.click();
         }
         if (value === 'search') {
           this.searchResult = this.getSearchResult();
@@ -211,17 +226,6 @@ export default {
     ...mapGetters({
       getSearchResult: 'manageStore/getSearchResult'
     })
-  },
-  watch: {
-    searchValue: function (value) {
-      if (this.source === 'search') {
-        if (value.length === 0) {
-          this.searchResult = this.getSearchResult();
-        }
-        var searchValueParsed = value.toLowerCase();
-        this.searchResult = this.getSearchResult().filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1));
-      }
-    }
   }
 }
 </script>
@@ -243,7 +247,7 @@ export default {
 }
 
 .source-icon + .select-sources {
-  width: calc(92% - 4.2rem);
+  width: calc(92% - 4.3rem);
 }
 .select-sources{
   font-size: 1.5rem;
@@ -260,13 +264,14 @@ export default {
   width:2.5rem;
   border-left:0.1rem solid #207cd28a;
   overflow:hidden;
+  font-size:0;
 }
 .select-icon i{
   display:inline-block;
   width:0;
   height:0;
   border-width:0.7rem;
-  margin:1rem 0.5rem 0;
+  margin:1rem 0 0 0.5rem;
   border-style:solid;
   border-color:#c8d6e8 transparent transparent transparent;
 }
@@ -315,12 +320,12 @@ export default {
   vertical-align: top;
   display:inline-block;
   position:relative;
-  width: calc(100% - 2.5rem);
+  width: calc(100% - 2.8rem);
   max-width:none;
   padding:0 2%;
 }
 .source-icon + .input-container {
-  width: calc(100% - 5.8rem);
+  width: calc(92% - 4.7rem);
 }
 
 .input-container .button {
@@ -363,7 +368,7 @@ export default {
 }
 label.filler{
   display:inline-block;
-  font-size:1.2rem;
+  font-size:1.1rem;
   width:calc(100% - 2.5rem);
   padding: 0.1rem 2%;
   line-height:1.15;
@@ -376,5 +381,8 @@ label.filler svg {
   height:auto;
   vertical-align: top;
   margin:0 0.8rem 0 0.5rem;
+}
+.button.blue{
+  color:#207bd2;
 }
 </style>

@@ -41,6 +41,7 @@ export default {
 .error-message {
   position: absolute;
   top: 0;
+  left:0;
   width: 100%;
   opacity: 1;
   transition: opacity 0.5s;

@@ -8,7 +8,7 @@
       :key="index" 
       :music="data"
       :page="'favorite'"></musicitem>
-      <span class="empty-message" v-if="getFavorites.length === 0">Vous n'avez aucune musique favorite ! N'hésitez plus, cliquez sur le <svgfile icon="favorite"></svgfile> de ce que vous aimez !</span>
+      <span class="empty-message" v-if="getFavorites.length === 0">Vous n'avez aucune musique favorite&nbsp;! N'hésitez plus, cliquez sur le <svgfile icon="favorite"></svgfile> de ce que vous aimez !</span>
     </div>
   </div>
 </template>

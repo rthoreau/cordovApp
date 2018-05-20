@@ -78,7 +78,7 @@ export default {
     }),
     play () {
       var musics = [...this.playlist.musics];
-      this.setCurrentMusic(musics.pop());
+      this.setCurrentMusic(musics.shift());
       this.musicAction({action: 'add', ids: musics, to: 'waitingLine', playlistId: this.playlist.id});
     },
     handleClick: function (event) {

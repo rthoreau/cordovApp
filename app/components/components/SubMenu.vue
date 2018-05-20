@@ -40,6 +40,10 @@ export default {
   },
   mounted () {
     this.jsObj = this.$el.parentElement.parentElement;
+    window.obj = this.jsObj
+    if (this.jsObj.className.indexOf('page-content') === -1) {
+      this.jsObj = this.jsObj.parentElement.parentElement
+    }
     this.jsObj.addEventListener('scroll', this.closeMenu);
     var offsetHeight = this.jsObj.offsetTop;
     var scrollTop = this.jsObj.scrollTop;

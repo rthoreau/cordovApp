@@ -2,12 +2,12 @@
   <div id="waitingLine">
     <div class="page-content">
       <span class="subtitle">Lectures suivantes :</span>
+      <btn :click="() => empty()" class="action"><svgfile icon="delete"></svgfile></btn>
+      <btn :click="() => loop()" class="action loop"><svgfile icon="loop"></svgfile></btn>
+      <btn v-if="getWaitingLine.length > 2" :click="() => musicAction({action: 'randomize', from: 'waitingLine'})" class="action"><svgfile icon="random"></svgfile></btn>
       <p class="empty-message" v-if="getWaitingLine.length === 0">
          Vous n'avez rien prévu d'écouter pour le moment&nbsp;!<br> Laissez faire la lecture automatique ou ajoutez des musiques à la file&nbsp;!
       </p>
-      <btn v-if="getWaitingLine.length !== 0" :click="() => popupVisible = true" class="action"><svgfile icon="delete"></svgfile></btn>
-      <btn v-if="getWaitingLine.length > 0" :click="() => loop()" class="action loop"><svgfile icon="loop"></svgfile></btn>
-      <btn v-if="getWaitingLine.length > 4" :click="() => musicAction({action: 'randomize', from: 'waitingLine'})" class="action"><svgfile icon="random"></svgfile></btn>
       <musicitem 
       v-for="(id, index) in getWaitingLine" 
       :key="index" :index="index"
@@ -37,7 +37,7 @@ export default {
     return {
       popupVisible: false,
       popupParams: {
-        okAction: () => this.empty(),
+        okAction: () => this.empty(true),
         cancelAction: () => this.popupVisible = false
       }
     }
@@ -46,7 +46,11 @@ export default {
     ...mapActions({
       musicAction: 'manageStore/musicAction'
     }),
-    empty () {
+    empty (confirmed) {
+      if (!confirmed) {
+        this.popupVisible = true
+        return
+      }
       this.musicAction({action: 'remove', all: true, from: 'waitingLine'});
       this.popupVisible = false;
     },

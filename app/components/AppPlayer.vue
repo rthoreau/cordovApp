@@ -8,11 +8,11 @@
         <plateformicon :plateform="plateform"></plateformicon>
         <div class="video-container">
           <transition name="appear">
-            <youtube v-if="plateform === 'yt'" class="video" :player-vars="{start: 0, autoplay: 0, controls:0, iv_load_policy: 3}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh !== false"></youtube>
+            <youtube v-if="plateform === 'yt'" class="video" :player-vars="{start: 0, autoplay: 0, controls:0, iv_load_policy: 3}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && reload !== false"></youtube>
           </transition>
           <transition name="appear">
-            <img :src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh && getCurrentMusic.thumbnail">
-            <div class="video empty" v-if="refresh && !getCurrentMusic.thumbnail"><svgfile icon="lo"></svgfile></div>
+            <img :src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && reload && getCurrentMusic.thumbnail">
+            <div class="video empty" v-if="reload && !getCurrentMusic.thumbnail"><svgfile icon="lo"></svgfile></div>
           </transition>
           <div class="overlay"></div>
         </div>
@@ -75,7 +75,7 @@ export default {
       currentTimeValue: 0,
       currentTimeInterval: '',
       progressInterval: '',
-      refresh: true,
+      reload: true,
       expandClass: '',
       sources: [],
       localPlayerEvent: '',
@@ -143,9 +143,11 @@ export default {
     },
     playPause () {
       if (this.paused) {
-        this.playVideo();
-        this.paused = false;
-        this.playInit = true;
+        if (this.currentMusic.plateform === 'yt' || !this.currentMusic.empty) {
+          this.playVideo();
+          this.paused = false;
+          this.playInit = true;
+        }
       } else {
         this.pauseVideo();
         this.paused = true;
@@ -302,7 +304,7 @@ export default {
       if (this.plateform === 'yt') {
         var self = this;
         window.setTimeout(function () {
-          self.refresh = 0;
+          self.reload = 0;
         }, 1500);
       }
     }
@@ -317,6 +319,7 @@ export default {
       });
       this.windowEventListener = true;
     }
+    this.$emit('loaded');
   },
   computed: {
     ...mapGetters({
@@ -338,6 +341,9 @@ export default {
       this.currentTimeValue = time;
     },
     getCurrentMusic: function (music) {
+      if (this.currentMusic && music.title === this.currentMusic.title) {
+        return;
+      }
       this.playInit = true;
       if (music.plateform === 'yt') {
         if (music.url) {
@@ -351,9 +357,9 @@ export default {
       }
       this.duration = music.duration;
       this.currentTime = 0;
-      this.refresh = false;
+      this.reload = false;
       this.$nextTick(function () {
-        this.refresh = true;
+        this.reload = true;
       });
       this.setData();
     },
@@ -490,6 +496,7 @@ export default {
   left: 0;
   right: 0;
   top: 0;
+  bottom: 0;
   z-index: 10;
 }
 

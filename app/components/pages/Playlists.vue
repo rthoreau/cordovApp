@@ -7,7 +7,7 @@
       </router-link>
     </header>
     <div class="page-content">
-      <span class="empty-message" v-if="getPlaylists.length === 0">Vous n'avez aucune playlist pour l'instant&nbsp;! <router-link :to="nextIdLink">Ajouter une playlist <svgfile icon="plus"></svgfile></router-link></span>
+      <span class="empty-message" v-if="getPlaylists.length === 0">Vous n'avez aucune playlist pour l'instant&nbsp;! <router-link :to="nextIdLink" class="borders"><svgfile icon="plus"></svgfile> Ajouter une playlist</router-link></span>
       <playlistitem 
       v-for="(data) in getPlaylists" 
       :key="data.id" 

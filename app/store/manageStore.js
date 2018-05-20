@@ -27,7 +27,7 @@ const state = {
 const getters = {
   getCurrentMusic: function (state) {
     var filtered = state.musics.filter(music => music.id === state.currentMusic);
-    return filtered.length ? filtered[0] : {id: '', plateform: 'lo', url: '', title: '- - - - - - - - - - - - - - -', duration: 0};
+    return filtered.length ? filtered[0] : {id: '', plateform: 'lo', url: '', title: '- - - - - - - - - - - - - - -', duration: 0, empty: true};
   },
   getMusics: state => state.musics,
   getMusic: function (state) {
@@ -236,7 +236,7 @@ const mutations = {
           params.ids.forEach(id => state.waitingLine.push(id));
         } else {
           //add playlist (-1) at start
-          params.ids.forEach(id => state.waitingLine.unshift(id));
+          params.ids.reverse().forEach(id => state.waitingLine.unshift(id));
         }
       } else {
         //else add to end
@@ -259,8 +259,6 @@ const mutations = {
         }
       }
       state.currentMusic = params.id;
-    } else {
-      console.log('missing arg, add to ?')
     }
   },
   mutateRemoveMusic: (state, params) => {
@@ -365,6 +363,9 @@ const mutations = {
         state.searchResult.push(music);
       }
     });
+  },
+  mutateEmptySearchResult: (state) => {
+    state.searchResult = []
   }
 }
 
@@ -416,6 +417,9 @@ const actions = {
   },
   addLocalFiles (context, musics) {
     context.commit('mutateAddLocalFiles', musics)
+  },
+  emptySearchResult (context) {
+    context.commit('mutateEmptySearchResult')
   }
 }
 

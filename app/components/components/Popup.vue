@@ -65,7 +65,7 @@ export default {
 }
 
 .popup {
-  background-color: #152031;
+  background-color: rgba(12, 28, 38, 1);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -97,6 +97,8 @@ export default {
   font-size: 1rem;
   color: #ddd;
   text-align: center;
+  max-height:18rem;
+  overflow:auto;
 }
 .popup footer {
   padding: 0.5rem 0;

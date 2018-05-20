@@ -5,7 +5,7 @@
     <router-view class="page" :class="playerExpanded ? 'hidden': ''"></router-view>
     <!--<draggable>
       <transition-group>-->
-    <appplayer @expanded="expand"></appplayer>
+    <appplayer @expanded="expand" @loaded="showApp(false, true)"></appplayer>
       <!--</transition-group>
     </draggable>-->
   </div>
@@ -15,6 +15,7 @@
 import appheader from './components/AppHeader.vue'
 import appplayer from './components/AppPlayer.vue'
 import svgdef from './components/components/SvgDef.vue'
+import {mapActions} from 'vuex'
 export default {
   name: 'app',
   components: {
@@ -24,30 +25,54 @@ export default {
   },
   data () {
     return {
-      playerExpanded: false
+      playerExpanded: false,
+      componentsLoaded: false,
+      timeLoaded: false
     }
   },
   methods: {
     expand (active) {
       this.playerExpanded = active;
+    },
+    ...mapActions({
+      emptySearchResult: 'manageStore/emptySearchResult'
+    }),
+    showApp (time, components) {
+      if (time) {
+        this.timeLoaded = true;
+      }
+      if (components) {
+        this.componentsLoaded = true;
+      }
+      if (this.componentsLoaded && this.timeLoaded) {
+        this.$el.parentElement.className = this.$el.parentElement.className + ' loaded';
+      }
     }
   },
   mounted () {
     var screenHeight = 0;
-    //var screenWidth = 0;
+    var screenWidth = 0;
     var root = document.querySelector(':root');
+    var init = false;
     //Set font size for same render ratio on any device
     function setFontSize () {
-      screenHeight = document.scrollingElement.offsetHeight;
-      //screenWidth = document.scrollingElement.offsetWidth;
-      //root.style.fontSize = (screenHeight > screenWidth ? screenHeight : screenWidth) / 40 + 'px';
-      root.style.fontSize = screenHeight / 40 + 'px';
+      if (!init || screenWidth !== document.scrollingElement.offsetWidth) {
+        screenWidth = document.scrollingElement.offsetWidth;
+        screenHeight = document.scrollingElement.offsetHeight;
+        root.style.fontSize = screenHeight / 40 + 'px';
+        init = true;
+      }
     }
+    var self = this;
+    window.setTimeout(function () {
+      self.showApp(true)
+    }, 2500);
 
     setFontSize();
-    /*this.$nextTick(function () {
+    this.$nextTick(function () {
       window.addEventListener('resize', setFontSize);
-    });*/
+    });
+    this.emptySearchResult();
   }
 }
 </script>
@@ -64,13 +89,26 @@ html {
 
 body {
   height: 100%;
-  background: url(assets/background.jpg) no-repeat fixed;
+  background: url(assets/splashscreen.png) no-repeat fixed;
+  background-position:center;
   background-size: cover;
   background-color:black;
   margin: 0;
   font-family: "Gadugi", Tahoma, Geneva, Verdana, sans-serif;
   color: #c8d6e8;
   font-size: 0.85rem;
+}
+
+body *{
+  opacity:0;
+  transition: opacity 0.5s;
+}
+
+body.loaded {
+  background-image: url(assets/background.jpg);
+}
+body.loaded *{
+  opacity:1;
 }
 
 #app {
@@ -89,6 +127,13 @@ body {
   color: inherit;
   padding: 0;
   text-align:center;
+}
+.borders{
+  display:inline-block;
+  border: 1px solid #207bd2;
+  padding: 0.2rem 0.8rem 0.4rem;
+  border-radius: 0.5rem;
+  margin-top: 0.5rem;
 }
 .button svg {
   width: 100%;
@@ -272,15 +317,7 @@ ul.selection li {
 ul.selection li + li {
   margin-top: 0.1rem;
   padding-top: 0.5rem;
-}
-ul.selection li + li:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 1%;
-  width: 98%;
-  height: 0.04rem;
-  background-color: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0, rgba(255, 255, 255, 0.2) 0.08rem, transparent 0.08rem, transparent 100%);
 }
 
 .music-plateform {
