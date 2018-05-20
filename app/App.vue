@@ -99,7 +99,7 @@ body {
   font-size: 0.85rem;
 }
 
-body *{
+body #app{
   opacity:0;
   transition: opacity 0.5s;
 }
@@ -107,7 +107,7 @@ body *{
 body.loaded {
   background-image: url(assets/background.jpg);
 }
-body.loaded *{
+body.loaded #app{
   opacity:1;
 }
 
