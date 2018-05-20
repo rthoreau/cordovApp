@@ -36,13 +36,13 @@
     <div class="page-content">
       <musicitem 
       v-for="(music, index) in searchResult"
-      v-if="source !== 'search' || compare(music)"
-      :key="index" 
+      v-if="searchResult.length && (source !== 'search' || compare(music))"
+      :key="keyValue(index, music.title)" 
       :music="music"
       :page="'search'"
       :forcedfavorite="source === 'yt' || source === 'fold'"
       @refresh="search"></musicitem>
-      <span v-if="searchResult.length === 0 && source === 'none'" class="empty-message">Sélectionnez une source pour rechercher vos musiques.</span>
+      <span v-if="searchResult.length === 0 && source === 'none'" class="empty-message">Sélectionnez une source pour rechercher vos musiques</span>
       <span v-if="searchResult.length === 0 && source === 'fold'" class="empty-message">Cliquez sur le dossier pour ouvrir l'exlorateur de fichiers&nbsp;</span>
       <span v-if="searchResult.length === 0 && source === 'yt' && connected" class="empty-message">Écrivez vos mots clés puis validez afin de voir les résultats&nbsp;!</span>
       <span v-if="searchValue.length && source === 'search'" class="empty-message center">Aucun résultat pour "{{searchValue}}"&nbsp;!</span>
@@ -76,7 +76,7 @@ export default {
       sourcesText: {'none': 'Chercher dans...', 'yt': 'Youtube', 'fold': 'Mes musiques', 'search': 'Recherches déjà effectuées'},
       searchResult: [],
       error: false,
-      OAUTH2_CLIENT_ID: '950123233154-e612r294nh3jfrhmierb8c0s80ao39g2.apps.googleusercontent.com',
+      OAUTH2_CLIENT_ID: '950123233154-7fbmpjgek656qv3mbvd3jgf3n57otb2a.apps.googleusercontent.com',
       OAUTH2_SCOPES: ['https://www.googleapis.com/auth/youtube'],
       connected: false,
       searchAuthorized: false,
@@ -126,6 +126,10 @@ export default {
     norm (val) {
       return val.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     },
+    keyValue (index, val) {
+      val = val.substr(val.length - 5);
+      return index + '-' + val.charCodeAt(0) + val.charCodeAt(1) + val.charCodeAt(2) + val.charCodeAt(3) + val.charCodeAt(4);
+    },
     focusSearch () {
       if (this.searchValue.length) {
         this.search()
@@ -173,6 +177,7 @@ export default {
     handleAuthResult (authResult) {
       if (authResult && !authResult.error && !authResult.message) {
         this.connected = true;
+        window.connected = true;
         this.loadAPIClientInterfaces();
       } else {
         this.error = 'La connection à l\'API a échoué';
@@ -185,6 +190,7 @@ export default {
       });
     },
     handleAPILoaded () {
+      window.searchAuthorized = true;
       this.searchAuthorized = true;
     },
     parse () {
@@ -226,6 +232,11 @@ export default {
     ...mapGetters({
       getSearchResult: 'manageStore/getSearchResult'
     })
+  },
+  mounted () {
+    this.searchAuthorized = window.searchAuthorized || false;
+    this.connected = window.connected || false;
+    this.gapi = window.gapi;
   }
 }
 </script>
@@ -236,7 +247,10 @@ export default {
   font-size:0;
 }
 .select-container{
-  border:0.1rem solid #207cd28a;
+  background: linear-gradient(to top, #207cd28a 0%, #207cd28a 0.1rem, transparent 0.1rem, transparent 100%),
+    linear-gradient(to left, #207cd28a 0%, #207cd28a 0.1rem, transparent 0.1rem, transparent 100%),
+    linear-gradient(to right, #207cd28a 0%, #207cd28a 0.1rem, transparent 0.1rem, transparent 100%),
+    linear-gradient(to bottom, #207cd28a 0%, #207cd28a 0.1rem, transparent 0.1rem, transparent 100%);
   margin-top:0.5rem;
 }
 .source-icon{
@@ -271,7 +285,7 @@ export default {
   width:0;
   height:0;
   border-width:0.7rem;
-  margin:1rem 0 0 0.5rem;
+  margin:1rem 0 0 0.2rem;
   border-style:solid;
   border-color:#c8d6e8 transparent transparent transparent;
 }

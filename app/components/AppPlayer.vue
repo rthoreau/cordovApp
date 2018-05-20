@@ -187,6 +187,7 @@ export default {
       if (this.plateform === 'yt') {
         this.player.seekTo(time);
       } else {
+        console.log('seek')
         this.localPlayerEvent = 'seekto' + time;
       }
       this.setProgress(time);

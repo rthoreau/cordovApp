@@ -1,5 +1,5 @@
 <template>
-  <div class="popup-overlay">
+  <div class="popup-overlay" v-on-clickaway="callAction">
     <div class="popup">
       <header v-if="defaultParams.title !== ''">
         <span class="title">{{defaultParams.title}}</span>
@@ -17,11 +17,13 @@
 
 <script>
 import btn from './Bouton'
+import { mixin as clickaway } from 'vue-clickaway'
 export default {
   name: 'SubMenu',
   props: {
     params: Object
   },
+  mixins: [ clickaway ],
   components: {
     btn
   },
@@ -38,6 +40,7 @@ export default {
   },
   methods: {
     callAction (action) {
+      action = action || this.defaultParams.cancelAction;
       try {
         action.call()
       } catch (error) {
@@ -86,7 +89,7 @@ export default {
   font-size: 1.1rem;
   padding: 0.6rem 1rem;
   color: white;
-  background-color: #4b89dc;
+  background-color: #114372;
 }
 .popup header + .container {
   padding: 0.8rem 0.8rem;
@@ -102,7 +105,7 @@ export default {
 }
 .popup footer {
   padding: 0.5rem 0;
-  background: linear-gradient(to right, #4b89dc, #4b89dc 49%, #111 50%, #111);
+  background: linear-gradient(to right, #114372, #114372 50%, #000 50%, #000);
   font-size: 0;
   text-align: center;
 }

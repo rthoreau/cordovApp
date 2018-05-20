@@ -10,7 +10,8 @@
       </p>
       <musicitem 
       v-for="(id, index) in getWaitingLine" 
-      :key="index" :index="index"
+      :key="index + '-' + id"
+      :index="index"
       :music="getMusic(id)"
       :page="'waitingLine'"></musicitem>
       <popup v-if="popupVisible" :params="popupParams">Vider la file d'attente ?</popup>

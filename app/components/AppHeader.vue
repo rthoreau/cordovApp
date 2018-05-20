@@ -72,6 +72,9 @@ export default {
   text-align: center;
   vertical-align: middle;
 }
+#appHeader svg {
+  min-height:1.5rem;
+}
 #appHeader .nav li:last-child {
   display: inline-block;
   width: 3.6%;
@@ -83,7 +86,10 @@ export default {
   content:none;
 }
 #appHeader .nav li:last-child svg {
-  height: 100%;
+  max-height:60%;
+  top:50%;
+  left:5%;
+  transform:translate(0, -50%);
   position: relative;
 }
 #appHeader .nav .link {

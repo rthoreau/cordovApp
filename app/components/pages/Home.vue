@@ -8,9 +8,9 @@
       <section class="last music" v-if="getLastMusics.length !== 0">
         <h2>Vos dernières écoutes&nbsp;:</h2>
         <musicitem 
-          v-for="(musicId, index) in getLastMusics"
+          v-for="musicId in getLastMusics"
           v-if="getMusic(musicId) !== false" 
-          :key="index" 
+          :key="musicId" 
           :music="getMusic(musicId)"
           :page="'home'"></musicitem>
       </section>

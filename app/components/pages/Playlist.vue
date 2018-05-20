@@ -23,7 +23,7 @@
         <transition-group>
           <musicitem 
           v-for="(musicId, index) in (mode === 'edit' ? playlist.musics : getPlaylist(id).musics)" 
-          :key="index" 
+          :key="index + '-' + musicId" 
           :music="getMusic(musicId)"
           :playlistid="id"
           :page="'playlist'"

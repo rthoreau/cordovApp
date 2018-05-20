@@ -18,8 +18,8 @@ const state = {
     {id: 'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite: false}
   ],
   playlists: [
-    {id: '14', name: 'Sleep', musics: ['5er84t568e', 'azdedbgyu'], colors: [{hex: '#ff4800'}, {hex: '#ff0000'}, {hex: '#ffaa00'}]},
-    {id: '22', name: 'Test', musics: ['bertertb', 'a65468e468v4', 'stlkapml'], colors: [{hex: '#000000'}, {hex: '#0532ff'}, {hex: '#FFFFFF'}]}
+    {id: '14', name: 'Musiques', musics: ['5er84t568e', 'azdedbgyu'], colors: [{hex: '#ff4800'}, {hex: '#ff0000'}, {hex: '#ffaa00'}]},
+    {id: '22', name: 'Playlist !', musics: ['bertertb', 'a65468e468v4', 'stlkapml'], colors: [{hex: '#000000'}, {hex: '#0532ff'}, {hex: '#FFFFFF'}]}
   ],
   searchResult: []
 }

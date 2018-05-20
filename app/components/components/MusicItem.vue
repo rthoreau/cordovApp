@@ -36,8 +36,8 @@
           <input type="checkbox" :id="'check' + playlist.id" :value="playlist.id" v-model="checkedPlaylists"><label class="checkbox" :for="'check'+playlist.id"> {{playlist.name}}</label>
         </li>
       </ul>
-      <div class="new-playlist">
-        <span class="label">Ajouter une playlist</span>
+      <div class="new-playlist" :class="getPlaylists.length ? '' : 'none'">
+        <span class="label">Créer une playlist</span>
         <input type="text" v-model="newPlaylistName" placeholder="Nom de la playlist" 
           @keyup.enter="newPlaylist()"><btn :click="() => newPlaylist()"><svgfile icon="plus"></svgfile></btn>
       </div>
@@ -57,7 +57,7 @@ import errormessage from '../components/ErrorMessage'
 export default {
   name: 'MusicItem',
   props: {
-    music: Object,
+    music: true,
     page: String,
     playlistid: String,
     mode: String,
@@ -312,11 +312,13 @@ export default {
   width: 6%;
   margin-right: 5%;
 }
-
 .popup .new-playlist .label{
   display:block;
   opacity:0.8;
   margin:1rem 0 0.5rem;
+}
+.popup .new-playlist.none .label{
+  margin-top:0;
 }
 .popup .new-playlist input{
   font-size: 1rem;
@@ -330,7 +332,7 @@ export default {
   line-height:1.15;
   width:calc(100% - 2rem);
   vertical-align: middle;
-  margin-right:0.5rem;
+  margin: 0 0.5rem 0.5rem 0;
   height:2rem;
   border:1px solid white;
 }

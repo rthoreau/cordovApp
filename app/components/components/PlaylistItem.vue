@@ -2,15 +2,15 @@
   <div class="playlist-item item" v-bind:class="submenuVisible ? 'active' : ''">
     <div class="playlist-infos">
       <playlisticon :colors="playlist.colors"></playlisticon>
-      <span class="music-amount">{{playlist.musics.length}}<svgfile icon="lo"></svgfile></span>
-      <span class="playlist-duration">{{hmsDuration(playlist.duration)}}</span>
+      <span class="music-amount" v-if="playlist.musics.length">{{playlist.musics.length}}<svgfile icon="lo"></svgfile></span>
+      <span class="playlist-duration" v-if="playlist.musics.length">{{hmsDuration(playlist.duration)}}</span>
     </div>
     <div class="playlist-content" @click="handleClick()">
       <span class="playlist-name">{{playlist.name}}</span>
       <ul class="playlist-music-list">
         <li
         v-for="(id, index) in playlist.musics" 
-        :key="index" 
+        :key="id + '-' + index" 
         :id="id" v-if="index <= 3"><i class="dot"></i>{{getMusic(id).title}}</li>
       </ul>
     </div>

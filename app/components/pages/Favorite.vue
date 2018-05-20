@@ -4,8 +4,8 @@
     </header>
     <div class="page-content">
       <musicitem 
-      v-for="(data, index) in getFavorites" 
-      :key="index" 
+      v-for="data in getFavorites" 
+      :key="data.id" 
       :music="data"
       :page="'favorite'"></musicitem>
       <span class="empty-message" v-if="getFavorites.length === 0">Vous n'avez aucune musique favorite&nbsp;! N'hésitez plus, cliquez sur le <svgfile icon="favorite"></svgfile> de ce que vous aimez !</span>

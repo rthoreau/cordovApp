@@ -30,6 +30,8 @@ export default {
       if (val === 'play') {
         if (!this.playing) {
           this.togglePlayback();
+          window.aaa = this;
+          console.log('play')
         }
         return;
       }
@@ -41,6 +43,7 @@ export default {
       }
       if (val.indexOf('seekto') !== -1) {
         val = val.replace('seekto', '');
+        console.log('to')
         this.setSeek(parseInt(val));
         return
       }
@@ -83,6 +86,9 @@ export default {
       this.started = false;
       this.togglePlayback();
     }
+  },
+  mounted () {
+    console.log(this.sources)
   }
 }
 </script>
