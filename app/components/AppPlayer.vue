@@ -341,6 +341,9 @@ export default {
       this.currentTimeValue = time;
     },
     getCurrentMusic: function (music) {
+      if (this.currentMusic && music.title === this.currentMusic.title) {
+        return;
+      }
       this.playInit = true;
       if (music.plateform === 'yt') {
         if (music.url) {

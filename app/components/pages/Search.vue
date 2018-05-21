@@ -37,7 +37,7 @@
       <musicitem 
       v-for="(music, index) in searchResult"
       v-if="searchResult.length && (source !== 'search' || compare(music))"
-      :key="index" 
+      :key="keyValue(index, music.title)" 
       :music="music"
       :page="'search'"
       :forcedfavorite="source === 'yt' || source === 'fold'"
@@ -177,7 +177,7 @@ export default {
     handleAuthResult (authResult) {
       if (authResult && !authResult.error && !authResult.message) {
         this.connected = true;
-        //window.connected = true;
+        window.connected = true;
         this.loadAPIClientInterfaces();
       } else {
         this.error = 'La connection à l\'API a échoué';
@@ -190,7 +190,7 @@ export default {
       });
     },
     handleAPILoaded () {
-      //window.searchAuthorized = true;
+      window.searchAuthorized = true;
       this.searchAuthorized = true;
     },
     parse () {

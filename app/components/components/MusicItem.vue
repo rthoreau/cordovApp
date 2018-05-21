@@ -57,7 +57,7 @@ import errormessage from '../components/ErrorMessage'
 export default {
   name: 'MusicItem',
   props: {
-    music: Object,
+    music: true,
     page: String,
     playlistid: String,
     mode: String,
