@@ -179,11 +179,12 @@ export default {
         randomComb[i] = randomComb[j];
         randomComb[j] = x;
       }
-      var newId = 0;
+      var newId = '0';
       this.getPlaylists.forEach(function (pl) {
         newId = newId < pl.id ? pl.id : newId;
       })
       newId = parseInt(newId) + 1;
+      newId = newId.toString();
       this.setPlaylist({id: newId, name: this.newPlaylistName, musics: [], colors: [randomComb[0], randomComb[1], randomComb[2]]});
       this.newPlaylistName = '';
       this.checkedPlaylists.push(newId)
@@ -312,6 +313,9 @@ export default {
   width: 6%;
   margin-right: 5%;
 }
+.popup .new-playlist{
+  margin-bottom: 0.5rem;
+}
 .popup .new-playlist .label{
   display:block;
   opacity:0.8;
@@ -332,7 +336,7 @@ export default {
   line-height:1.15;
   width:calc(100% - 2rem);
   vertical-align: middle;
-  margin: 0 0.5rem 0.5rem 0;
+  margin: 0 0.5rem 0 0;
   height:2rem;
   border:1px solid white;
 }
