@@ -1,6 +1,6 @@
 const state = {
   currentMusic: '',
-  waitingLine: ['5er84t568e', 'ert5784ert'],
+  waitingLine: [],
   lastMusics: [],
   lastPlaylist: '',
   musics: [

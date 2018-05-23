@@ -331,14 +331,25 @@ ul.selection li + li {
   overflow: hidden;
 }
 
+.rightAppear-enter-active,
+.rightAppear-leave-active {
+  transition: all 0.3s;
+}
+
+.rightAppear-enter,
+.rightAppear-leave-to {
+  width: 0% !important;
+}
+
 .appear-enter-active,
 .appear-leave-active {
-  transition: all 0.3s;
+  transition: all 0.5s;
+  opacity:0;
 }
 
 .appear-enter,
 .appear-leave-to {
-  width: 0% !important;
+  opacity:1;
 }
 
 /* items */

@@ -7,7 +7,7 @@
       <plateformicon :plateform="music.plateform"></plateformicon>
     </div>
     <div class="music-thumbnail-container" @click="addToCurrent()">
-      <transition name="appear">
+      <transition name="rightAppear">
         <img v-if="music.thumbnail && loaded" :src="music.thumbnail" alt="" class="music-thumbnail">
         <div v-if="!music.thumbnail && loaded" class="music-thumbnail empty"><svgfile icon="lo"></svgfile></div>
       </transition>

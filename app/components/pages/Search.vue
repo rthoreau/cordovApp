@@ -113,9 +113,7 @@ export default {
 
         var self = this;
         request.execute(function (response) {
-          console.log(response.result)
           self.youtubeSearchResult = JSON.stringify(response.result);
-          console.log(self.youtubeSearchResult)
           self.parse();
         });
         return;
@@ -287,7 +285,7 @@ export default {
   width:0;
   height:0;
   border-width:0.7rem;
-  margin:1rem 0 0 0.2rem;
+  margin:1rem 0.1rem 0;
   border-style:solid;
   border-color:#c8d6e8 transparent transparent transparent;
 }

@@ -1,16 +1,16 @@
 <template>
   <div id="appPlayer" :class="expandClass">
     <div class="player-container">
-      <div v-if="expandClass === '' && duration !== 0" class="progress" :style="'width:' + currentTimeValue + '%'"></div>
-      <timeslider v-if="expandClass !== ''" :time="currentTimeValue" @settime="seekTo"></timeslider>
+      <div v-if="expandClass === '' && duration !== 0" class="progress" :style="'width:' + loaded ? currentTimeValue : 0 + '%'"></div>
+      <timeslider v-if="expandClass !== ''" :time="loaded ? currentTimeValue : 0" @settime="seekTo"></timeslider>
 
       <div class="music-plateform" :class="plateform">
         <plateformicon :plateform="plateform"></plateformicon>
         <div class="video-container">
-          <transition name="appear">
+          <transition name="rightAppear">
             <youtube v-if="plateform === 'yt'" class="video" :player-vars="{start: 0, autoplay: 0, controls:0, iv_load_policy: 3}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && reload !== false"></youtube>
           </transition>
-          <transition name="appear">
+          <transition name="rightAppear">
             <img :src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && reload && getCurrentMusic.thumbnail">
             <div class="video empty" v-if="reload && !getCurrentMusic.thumbnail"><svgfile icon="lo"></svgfile></div>
           </transition>
@@ -20,8 +20,11 @@
 
       <btn :click="() => playPause()" class="play">
         <transition name="switch" mode="out-in">
-          <svgfile icon="play" v-if="paused" key="play"></svgfile>
+          <svgfile icon="play" v-if="paused && (loaded || !playInit)" key="play"></svgfile>
           <svgfile icon="pause" v-if="!paused" key="pause"></svgfile>
+        </transition>
+        <transition name="appear">
+          <svgfile icon="load" v-if="!loaded && playInit" key="load" class="load-icon"></svgfile>
         </transition>
       </btn>
 
@@ -29,7 +32,7 @@
 
       <p class="music-infos" :class="getCurrentMusic.id ? '' : 'empty'">
         <span class="music-title">{{getCurrentMusic.title}}</span>
-        <span key="t" v-if="!unloaded" class="time">{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+        <span key="t" v-if="!unloaded" class="time">{{loaded ? hmsDuration(currentTime) : hmsDuration(0)}} / {{hmsDuration(duration)}}</span>
         <span key="u" v-else class="unloaded">Musique inaccessible ! :'(</span>
       </p>
 
@@ -72,6 +75,7 @@ export default {
       paused: true,
       currentTime: 0,
       duration: 0,
+      loaded: false,
       currentTimeValue: 0,
       currentTimeInterval: '',
       progressInterval: '',
@@ -125,6 +129,7 @@ export default {
       }
     },
     playing () {
+      this.loaded = true;
       if (!this.playInit) {
         this.pauseVideo();
         this.paused = true;
@@ -178,7 +183,6 @@ export default {
       if (this.player && id) {
         this.player.loadVideoById({videoId: id, suggestedQuality: 'small', start: 0});
         this.setProgressByGet();
-        window.player = this.player
         this.showVideo();
       }
     },
@@ -261,6 +265,7 @@ export default {
       this.duration = this.currentMusic.duration;
       this.currentTime = 0;
       this.unloaded = false;
+      this.loaded = false;
       this.sources = [];
       this.localPlayerEvent = this.localPlayerEvent === 'play' ? '' : this.localPlayerEvent;
       if (this.plateform === 'yt') {
@@ -553,5 +558,8 @@ export default {
 }
 .unloaded{
   color:#ff3f3f;
+}
+.load-icon{
+  opacity:1;
 }
 </style>

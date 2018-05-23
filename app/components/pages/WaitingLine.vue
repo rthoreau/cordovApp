@@ -6,7 +6,7 @@
       <btn :click="() => loop()" class="action loop"><svgfile icon="loop"></svgfile></btn>
       <btn v-if="getWaitingLine.length > 2" :click="() => musicAction({action: 'randomize', from: 'waitingLine'})" class="action"><svgfile icon="random"></svgfile></btn>
       <p class="empty-message" v-if="getWaitingLine.length === 0">
-         Vous n'avez rien prévu d'écouter pour le moment&nbsp;!<br> Laissez faire la lecture automatique ou ajoutez des musiques à la file&nbsp;!
+         Vous n'avez rien prévu d'écouter pour le moment&nbsp;!<br> Ajoutez des musiques à la file&nbsp;!
       </p>
       <musicitem 
       v-for="(id, index) in getWaitingLine" 

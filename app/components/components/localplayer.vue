@@ -17,7 +17,8 @@ export default {
     return {
       submenuVisible: false,
       seek: undefined,
-      start: false
+      start: false,
+      currentSource: undefined
     }
   },
   methods: {
@@ -30,7 +31,6 @@ export default {
       if (val === 'play') {
         if (!this.playing) {
           this.togglePlayback();
-          window.aaa = this;
         }
         return;
       }
@@ -63,7 +63,6 @@ export default {
       if (this.music.duration === 0) {
         this.setMusic({id: this.music.id, duration: this.duration})
         this.$emit('duration', this.duration);
-        this.togglePlayback();
       }
     },
     playing: function (val) {
@@ -81,6 +80,10 @@ export default {
       }
     },
     sources: function (val) {
+      if (val === this.currentSource) {
+        return;
+      }
+      this.currentSource = val;
       this.started = false;
       this.togglePlayback();
     }
